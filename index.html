@@ -14,10 +14,8 @@
             --text-muted: #88aa88;
             --border-color: rgba(46, 204, 113, 0.2);
             --danger: #d9534f;
-            /* ألوان مستوحاة من ديسكورد للرتب */
-            --discord-blurple: #5865F2;
             --discord-dark: #2F3136;
-            --discord-card: #202225;
+            --discord-main: #36393f;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 60px; }
@@ -34,19 +32,19 @@
         .form-group label { display: block; margin-bottom: 8px; color: #ccc; font-size: 14px; }
         .form-control { width: 100%; padding: 12px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 16px; }
         .form-control:focus { outline: none; border-color: var(--primary); }
-        .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; text-decoration: none; }
         .btn:hover { background-color: var(--primary-hover); }
         .panel-section { background-color: var(--surface); padding: 25px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 25px; }
         .panel-section h3 { margin-bottom: 15px; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; font-size: 1.4rem; }
         
-        /* تصميم نظام رتب ديسكورد Discord Roles Layout */
-        .discord-roles-container { display: grid; grid-template-columns: 250px 1fr; background: var(--discord-dark); border-radius: 8px; border: 1fr solid rgba(255,255,255,0.05); min-height: 450px; overflow: hidden; }
-        .discord-roles-sidebar { background: #2f3136; border-left: 1px solid rgba(0,0,0,0.2); padding: 15px; }
+        .discord-roles-container { display: grid; grid-template-columns: 250px 1fr; background: var(--discord-dark); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); min-height: 400px; overflow: hidden; margin-top: 15px; }
+        .discord-roles-sidebar { background: #2f3136; padding: 15px; border-left: 1px solid rgba(0,0,0,0.2); }
         .discord-role-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 4px; cursor: pointer; margin-bottom: 5px; font-weight: 500; font-size: 14px; color: #b9bbbe; }
         .discord-role-item:hover, .discord-role-item.active { background: rgba(79,84,92,0.3); color: #fff; }
-        .discord-role-color-dot { width: 12px; height: 12px; border-radius: 50%; margin-left: 8px; display: inline-block; }
+        .discord-role-color-dot { width: 10px; height: 10px; border-radius: 50%; margin-left: 8px; display: inline-block; }
         .discord-roles-main { background: #36393f; padding: 20px; }
         .discord-permission-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
         .discord-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .discord-switch input { opacity: 0; width: 0; height: 0; }
         .discord-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #72767d; transition: .2s; border-radius: 34px; }
@@ -61,7 +59,6 @@
             header { display: flex; flex-direction: column; gap: 10px; text-align: center; padding: 15px; }
             .logo { font-size: 20px; width: 100%; }
             .nav-links { justify-content: center; width: 100%; }
-            .nav-btn { width: 100%; text-align: center; }
             .discord-roles-container { grid-template-columns: 1fr; }
             .discord-roles-sidebar { border-left: none; border-bottom: 1px solid rgba(0,0,0,0.2); }
             .data-item { flex-direction: column; gap: 10px; text-align: center; }
@@ -71,127 +68,101 @@
 <body>
 
     <header>
-        <!-- المعرف البرمجي الفريد المستلم يظهر هنا صريحاً أعلى اليمين/الشمال لتسهيل نقله -->
-        <div style="font-size: 13px; color: var(--text-muted);" id="headerUserTitle">👤 جاري سحب المعرف الرقمي...</div>
+        <div style="font-size: 14px; color: var(--primary); font-weight: bold;" id="headerUserTitle">👤 جاري تهيئة الهوية...</div>
         <a href="#" class="logo">KW STORE | الإدارة</a>
         <div class="nav-links">
             <button id="logoutBtn" class="nav-btn" onclick="logoutStaff()" style="display: none;">🚪 خروج</button>
         </div>
     </header>
 
-    <!-- 🔐 شاشة قفل الدخول: القائمة المنسدلة للرتب وخانة المعرف الرقمي المصلحة -->
     <div class="login-view" id="lockScreenView">
         <div class="login-card">
             <h2>تسجيل دخول المسؤولين</h2>
             <form id="mainLoginForm" onsubmit="handleStaffAuth(event)">
-                
                 <div class="form-group">
                     <label>اختر رتبتك الوظيفية (سهم الخيارات):</label>
                     <select id="loginRoleSelect" class="form-control"></select>
                 </div>
-                
                 <div class="form-group">
                     <label>المعرف الرقمي (أدخل الـ ID الذي يظهر لك بأعلى الصفحة):</label>
-                    <!-- تم إضافة صندوق الإدخال المفقود وتأمينه بـ ID صحيح ليعمل الزر فورا -->
                     
                 </div>
-                
                 <div class="form-group">
                     <label>كلمة المرور الخاصة بالرتبة المحددة:</label>
                     <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
                 </div>
-                
-                <button type="submit" class="btn">تدقيق الصلاحيات والولوچ 🛡</button>
+                <button type="submit" class="btn">تدقيق الصلاحيات والولوج 🛡</button>
             </form>
         </div>
     </div>
-    <!-- ⚙ الواجهة الثانية: لوحة التحكم البرمجية الداخلية -->
     <div class="container" id="dashboardView" style="display: none;">
         
-        <!-- لوحة الرتب والصلاحيات على طراز ديسكورد بالكامل -->
         <div class="panel-section">
             <h3>🛡 لوحة التحكم في أدوار وصلاحيات النظام (Discord Style)</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">أنشئ الرتب، اضغط عليها، وتحكم في تشغيل وإغلاق كل صلاحية بالملي تماماً مثل ديسكورد:</p>
-            
-            <div class="form-group" style="display: flex; gap: 10px;">
-                <input type="text" id="roleInput" class="form-control" placeholder="اسم الرتبة الجديدة (مثال: مشرف مبيعات)...">
+            <div class="form-group" style="display: flex; gap: 10px; margin-top: 15px;">
+                <input type="text" id="roleInput" class="form-control" placeholder="اسم الرتبة الجديدة...">
                 <button class="btn" style="width: auto; white-space: nowrap;" onclick="addNewRole()">➕ إنشاء رتبة</button>
             </div>
 
             <div class="discord-roles-container">
-                <!-- شريط الرتب الجانبي -->
                 <div class="discord-roles-sidebar" id="discordRolesSidebar"></div>
-                
-                <!-- لوحة الصلاحيات المفتوحة للرتبة النشطة -->
                 <div class="discord-roles-main" id="discordRolesMain" style="display: none;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-                        <h4 id="selectedRoleName" style="color: #fff; font-size: 18px;">اسم الرتبة</h4>
+                        <h4 id="selectedRoleName" style="color: #fff; font-size: 18px;">الرتبة</h4>
                         <div>
                             <span style="font-size: 12px; color: #cd9b32; margin-left: 10px; font-weight: bold;" id="selectedRolePass">🔑 الباسورد: </span>
-                            <button onclick="changeSelectedRolePassword()" style="background: #cd9b32; border:none; padding:3px 8px; border-radius:3px; font-size:11px; cursor:pointer; font-weight:bold;">تعديل الباسورد</button>
+                            <button onclick="changeSelectedRolePassword()" style="background: #cd9b32; border:none; color:#000; padding:3px 8px; border-radius:3px; font-size:11px; cursor:pointer; font-weight:bold;">تعديل</button>
                         </div>
                     </div>
                     
-                    <!-- شبكة مفاتيح الصلاحيات ديسكورد ستايل -->
                     <div class="discord-permission-row">
                         <div>
                             <div style="font-weight: bold; color: #fff;">رؤية تذاكر الشكاوى</div>
-                            <div style="font-size: 12px; color: #b9bbbe;">تسمح لصاحب الرتبة باستعراض الشكاوى المستلمة من العملاء.</div>
+                            <div style="font-size: 12px; color: #b9bbbe;">تسمح باستعراض شكاوى العملاء المستلمة.</div>
                         </div>
                         <label class="discord-switch"><input type="checkbox" id="perm_viewComplaints" onchange="updateSelectedRolePerm('viewComplaints', this.checked)"><span class="discord-slider"></span></label>
                     </div>
                     <div class="discord-permission-row">
                         <div>
                             <div style="font-weight: bold; color: #fff;">تعديل أسعار المنتجات</div>
-                            <div style="font-size: 12px; color: #b9bbbe;">تسمح بربط وتحديث قيم فواتير السوفت وير وأنظمة الكاشير.</div>
+                            <div style="font-size: 12px; color: #b9bbbe;">تسمح بتحديث قيم فواتير الكاشير.</div>
                         </div>
                         <label class="discord-switch"><input type="checkbox" id="perm_editPrices" onchange="updateSelectedRolePerm('editPrices', this.checked)"><span class="discord-slider"></span></label>
                     </div>
                     <div class="discord-permission-row">
                         <div>
                             <div style="font-weight: bold; color: #fff;">صلاحية التعيين والتوظيف</div>
-                            <div style="font-size: 12px; color: #b9bbbe;">تمنح القدرة على توظيف الزوار ومنحهم الرتب الوظيفية بالنظام.</div>
+                            <div style="font-size: 12px; color: #b9bbbe;">تمنح القدرة على توظيف طاقم عمل جديد للرتب.</div>
                         </div>
                         <label class="discord-switch"><input type="checkbox" id="perm_fireAssign" onchange="updateSelectedRolePerm('fireAssign', this.checked)"><span class="discord-slider"></span></label>
-                    </div>
-                    <div class="discord-permission-row">
-                        <div>
-                            <div style="font-weight: bold; color: #fff;">إدارة وتعديل المعرفات والأسماء</div>
-                            <div style="font-size: 12px; color: #b9bbbe;">تسمح بتعديل دليل معرفات الزوار (Directory) بشكل فوري صلب.</div>
-                        </div>
-                        <label class="discord-switch"><input type="checkbox" id="perm_manageDirectory" onchange="updateSelectedRolePerm('manageDirectory', this.checked)"><span class="discord-slider"></span></label>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- القسم الخاص بدليل معرفات المستخدمين والزوار والـ Edit الفوري -->
         <div class="panel-section">
-            <h3>📂 دليل معرفات الزوار والمستخدمين المستلم (Directory)</h3>
-            <button class="btn" style="background: #16a085; color: #fff; margin-bottom: 15px; width: auto;" onclick="toggleUsersDirectory()">🔄 استعراض / تحديث كشف المعرفات حياً 👤</button>
-            <div id="usersDirectoryList" style="display: none; max-height: 200px; overflow-y: auto; background: #060b07; border: 1px solid var(--border-color); padding: 10px; border-radius: 4px;"></div>
+            <h3>📂 دليل معرفات الزوار والمستخدمين (Directory)</h3>
+            <button class="btn" style="background: #16a085; color: #fff; margin-bottom: 15px; width: auto;" onclick="toggleUsersDirectory()">🔄 استعراض كشف المعرفات 👤</button>
+            <div id="usersDirectoryList" style="display: none; max-height: 200px; overflow-y: auto;"></div>
         </div>
 
-        <!-- قسم التوظيف والتعيين -->
         <div class="panel-section">
-            <h3>👥 توظيف وتعيين الرتب للموظفين الجدد</h3>
+            <h3>👥 توظيف وتعيين الموظفين الجدد</h3>
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <input type="text" id="empIdInput" class="form-control" placeholder="ادخل معرف الـ ID للزائر المراد توظيفه...">
+                <input type="text" id="empIdInput" class="form-control" placeholder="ID الزائر...">
                 <select id="empRoleSelect" class="form-control"></select>
-                <button class="btn" style="width: auto; white-space: nowrap;" onclick="assignEmployee()">تفعيل قرار التعيين 💼</button>
+                <button class="btn" style="width: auto; white-space: nowrap;" onclick="assignEmployee()">تفعيل التعيين 💼</button>
             </div>
             <div id="empList"></div>
         </div>
 
-        <!-- قسم الشكاوى المستلمة من العميل -->
         <div class="panel-section">
-            <h3>📬 كشف تذاكر الشكاوى والمقترحات المستلمة من العملاء</h3>
+            <h3>📬 كشف تذاكر الشكاوى المستلمة من العملاء</h3>
             <div id="adminComplaintsList"></div>
         </div>
-
     </div>
 
     <footer>
-        حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام إدارة وكاشير الرتب المطور ديسكورد ستايل
+        حقوق الطبع محفوظة لـ KW STORE © ٢٠٢٦ - نظام الموظفين المطوّر بالكامل
     </footer>
 
     <script src="app.js"></script>
