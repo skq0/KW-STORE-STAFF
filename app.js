@@ -7,7 +7,11 @@ function get(k, def) {
     try { return JSON.parse(val); } catch(e) { return def; } 
 }
 
-// دالة سحب وتلقيم المعرف بالأعلى حياً ومباشرة
+function set(k, v) { 
+    localStorage.setItem(k, JSON.stringify(v)); 
+}
+
+// دالة توليد وعرض معرف الزائر الحالي أعلى الصفحة تلقائياً وثباته
 function initVisitorIdentity() {
     var myId = localStorage.getItem("kw_my_id");
     var myName = localStorage.getItem("kw_my_name");
@@ -20,7 +24,7 @@ function initVisitorIdentity() {
         
         var dir = get("kw_visitors_directory", []);
         dir.push({ id: myId, name: myName });
-        localStorage.setItem("kw_visitors_directory", JSON.stringify(dir));
+        set("kw_visitors_directory", dir);
     }
     
     var titleEl = document.getElementById("headerUserTitle");
@@ -31,12 +35,14 @@ function initVisitorIdentity() {
 
 function handleStaffAuth(e) {
     e.preventDefault();
+    
     var selectedRole = document.getElementById("loginRoleSelect").value;
     var typedIdentity = document.getElementById("authIdentity").value.trim();
     var typedPassword = document.getElementById("authPassword").value;
     
     if (selectedRole === "مدير العام" && (typedIdentity === "100" || typedIdentity === localStorage.getItem("kw_my_id")) && 
         (typedPassword === "admin2026" || typedPassword === "youssef2026")) {
+        
         localStorage.setItem("kw_isAdmin", "true");
         unlockDashboard("Youssef Developer (مدير العام)");
         return;
@@ -58,6 +64,7 @@ function unlockDashboard(userTitle) {
     document.getElementById("dashboardView").style.display = "block";
     document.getElementById("logoutBtn").style.display = "inline-block";
     document.getElementById("headerUserTitle").innerText = "⚙ الموظف النشط: " + userTitle;
+    
     renderAll();
     loadDiscordRolesSidebar();
 }
@@ -102,11 +109,10 @@ function updateSelectedRolePerm(permName, isChecked) {
     if (role) {
         if (!role.permissions) role.permissions = {};
         role.permissions[permName] = isChecked;
-        localStorage.setItem("kw_roles_v3", JSON.stringify(roles));
+        set("kw_roles_v3", roles);
     }
 }
 
-// دالة تعديل الباسورد الفوري للرتب
 function changeSelectedRolePassword() {
     if (!selectedRoleId) return;
     var roles = get("kw_roles_v3", []);
@@ -115,7 +121,7 @@ function changeSelectedRolePassword() {
         var newPass = prompt("أدخل الباسورد الجديد للرتبة:", role.password);
         if (newPass && newPass.trim() !== "") {
             role.password = newPass.trim();
-            localStorage.setItem("kw_roles_v3", JSON.stringify(roles));
+            set("kw_roles_v3", roles);
             selectDiscordRole(selectedRoleId);
         }
     }
@@ -126,7 +132,7 @@ function addNewRole() {
     if (!name) return;
     var r = get("kw_roles_v3", []);
     r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, editPrices: false, fireAssign: false } });
-    localStorage.setItem("kw_roles_v3", JSON.stringify(r));
+    set("kw_roles_v3", r);
     document.getElementById("roleInput").value = "";
     renderAll();
     loadDiscordRolesSidebar();
@@ -140,7 +146,7 @@ function editUserIdentity(oldId) {
     var newId = prompt("ID الجديد لشحن الهوية:", dir[idx].id);
     if (newName && newId) {
         dir[idx].name = newName; dir[idx].id = newId;
-        localStorage.setItem("kw_visitors_directory", JSON.stringify(dir));
+        set("kw_visitors_directory", dir);
         document.getElementById("usersDirectoryList").style.display = "none";
         toggleUsersDirectory();
     }
@@ -182,7 +188,7 @@ function assignEmployee() {
     var emps = get("kw_employees", []);
     var exist = emps.find(function(e) { return e.id.toString() === id.toString(); });
     if (exist) { exist.role = role; } else { emps.push({ id: id, name: user.name, role: role }); }
-    localStorage.setItem("kw_employees", JSON.stringify(emps));
+    set("kw_employees", emps);
     document.getElementById("empIdInput").value = "";
     renderAll(); alert("تم التوظيف بنجاح.");
 }
@@ -190,14 +196,13 @@ function assignEmployee() {
 document.addEventListener("DOMContentLoaded", function() {
     initVisitorIdentity();
     if (!localStorage.getItem("kw_roles_v3")) {
-        var baseRoles = [
+        set("kw_roles_v3", [
             { id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, editPrices: true, fireAssign: true } },
             { id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, editPrices: false, fireAssign: false } },
             { id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, editPrices: false, fireAssign: false } }
-        ];
-        localStorage.setItem("kw_roles_v3", JSON.stringify(baseRoles));
+        ]);
     }
-    if (!localStorage.getItem("kw_employees")) { localStorage.setItem("kw_employees", JSON.stringify([{ id: "100", name: "Youssef Developer", role: "مدير العام" }])); }
+    if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "100", name: "Youssef Developer", role: "مدير العام" }]); }
     
     var select = document.getElementById("loginRoleSelect");
     if (select) {
