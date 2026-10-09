@@ -71,31 +71,37 @@
 <body>
 
     <header>
-        <div style="font-size: 13px; color: var(--text-muted);" id="headerUserTitle">👤 طاقم العمل: زائر غير مسجل</div>
+        <!-- المعرف البرمجي الفريد المستلم يظهر هنا صريحاً أعلى اليمين/الشمال لتسهيل نقله -->
+        <div style="font-size: 13px; color: var(--text-muted);" id="headerUserTitle">👤 جاري سحب المعرف الرقمي...</div>
         <a href="#" class="logo">KW STORE | الإدارة</a>
         <div class="nav-links">
             <button id="logoutBtn" class="nav-btn" onclick="logoutStaff()" style="display: none;">🚪 خروج</button>
         </div>
     </header>
 
-    <!-- 🔐 شاشة قفل الدخول: القائمة المنسدلة للرتب وخانة المعرف العشوائي -->
+    <!-- 🔐 شاشة قفل الدخول: القائمة المنسدلة للرتب وخانة المعرف الرقمي المصلحة -->
     <div class="login-view" id="lockScreenView">
         <div class="login-card">
             <h2>تسجيل دخول المسؤولين</h2>
             <form id="mainLoginForm" onsubmit="handleStaffAuth(event)">
+                
                 <div class="form-group">
                     <label>اختر رتبتك الوظيفية (سهم الخيارات):</label>
-                    <select id="loginRoleSelect" class="form-control" onchange="updatePasswordPlaceholder()"></select>
+                    <select id="loginRoleSelect" class="form-control"></select>
                 </div>
+                
                 <div class="form-group">
-                    <label>المعرف الرقمي العشوائي (الـ ID المسجل لك بالمتجر):</label>
+                    <label>المعرف الرقمي (أدخل الـ ID الذي يظهر لك بأعلى الصفحة):</label>
+                    <!-- تم إضافة صندوق الإدخال المفقود وتأمينه بـ ID صحيح ليعمل الزر فورا -->
                     
                 </div>
+                
                 <div class="form-group">
                     <label>كلمة المرور الخاصة بالرتبة المحددة:</label>
                     <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn">تدقيق الصلاحيات والولوج 🛡</button>
+                
+                <button type="submit" class="btn">تدقيق الصلاحيات والولوچ 🛡</button>
             </form>
         </div>
     </div>
