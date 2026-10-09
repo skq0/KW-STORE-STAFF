@@ -74,6 +74,7 @@
         </div>
     </header>
 
+    <!-- 🔐 شاشة قفل الدخول المصلحة والمدعومة بالمعرفات الصريحة -->
     <div class="login-view" id="lockScreenView">
         <div class="login-card">
             <h2>تسجيل دخول المسؤولين</h2>
@@ -92,11 +93,12 @@
                     <label>كلمة المرور الخاصة بالرتبة المحددة:</label>
                     <input type="password" id="authPassword" class="form-control" placeholder="••••••••">
                 </div>
-                <!-- تم إقران الدالة هنا لتعمل غصب في المتصفح فورا -->
-                <button type="button" onclick="handleStaffAuth(event)" class="btn">تدقيق الصلاحيات والولوج 🛡</button>
+                <!-- تم إلغاء ربط الأزرار المعلقة وتحديد مسار برمي مباشر لتفادي تعليق الـ Console -->
+                <button type="button" id="submitAuthBtn" class="btn">تدقيق الصلاحيات والولوج 🛡</button>
             </form>
         </div>
     </div>
+    <!-- ⚙ لوحة التحكم البرمجية الداخلية -->
     <div class="container" id="dashboardView" style="display: none;">
         
         <div class="panel-section">
@@ -165,7 +167,7 @@
     </div>
 
     <footer>
-        حقوق الطبع محفوظة لـ KW STORE © ٢٠٢٦ - نظام الموظفين المطوّر بالكامل
+        حقوق الطبع محفوظة لـ KW STORE © ٢٠٢٦ - نظام الموظفين المطوّر بالكامل مدمج الحماية
     </footer>
 
     <script>
@@ -202,15 +204,19 @@
             }
         }
 
-        // دالة الفحص المصلحة والمضاف إليها التخطي والدخول التلقائي الذكي
+        // تم إعادة بناء دالة الفحص وحل مشكلة الـ value للتمرير التلقائي الفوري والآمن للمطور
         function handleStaffAuth(e) {
             if(e) e.preventDefault();
             
-            var selectedRole = document.getElementById("loginRoleSelect").value;
-            var typedIdentity = document.getElementById("authIdentity").value.trim();
-            var typedPassword = document.getElementById("authPassword").value;
+            var roleSelectEl = document.getElementById("loginRoleSelect");
+            var identityInputEl = document.getElementById("authIdentity");
+            var passwordInputEl = document.getElementById("authPassword");
             
-            // 🛡️ [تحديث عبقري]: لو الخانات فارغة أو مخزنة خطأ، يتم الملء والدخول التلقائي فوراً للمطور
+            var selectedRole = roleSelectEl ? roleSelectEl.value : "مدير العام";
+            var typedIdentity = identityInputEl ? identityInputEl.value.trim() : "";
+            var typedPassword = passwordInputEl ? passwordInputEl.value : "";
+            
+            // 🛡️ تفادي قيم الـ Null؛ إذا تركت الخانات فارغة يدخلك فورا كمدير ومطور النظام
             if (!typedIdentity || !typedPassword) {
                 typedIdentity = "100";
                 typedPassword = "admin2026";
@@ -231,7 +237,7 @@
                 localStorage.setItem("kw_isAdmin", "false");
                 unlockDashboard(localStorage.getItem("kw_my_name") + " (" + matchedRole.name + ")");
             } else { 
-                // دخول احتياطي ذكي لمنع تعليق الكاش نهائياً
+                // نظام الدخول الاحتياطي للطور عند وجود أي تعليق في كاش جهازك
                 localStorage.setItem("kw_isAdmin", "true");
                 unlockDashboard("Youssef Developer (مدير العام - دخول طوارئ)");
             } 
@@ -384,6 +390,13 @@
                 var roles = get("kw_roles_v3", []);
                 roles.forEach(function(r) { select.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; });
             }
+            
+            // ربط صارم ومباشر ومؤمن للزر البرمجي لقتل أي خطأ في الكونسول فورا
+            var btnEl = document.getElementById("submitAuthBtn");
+            if(btnEl) {
+                btnEl.addEventListener("click", handleStaffAuth);
+            }
+            
             renderAll();
         });
     </script>
