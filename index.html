@@ -92,7 +92,7 @@
 
     <header>
         <div style="font-size: 14px; color: var(--primary); font-weight: bold;" id="headerUserTitle">👤 جاري سحب بيانات الهوية...</div>
-        <a href="#" class="logo">KW STORE | لوحة القيادة</a>
+        <a href="#" class="logo">KW STORE | الأداره </a>
         <div class="nav-links">
             <button id="logoutBtn" class="nav-btn" onclick="processStaffLogoutLive()" style="display: none;">🚪 تسجيل الخروج</button>
         </div>
@@ -103,7 +103,6 @@
             <form id="mainLoginForm" onsubmit="handleStaffAuth(event)">
                 <div class="form-group">
                     <label>اختر الرتبة الوظيفية المعتمدة:</label>
-                    <!-- حقن الرتب الثابتة حتمياً في الهيكل لكسر الشاشة السوداء في استضافة GitHub -->
                     <select id="loginRoleSelect" class="form-control">
                         <option value="مدير العام">مدير العام</option>
                         <option value="مسؤول شكاوى">مسؤول شكاوى</option>
@@ -309,8 +308,8 @@
     <footer>
         حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام المراقبة السيبرانية والـ LOG المحمي بالمزامنة العالمية الحية عن بعد
     </footer>
-       <script>
-        // 🔗 تم تصحيح الرابط ليتطابق مع خادمك الحقيقي بالـ b وليس الـ c
+    <script>
+        // 🔗 الرابط الصحيح والمطابق لقاعدة بياناتك السحابية 100% لبث البيانات عبر جيت هاب
         var FIREBASE_URL = "https://firebaseio.com";
 
         var selectedRoleId = null;
@@ -331,7 +330,7 @@
         function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // مزامنة فورية تتجاوز CORS الخاص باستضافة GitHub Pages
+            // مزامنة سريعة تتخطى CORS الخاص بجيت هاب حياً في نفس الثانية
             fetch(`${FIREBASE_URL}${key}.json`, {
                 method: 'PUT',
                 body: JSON.stringify(value)
@@ -339,7 +338,7 @@
         }
 
         function listenToCloudGlobalUpdates() {
-            // محرك استماع دوري سريع يربط الأجهزة المتصلة كل ثانيتين بدون ثغرات تجميد
+            // محرك الفحص والاتصال اللحظي الدائم لربط المتصفحات حياً وفوراً كل ثانيتين
             setInterval(function() {
                 fetch(`${FIREBASE_URL}.json`)
                 .then(res => res.json())
@@ -517,7 +516,8 @@
 
         function updateSelectedRolePerm(permName, isChecked) { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (!role.permissions) role.permissions = {}; role.permissions[permName] = isChecked; pushToPrivateLog("⚙️ تعديل صلاحيات رتبة", `تعديل الصلاحية [${permName}] إلى (${isChecked})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); } }
         function changeSelectedRolePassword() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { var newPass = prompt("أدخل كلمة المرور الجديدة:", role.password); if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); pushToPrivateLog("🔑 تغيير كلمة مرور رتبة", `تعديل باسورد رتبة (${role.name})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
-               function processHireEmployee() { 
+        function renameSelectedRoleLive() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (role.name === "مدير العام") return; var newName = prompt("أدخل الاسم الجديد:", role.name); if (newName && newName.trim() !== "") { var oldName = role.name; role.name = newName.trim(); pushToPrivateLog("✏️ تعديل اسم رتبة", `تعديل من (${oldName}) إلى (${role.name})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
+        function processHireEmployee() { 
             var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
             if (isOwner || currentUserPermissions.fireAssign === true) { 
                 var name = document.getElementById("hireName").value.trim(); 
@@ -604,6 +604,17 @@
         function downloadStaffDataBackupFile() { var emps = get("kw_employees", []); var textContent = "📊 كشف بيانات موظفي متجر KW STORE\n"; emps.forEach(function(e, i) { if(e) textContent += (i+1) + ". الاسم: " + e.name + " | المعرّف: " + e.id + " | الرتبة: " + e.role + "\n"; }); var blob = new Blob([textContent], { type: "text/plain;charset=utf-8" }); var link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kw_staff_records_data_2026.txt"; link.click(); }
         function renderAll() {
             var hireSel = document.getElementById("hireRoleSelect"); var fieldSel = document.getElementById("field_staffRole"); var fireSel = document.getElementById("fireEmployeeSelect"); var loginSel = document.getElementById("loginRoleSelect"); var compCont = document.getElementById("complaintsListContainer"); var ordCont = document.getElementById("ordersListContainer"); var tableCont = document.getElementById("staffRecordsDataTableContainer"); var logCont = document.getElementById("systemLogListContainer"); var trashCont = document.getElementById("trashLogListContainer"); var privCont = document.getElementById("privateLogsContainer"); var roles = get("kw_roles_v3", []); var emps = get("kw_employees", []);
+            
+            // حقن ذكي ومحمي يمنع اختفاء الرتب أو حدوث لود لانهائي عند تدوين الرتب حياً
+            if(loginSel && loginSel.options.length <= 3) { 
+                var currentVal = loginSel.value;
+                loginSel.innerHTML = ""; 
+                roles.forEach(function(r) { if(r) loginSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; });
+                if(currentVal) loginSel.value = currentVal;
+            }
+            if(hireSel) { hireSel.innerHTML = ""; roles.forEach(function(r) { if(r) hireSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
+            if(fieldSel) { fieldSel.innerHTML = ""; roles.forEach(function(r) { if(r) fieldSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
+            if(fireSel) { fireSel.innerHTML = ""; emps.forEach(function(e) { if(e) fireSel.innerHTML += '<option value="' + e.id + '">👤 ' + e.name + ' (ID: ' + e.id + ')</option>'; }); }
             if(compCont) { compCont.innerHTML = ""; var complaints = get("kw_complaints_v1", []); if(complaints.length === 0) { compCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد شكاوى مستلمة حالياً.</div>'; } else { complaints.forEach(function(c) { if(c) { compCont.innerHTML += '<div class="data-list-item"><div>📅 وقت التذكرة: ' + c.date + ' | 👤 اسم العميل: ' + c.senderName + '</div>' + '<div style="color:#fff; margin-top:5px; font-weight:bold;">⚠️ الشكوى: ' + c.message + '</div>' + '<div style="margin-top:8px; color:var(--primary);">✍️ الرد الحالي: ' + (c.reply || "لا يوجد رد بعد") + '</div>' + '<div style="margin-top:10px; display:flex; gap:8px;">' + '<button class="btn" style="width:auto; padding:4px 10px; font-size:12px;" onclick="processComplaintReply(\''+c.id+'\')">✉️ الرد الفني</button>' + '<button class="btn btn-danger" style="width:auto; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissComplaint(\''+c.id+'\')">❌ إنهاء ومسح التذكرة</button></div></div>'; } }); } }
             if(ordCont) { ordCont.innerHTML = ""; var orders = get("kw_orders_v1", []); if(orders.length === 0) { ordCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد طلبات شراء مسجلة حالياً.</div>'; } else { orders.forEach(function(o) { if(o) { ordCont.innerHTML += '<div class="data-list-item"><div>👤 المشتري: ' + o.clientName + ' | 📞 هاتف: ' + o.clientPhone + '</div>' + '<div style="color:#fff; margin-top:5px; font-weight:bold;">📦 النظام المطلوب: ' + o.selectedSystem + '</div>' + '<div style="font-size:12px; color:var(--text-muted); margin-top:5px;">📅 التوقيت: ' + o.date + '</div>' + '<button class="btn btn-danger" style="width:auto; margin-top:10px; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissOrder(\''+o.id+'\')">❌ إنهاء ومسح الطلب</button></div>'; } }); } }
             if(tableCont) { tableCont.innerHTML = ""; if(emps.length === 0) { tableCont.innerHTML = '<div>كشف الموظفين فارغ.</div>'; } else { emps.forEach(function(e) { if(e) { tableCont.innerHTML += '<div class="data-list-item flex-box"><span>👤 الموظف: ' + e.name + ' | 🆔 الـ ID: ' + e.id + ' | 🛡️ الرتبة: <span class="badge">' + e.role + '</span></span>' + '<button class="btn-danger" style="padding:4px 10px; font-size:12px;" onclick="deleteSingleEmployeeRecord(\''+e.id+'\', \''+e.name+'\', \''+e.role+'\')">إزالة الموظف ❌</button></div>'; } }); } }
@@ -612,10 +623,10 @@
             if(privCont) { privCont.innerHTML = ""; var pLogs = get("kw_private_cyber_logs_v1", []); if(pLogs.length === 0) { privCont.innerHTML = '<div style="color:var(--text-muted); padding:15px; text-align:center;">📡 رادار الرصد السري فارغ ونظيف كلياً، لا يوجد عمليات مسجلة...</div>'; } else { pLogs.slice().reverse().forEach(function(pl) { if(pl) { privCont.innerHTML += `<div class="cyber-log-item"><div class="cyber-log-header" onclick="togglePrivateLogDropdown(this)"><div class="cyber-log-title"><span>⚙️ \${pl.actionTitle}</span></div><span class="cyber-arrow">▼ لمشاهدة التفاصيل</span></div><div class="cyber-log-details"><p style="color: #fff; font-weight: 500; margin-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 6px;">📝 وصف العملية الكلية: <span style="color:#ccc;">\${pl.description}</span></p><div class="grid-details"><div class="detail-tag">👤 اسم الفاعل: <span>\${pl.executorName}</span></div><div class="detail-tag">🆔 الأيدي (ID): <span>\${pl.executorId}</span></div><div class="detail-tag">🛡️ الرتبة الإدارية: <span>\${pl.executorRole}</span></div><div class="detail-tag">🕒 الوقت: <span>\${pl.time}</span></div><div class="detail-tag">📅 التاريخ: <span>\${pl.date}</span></div></div></div></div>`; } }); } }
         }
         window.onload = function() {
-            // إجبار النظام على جلب أحدث نسخة رتب مطابقة للسيرفر السحابي المصلح
-            if (!localStorage.getItem("kw_sync_fixed_rtdb_v105")) { 
+            // إجبار المنظومة السحابية على تصفير ومحاذاة التعارضات السابقة بالأجهزة المتصلة
+            if (!localStorage.getItem("kw_sync_fixed_rest_v109")) { 
                 localStorage.clear(); 
-                localStorage.setItem("kw_sync_fixed_rtdb_v105", "true"); 
+                localStorage.setItem("kw_sync_fixed_rest_v109", "true"); 
             }
             if (!localStorage.getItem("kw_roles_v3")) { 
                 set("kw_roles_v3", [ 
@@ -631,3 +642,6 @@
             renderAll();
             window.addEventListener("storage", function() { renderAll(); });
         };
+    </script>
+</body>
+</html>
