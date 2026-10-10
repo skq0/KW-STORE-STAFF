@@ -481,7 +481,7 @@
                 }
             } else { alert("خطأ حماية: عذراً، أنت لا تملك الصلاحية!"); }
         }
-        function addNewRole() { 
+               function addNewRole() { 
             var isOwner = localStorage.getItem("kw_isAdmin") === "true";
             if (isOwner || currentUserPermissions.addDeleteRoles === true) {
                 var name = document.getElementById("roleInput").value.trim(); if (!name) return; 
