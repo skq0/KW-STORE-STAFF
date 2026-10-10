@@ -94,19 +94,13 @@
 <body>
 
     <header>
-        <div style="font-size: 14px; color: var(--primary); font-weight: bold;" id="headerUserTitle">👤 جاري سحب بيانات الهوية...</div>
-        <a href="#" class="logo">KW STORE | لوحة القيادة</a>
-        <div class="nav-links">
-            <button id="logoutBtn" class="nav-btn" onclick="processStaffLogoutLive()" style="display: none;">🚪 تسجيل الخروج</button>
-        </div>
-    </header>
-    <div class="login-view" id="lockScreenView">
+            <div class="login-view" id="lockScreenView">
         <div class="login-card">
             <h2>تسجيل دخول طاقم العمل</h2>
-            <form id="mainLoginForm" onsubmit="handleStaffAuth(event)">
+            <!-- تم إزالة وسم form التقليدي لمنع المتصفح من عمل ريفريش إجباري -->
+            <div id="mainLoginForm">
                 <div class="form-group">
                     <label>اختر الرتبة الوظيفية المعتمدة:</label>
-                    <!-- حقن خيارات الرتب الأساسية مباشرة في الـ HTML لكسر مشكلة الشاشة السوداء على GitHub -->
                     <select id="loginRoleSelect" class="form-control">
                         <option value="مدير العام">مدير العام</option>
                         <option value="مسؤول شكاوى">مسؤول شكاوى</option>
@@ -121,8 +115,8 @@
                     <label>كلمة مرور الرتبة المحددة:</label>
                     <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn">تدقيق الصلاحيات والولوج البرمجي 🛡</button>
-            </form>
+                <button type="button" class="btn" onclick="handleStaffAuth(null)">تدقيق الصلاحيات والولوج البرمجي 🛡</button>
+            </div>
         </div>
     </div>
 
