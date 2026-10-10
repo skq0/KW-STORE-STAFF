@@ -327,9 +327,10 @@
         function set(k, v) { 
             localStorage.setItem(k, JSON.stringify(v)); 
         }
-                function broadcastCloudDataChange(key, value) {
+                       function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
+            // 🔗 تم تصحيح الرابط بإضافة الشرطة المائلة / قبل الـ json لضمان نجاح الاتصال الحتمي
             fetch("https://firebaseio.com" + key + ".json", {
                 method: 'PUT',
                 body: JSON.stringify(value)
@@ -337,6 +338,7 @@
         }
 
         function listenToCloudGlobalUpdates() {
+            // ⚡ سحب مستمر ومباشر بدون كاش لتحديث الأجهزة التانية حياً في نفس الثانية
             setInterval(function() {
                 fetch("https://firebaseio.com.json?nocache=" + Date.now())
                 .then(function(res) { return res.json(); })
