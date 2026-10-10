@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KW STORE | الرادار السيبراني والبث السحابي الحي 2026</title>
-    <!-- استدعاء سكريبتات جوجل الرسمية لربط الأجهزة والبث الحي والمباشر فورا -->
+    <title>KW STORE | الرادار السيبراني والمزامنة السحابية العالمية 2026</title>
+    <!-- استدعاء مكاتب وسيرفرات جوجل الرسمية لربط الأجهزة والبث الحي والمباشر فورا -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
     <style>
@@ -24,18 +24,18 @@
             --cyber-purple: #9b59b6;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
         header { background-color: var(--surface); padding: 15px 20px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 2px solid var(--primary); z-index: 200; position: relative; }
         .logo { font-size: 22px; font-weight: bold; color: var(--primary); text-decoration: none; text-align: center; }
         .nav-links { display: flex; gap: 15px; align-items: center; justify-content: flex-end; }
         .nav-btn { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 13px; font-weight: bold; }
         .nav-btn:hover { background-color: var(--danger); color: #fff; }
-        .login-view { display: flex; justify-content: center; align-items: center; flex: 1; padding: 40px 20px; }
-        .login-card { background-color: var(--surface); padding: 35px; border-radius: 8px; border: 1px solid var(--border-color); width: 100%; max-width: 440px; box-shadow: 0 8px 30px rgba(0,0,0,0.7); }
+        .login-view { display: flex; justify-content: center; align-items: center; flex: 1; padding: 40px 20px; min-height: calc(100vh - 65px); }
+        .login-card { background-color: var(--surface); padding: 35px; border-radius: 8px; border: 1px solid var(--border-color); width: 100%; max-width: 440px; box-shadow: 0 8px 30px rgba(0,0,0,0.7); position: relative; z-index: 10; }
         .login-card h2 { color: var(--primary); text-align: center; margin-bottom: 25px; font-size: 1.7rem; letter-spacing: 0.5px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; text-align: right; }
         .form-group label { display: block; margin-bottom: 8px; color: #ccc; font-size: 14px; font-weight: 500; }
-        .form-control { width: 100%; padding: 12px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 15px; transition: border-color 0.2s; }
+        .form-control { width: 100%; padding: 12px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 15px; transition: border-color 0.2s; text-align: right; }
         .form-control:focus { outline: none; border-color: var(--primary); }
         .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; text-decoration: none; transition: background 0.2s; }
         .btn:hover { background-color: var(--primary-hover); }
@@ -94,10 +94,15 @@
 <body>
 
     <header>
-            <div class="login-view" id="lockScreenView">
+        <div style="font-size: 14px; color: var(--primary); font-weight: bold;" id="headerUserTitle">👤 جاري سحب بيانات الهوية...</div>
+        <a href="#" class="logo">KW STORE | لوحة القيادة</a>
+        <div class="nav-links">
+            <button id="logoutBtn" class="nav-btn" onclick="processStaffLogoutLive()" style="display: none;">🚪 تسجيل الخروج</button>
+        </div>
+    </header>
+    <div class="login-view" id="lockScreenView">
         <div class="login-card">
             <h2>تسجيل دخول طاقم العمل</h2>
-            <!-- تم إزالة وسم form التقليدي لمنع المتصفح من عمل ريفريش إجباري -->
             <div id="mainLoginForm">
                 <div class="form-group">
                     <label>اختر الرتبة الوظيفية المعتمدة:</label>
@@ -307,7 +312,7 @@
         حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام المراقبة السيبرانية والـ LOG المحمي بالمزامنة العالمية الحية عن بعد
     </footer>
     <script>
-        // 🔗 ضبط تهيئة خادم وجهاز الاستماع للبث الحي وقاعدة بيانات Firebase الحقيقية الخاصة بك بدقة
+        // 🔗 تهيئة خادم البث الحي وقاعدة بيانات Firebase المباشرة لربط أجهزة الطاقم حياً فورا بالإنترنت
         var config = {
             databaseURL: "https://firebaseio.com"
         };
@@ -332,12 +337,12 @@
         function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // الرفع والتدفق اللحظي الحتمي عبر السيرفر ليتلقاه بقية الأجهزة فوراً حياً
+            // الرفع الفوري التلقائي لقاعدة البيانات السحابية لبقية الموظفين حياً عن بعد في نفس اللحظة
             database.ref(key).set(value).catch(e => console.log("خطأ رفع سحابي"));
         }
 
         function listenToCloudGlobalUpdates() {
-            // تفعيل بث الاستماع المباشر الحقيقي: أي عملية حقن أو تعديل رتبة تظهر فوراً بكافة الشاشات بدون كاش
+            // تفعيل بروتوكول البث الحي المستمر بجوجل لكسر كاش الأجهزة والمتصفحات الخارجية فورا حياً
             database.ref().on('value', function(snapshot) {
                 var data = snapshot.val();
                 if (data) {
@@ -393,52 +398,45 @@
             if (buttons) { buttons.forEach(function(b) { b.classList.remove('active'); }); }
             if(btnElement) btnElement.classList.add('active');
         }
-                function handleStaffAuth(e) {
+        function handleStaffAuth(e) {
             if (e) e.preventDefault();
             var roleSelectEl = document.getElementById("loginRoleSelect");
             var identityInputEl = document.getElementById("authIdentity");
             var passwordInputEl = document.getElementById("authPassword");
-            
             var selectedRole = roleSelectEl ? roleSelectEl.value : "مدير العام";
             var typedIdentity = identityInputEl ? identityInputEl.value.trim() : "100";
             var typedPassword = passwordInputEl ? passwordInputEl.value : "admin2026";
             
-            // 🛡️ خط دفاع أول: السماح للمدير العام بالولوج الفوري الحتمي دون تجميد الصفحة
+            // 🛡️ خط دفاع أول: التحقق الحتمي المباشر للمدير العام لكسر التجميد فورا
             if (selectedRole === "مدير العام") {
                 if (typedPassword === "admin2026" || typedPassword === "youssef2026") {
                     localStorage.setItem("kw_isAdmin", "true");
                     setupActiveSession("Youssef Developer", "admin@kwstore.com", typedIdentity, "مدير العام");
                     currentUserPermissions = { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, deleteAccessLog: true, viewTrashLog: true, deleteTrashLog: true, addDeleteRoles: true, editRolePerms: true, viewPrivateLog: true, deletePrivateLogHistory: true, editFiles: true, devMode: true };
-                    
                     pushToSystemLog("admin@kwstore.com", "Youssef Developer", "مدير العام (تسجيل دخول نجاح)", typedIdentity);
-                    pushToPrivateLog("تسجيل دخول مسؤول عام 👑", "تم نجاح تدقيق الصلاحيات الكاملة لأعلى رتبة بالـ ID رقم " + typedIdentity, "Youssef Developer", typedIdentity, "مدير العام");
+                    pushToPrivateLog("تسجيل دخول مسؤول عام 👑", "تم بنجاح تدقيق وتحقق الصلاحيات الكاملة لأعلى رتبة بالنظام بالـ ID رقم " + typedIdentity, "Youssef Developer", typedIdentity, "مدير العام");
                     unlockDashboard("Youssef Developer (مدير العام)");
                     return;
                 }
             }
-            
-            // التحقق من بقية رتب الموظفين العاديين
             var emps = get("kw_employees", []);
             var matchedEmp = emps.find(function(emp) { return emp && emp.id.toString() === typedIdentity && emp.role === selectedRole; });
             var roles = get("kw_roles_v3", []);
             var matchedRole = roles.find(function(r) { return r && r.name === selectedRole && r.password === typedPassword; });
-            
             if (matchedRole && matchedEmp) {
                 localStorage.setItem("kw_isAdmin", "false");
                 setupActiveSession(matchedEmp.name, matchedEmp.email, matchedEmp.id, matchedRole.name);
                 currentUserPermissions = matchedRole.permissions || {};
-                
-                pushToSystemLog(matchedEmp.email, matchedEmp.name, matchedRole.name + " (تسجيل دخول نجاح)", matchedEmp.id);
-                pushToPrivateLog("تسجيل دخول رتبة موظف 💼", "تم تسجيل دخول آمن للموظف بنجاح وتوثيق الهوية عبر السيستم", matchedEmp.name, matchedEmp.id, matchedRole.name);
+                pushToSystemLog(matchedEmp.email, matchedEmp.name, matchedRole.name + " (تسجيل دخول)", matchedEmp.id);
+                pushToPrivateLog("تسجيل دخول رتبة موظف 💼", "تم تسجيل دخول آمن للموظف بنجاح وتفعيل حزمة تصاريح الرتب المعينة له", matchedEmp.name, matchedEmp.id, matchedRole.name);
                 unlockDashboard(matchedEmp.name + " (" + matchedRole.name + ")");
-            } else { 
-                alert("خطأ تدقيق: البيانات المدخلة لا تطابق رتبك المسجلة أو الباسورد خاطئ!"); 
-            }
+            } else { alert("خطأ تدقيق: البيانات المدخلة لا تطابق رتبك المسجلة أو الباسورد خاطئ!"); }
         }
 
         function setupActiveSession(name, email, id, role) { activeUserSessionName = name; activeUserSessionEmail = email; activeUserSessionId = id; activeUserSessionRole = role; }
         function unlockDashboard(userTitle) { document.getElementById("lockScreenView").style.display = "none"; document.getElementById("dashboardView").style.display = "flex"; document.getElementById("logoutBtn").style.display = "inline-block"; document.getElementById("headerUserTitle").innerText = "⚙ المسؤول النشط: " + userTitle; renderAll(); loadDiscordRolesSidebar(); }
         function processStaffLogoutLive() { pushToSystemLog(activeUserSessionEmail, activeUserSessionName, "تسجيل خروج صريح ومغادرة الجلسة 🚪", activeUserSessionId); pushToPrivateLog("تسجيل خروج 🚪", "قام المسؤول بإغلاق الواجهة وتأمين الجلسة وتوثيق الخروج من المتصفح حياً", activeUserSessionName, activeUserSessionId, activeUserSessionRole); localStorage.removeItem("kw_isAdmin"); location.reload(); }
+        function pushToSystemLog(email, name, role, id) { 
             var logs = get("kw_system_logs_v1", []); 
             logs.push({ name: name, email: email, role: role, id: id || "---", time: new Date().toLocaleString("ar-EG") }); 
             broadcastCloudDataChange("kw_system_logs_v1", logs);
