@@ -38,20 +38,20 @@
         .btn-danger { background-color: var(--danger); color: #fff; }
         .btn-danger:hover { background-color: var(--danger-hover); }
         /* الهيكلية البرمجية المصلحة للشريط الجانبي العمودي والواجهة المفتوحة */
-        .dashboard-container { display: none; flex: 1; width: 100%; position: relative; }
+        .dashboard-container { display: none; width: 100%; position: relative; }
         
-        /* شريط جانبي ثابت ومستقل ممتد بكامل الطول الرأسي بالجهة اليمنى واضح جداً ومخفي تلقائياً */
+        /* شريط جانبي ثابت ومستقل ممتد بكامل الطول الرأسي بالجهة اليمنى واضح جداً ومخفي تلقائياً قبل الدخول */
         .sidebar-right { width: 260px; background-color: #0b130e; border-left: 2px solid var(--primary); padding: 25px 12px; display: flex; flex-direction: column; gap: 12px; min-height: calc(100vh - 65px); }
         .sidebar-btn { width: 100%; background: #060b07; border: 1px solid var(--border-color); color: #ccc; padding: 14px 18px; text-align: right; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
         .sidebar-btn:hover, .sidebar-btn.active { background-color: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 2px 10px rgba(46,204,113,0.2); }
         
-        /* مساحة العرض الحية الكبيرة في الجهة اليسرى */
+        /* مساحة العرض الحية الكبيرة في الجهة اليسرى للبيانات */
         .main-content-left { flex: 1; padding: 35px; overflow-y: auto; height: calc(100vh - 65px); padding-bottom: 100px; }
         
         .panel-view { display: none; background-color: var(--surface); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .panel-view.active { display: block; }
         .panel-view h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-size: 1.6rem; }
-        /* تنسيق لوحة أدوار وصلاحيات ديسكورد ستايل */
+        /* تنسيق لوحة أدوار وصلاحيات ديسكورد ستايل والمفاتيح */
         .discord-roles-container { display: grid; grid-template-columns: 200px 1fr; background: var(--discord-dark); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); min-height: 350px; overflow: hidden; margin-top: 15px; }
         .discord-roles-sidebar { background: #2f3136; padding: 10px; border-left: 1px solid rgba(0,0,0,0.2); }
         .discord-role-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-radius: 4px; cursor: pointer; margin-bottom: 5px; font-size: 13px; color: #b9bbbe; }
@@ -91,7 +91,7 @@
         </div>
     </header>
 
-    <!-- 🔐 شاشة قفل الدخول (الواجهة الوحيدة التي تظهر للزائر في البداية) -->
+    <!-- 🔐 شاشة قفل الدخول (الواجهة الوحيدة والمحمية التي تظهر في البداية لمنع الأخطاء) -->
     <div class="login-view" id="lockScreenView">
         <div class="login-card">
             <h2>تسجيل دخول طاقم العمل</h2>
@@ -113,10 +113,10 @@
         </div>
     </div>
 
-    <!-- ⚙ حاوية لوحة التحكم المتقدمة بالأزرار العمودية على اليمين (تظهر بعد الدخول فقط) -->
+    <!-- ⚙ حاوية لوحة التحكم المتقدمة بالأزرار العمودية على اليمين (مخفية بالكامل كودياً قبل الدخول) -->
     <div class="dashboard-container" id="dashboardView">
         
-        <!-- الشريط الجانبي العمودي الاحترافي الواضح على اليمين تماماً -->
+        <!-- الأزرار الجانبية الممتدة عمودياً في أقصى اليمين بوضوح كامل -->
         <div class="sidebar-right">
             <button class="sidebar-btn active" onclick="switchPanel('complaintsPanel', this)">📬 تذاكر الشكاوى</button>
             <button class="sidebar-btn" onclick="switchPanel('ordersPanel', this)">📦 طلبات الأنظمة</button>
@@ -297,7 +297,6 @@
             buttons.forEach(function(b) { b.classList.remove('active'); });
             if(btnElement) btnElement.classList.add('active');
         }
-
         function handleStaffAuth(e) {
             e.preventDefault();
             
@@ -341,7 +340,7 @@
         }
 
         function unlockDashboard(userTitle) {
-            // [إصلاح مصلح وجذري]: إخفاء تماماً شاشة تسجيل الدخول وبث وعرض الحاوية والزرار العمودي الجانبي بالكامل بعد الولوج الناجح
+            // [إصلاح مصلح وجذري]: تحويل شاشة تسجيل الدخول إلى مخفية وبث وتوليد الأزرار واللوحة الجانبية بالكامل بعد فك القفل بنجاح فورا
             document.getElementById("lockScreenView").style.display = "none";
             document.getElementById("dashboardView").style.display = "flex";
             document.getElementById("logoutBtn").style.display = "inline-block";
@@ -489,8 +488,9 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            initVisitorIdentity();
+        // [تحديث هندسي ذهبي للتشغيل الصارم والأكيد فورا]: استخدام تفريغ وتعبئة أحداث السهم فورا عند الإقلاع الشامل
+window.onload = function() {
+initVisitorIdentity();
 if (!localStorage.getItem("kw_roles_v3")) {
 set("kw_roles_v3", [
 { id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, editPrices: true, fireAssign: true } },
@@ -505,4 +505,4 @@ select.innerHTML = ""; var roles = get("kw_roles_v3", []);
 roles.forEach(function(r) { select.innerHTML += '' + r.name + ''; });
 }
 renderAll();
-});
+};
