@@ -327,20 +327,18 @@
         function set(k, v) { 
             localStorage.setItem(k, JSON.stringify(v)); 
         }
-        function broadcastCloudDataChange(key, value) {
+                function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // مزامنة فورية تتخطى قيود CORS الخاصة بجيت هاب وتعمل فورا على جميع الشبكات
-            fetch(FIREBASE_URL + key + ".json", {
+            fetch("https://firebaseio.com" + key + ".json", {
                 method: 'PUT',
                 body: JSON.stringify(value)
             }).catch(e => console.log("خطأ رفع سحابي"));
         }
 
         function listenToCloudGlobalUpdates() {
-            // كسر حظر كاش المتصفحات وسحب البيانات الطازجة من السيرفر حياً كل ثانية ونصف للأجهزة التانية
             setInterval(function() {
-                fetch(FIREBASE_URL + ".json?nocache=" + Date.now())
+                fetch("https://firebaseio.com.json?nocache=" + Date.now())
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     if (data) {
