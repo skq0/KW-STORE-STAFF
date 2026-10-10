@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KW STORE | الرادار السيبراني والبث السحابي الحي 2026</title>
-    <!-- استدعاء مكاتب وسيرفرات جوجل الرسمية لربط الأجهزة والبث الحي والمباشر فورا -->
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
+    <title>KW STORE | الرادار السيبراني والمزامنة السحابية العالمية 2026</title>
     <style>
         :root {
             --bg-dark: #060b07;
@@ -100,6 +97,144 @@
             <button id="logoutBtn" class="nav-btn" onclick="processStaffLogoutLive()" style="display: none;">🚪 تسجيل الخروج</button>
         </div>
     </header>
+    <div class="login-view" id="lockScreenView">
+        <div class="login-card">
+            <h2>تسجيل دخول طاقم العمل</h2>
+            <form id="mainLoginForm" onsubmit="handleStaffAuth(event)">
+                <div class="form-group">
+                    <label>اختر الرتبة الوظيفية المعتمدة:</label>
+                    <!-- حقن الرتب الثابتة حتمياً في الهيكل لكسر الشاشة السوداء في استضافة GitHub -->
+                    <select id="loginRoleSelect" class="form-control">
+                        <option value="مدير العام">مدير العام</option>
+                        <option value="مسؤول شكاوى">مسؤول شكاوى</option>
+                        <option value="دعم فني مستوى 1">دعم فني مستوى 1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المعرف الرقمي (ID) الممنوح لك:</label>
+                    
+                </div>
+                <div class="form-group">
+                    <label>كلمة مرور الرتبة المحددة:</label>
+                    <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn">تدقيق الصلاحيات والولوج البرمجي 🛡</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard-container" id="dashboardView">
+        <div class="sidebar-right">
+            <button class="sidebar-btn active" onclick="switchPanel('complaintsPanel', this)">📬 تذاكر الشكاوى</button>
+            <button class="sidebar-btn" onclick="switchPanel('ordersPanel', this)">📦 طلبات الأنظمة</button>
+            <button class="sidebar-btn" onclick="switchPanel('hiringPanel', this)">👥 التعيين والفصل</button>
+            <button class="sidebar-btn" onclick="switchPanel('rolesPanel', this)">🛡 التعديل والصلاحيات</button>
+            <button class="sidebar-btn" onclick="switchPanel('staffDataPanel', this)">📊 بيانات الموظفين</button>
+            <button class="sidebar-btn" onclick="switchPanel('logPanel', this)">📋 سجلات الدخول LOG</button>
+            <button class="sidebar-btn" onclick="switchPanel('trashLogPanel', this)">🗑️ سجل المحذوفات LOG</button>
+            <button class="sidebar-btn cyber-btn" style="border-right: 3px solid var(--cyber-purple);" onclick="switchPanel('privateLogPanel', this)">👁️ Private Logs</button>
+            <button class="sidebar-btn" onclick="switchPanel('filesPanel', this)">📝 تحرير ملفات الموقع</button>
+            <button class="sidebar-btn" onclick="switchPanel('devPanel', this)">🎨 قسم التطوير والشكل</button>
+        </div>
+        
+        <div class="main-content-left">
+            <div id="complaintsPanel" class="panel-view active">
+                <h3>📬 تذاكر الشكاوى والمقترحات الحية للعملاء</h3>
+                <div id="complaintsListContainer"></div>
+            </div>
+
+            <div id="ordersPanel" class="panel-view">
+                <h3>📦 سجل طلبات شراء الأنظمة وكاشير المبيعات الحية</h3>
+                <div id="ordersListContainer"></div>
+            </div>
+
+            <div id="hiringPanel" class="panel-view">
+                <h3>👥 إدارة توظيف وتعيين وفصل الموظفين والعملاء</h3>
+                <div style="border: 1px solid var(--border-color); padding: 15px; border-radius: 6px; margin-bottom: 20px; background: #060b07;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">➕ إصدار قرار تعيين موظف جديد</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="hireName" class="form-control" placeholder="اسم الموظف بالكامل...">
+                        <input type="text" id="hireId" class="form-control" placeholder="تعيين الـ ID (مثال: 105)...">
+                        <input type="email" id="hireEmail" class="form-control" placeholder="البريد الإلكتروني (Email)...">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="hireRoleSelect" class="form-control"></select>
+                        <button class="btn" style="width: auto; white-space: nowrap;" onclick="processHireEmployee()">توقيع قرار التعيين 💼</button>
+                    </div>
+                </div>
+                <div style="border: 1px solid var(--border-color); padding: 15px; border-radius: 6px; background: #060b07;">
+                    <h4 style="color: var(--danger); margin-bottom: 10px;">❌ قرار الفصل الفوري من الخدمة</h4>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="fireEmployeeSelect" class="form-control"></select>
+                        <button class="btn btn-danger" style="width: auto; white-space: nowrap;" onclick="processFireEmployee()">تنفيذ قرار الفصل ❌</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rolesPanel" class="panel-view">
+                <h3>🛡 لوحة تعديل الأدوار وإذن صلاحيات الرتب (Discord Style)</h3>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <input type="text" id="roleInput" class="form-control" placeholder="اسم الرتبة الجديدة...">
+                    <button class="btn" style="width: auto; white-space: nowrap;" onclick="addNewRole()">➕ إنشاء رتبة</button>
+                </div>
+                <div class="discord-roles-container">
+                    <div class="discord-roles-sidebar" id="discordRolesSidebar"></div>
+                    <div class="discord-roles-main" id="discordRolesMain" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                            <h4 id="selectedRoleName" style="color: #fff; font-size: 17px;">الرتبة</h4>
+                            <div>
+                                <span style="font-size: 12px; color: #cd9b32; margin-left: 10px; font-weight: bold;" id="selectedRolePass">🔑 الباسورد: </span>
+                                <button onclick="changeSelectedRolePassword()" style="background: #cd9b32; border:none; color:#000; padding:3px 8px; border-radius:3px; font-size:11px; cursor:pointer; font-weight:bold;">تعديل</button>
+                            </div>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">رؤية تذاكر الشكاوى والرد عليها</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_viewComplaints" onchange="updateSelectedRolePerm('viewComplaints', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">رؤية طلبات العملاء</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_viewOrders" onchange="updateSelectedRolePerm('viewOrders', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">صلاحية تعيين وفصل العملاء والموظفين</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_fireAssign" onchange="updateSelectedRolePerm('fireAssign', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">صلاحية رؤية معلومات الموظفين</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_viewStaffData" onchange="updateSelectedRolePerm('viewStaffData', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">صلاحية رؤية السجلات LOG العامة</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_viewLog" onchange="updateSelectedRolePerm('viewLog', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #warning;">صلاحية حذف LOG الدخول والخروج 🧹</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_deleteAccessLog" onchange="updateSelectedRolePerm('deleteAccessLog', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">صلاحية رؤية سجل المحذوفات والأرشفة</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_viewTrashLog" onchange="updateSelectedRolePerm('viewTrashLog', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #warning;">صلاحية حذف لوق الطلبات والشكاوى (الأرشفة) 🧹</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_deleteTrashLog" onchange="updateSelectedRolePerm('deleteTrashLog', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">صلاحية إضافة رتب أو إزالة رتب</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_addDeleteRoles" onchange="updateSelectedRolePerm('addDeleteRoles', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">صلاحية تعديل صلاحيات الرتب</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_editRolePerms" onchange="updateSelectedRolePerm('editRolePerms', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: var(--cyber-purple);">صلاحية رؤية الـ Private Logs 👀</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_viewPrivateLog" onchange="updateSelectedRolePerm('viewPrivateLog', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #d9534f;">صلاحية مسح الـ Delete Private log history 🧹🔥</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_deletePrivateLogHistory" onchange="updateSelectedRolePerm('deletePrivateLogHistory', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
                         <div class="discord-permission-row">
                             <div><div style="font-weight: bold; color: #fff;">صلاحية تحرير ملفات الموقع</div></div>
                             <label class="discord-switch"><input type="checkbox" id="perm_editFiles" onchange="updateSelectedRolePerm('editFiles', this.checked)"><span class="discord-slider"></span></label>
@@ -175,12 +310,8 @@
         حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام المراقبة السيبرانية والـ LOG المحمي بالمزامنة العالمية الحية عن بعد
     </footer>
     <script>
-        // ربط وحقن إعدادات بث خادم Firebase الخاص بك لربط أجهزة الطاقم حياً فورا بالإنترنت
-        var config = {
-            databaseURL: "https://firebaseio.com"
-        };
-        firebase.initializeApp(config);
-        var database = firebase.database();
+        // الحقن المباشر لـ Firebase REST Engine المتوافق كلياً مع خوادم جيت هاب لعام 2026
+        var FIREBASE_URL = "https://firebaseio.com";
 
         var selectedRoleId = null;
         var currentUserPermissions = {}; 
@@ -200,24 +331,27 @@
         function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // الرفع الفوري التلقائي لقاعدة البيانات السحابية لبقية الموظفين حياً عن بعد في نفس اللحظة
-            database.ref(key).set(value).catch(e => console.log("خطأ رفع سحابي"));
+            // مزامنة فورية تتجاوز CORS الخاص باستضافة GitHub Pages
+            fetch(`${FIREBASE_URL}${key}.json`, {
+                method: 'PUT',
+                body: JSON.stringify(value)
+            }).catch(e => console.log("خطأ مزامنة"));
         }
 
         function listenToCloudGlobalUpdates() {
-            // تفعيل بروتوكول البث الحي المستمر بجوجل: بمجرد تعديل أي رتبة أو لوق يتم حقنها فوراً بجميع الشاشات المتصلة
-            database.ref().on('value', function(snapshot) {
-                var data = snapshot.val();
-                if (data) {
-                    Object.keys(data).forEach(function(key) {
-                        localStorage.setItem(key, JSON.stringify(data[key]));
-                    });
-                    renderAll();
-                    loadDiscordRolesSidebar();
-                }
-            }, function(error) {
-                console.log("خطأ في استقبال البث الحي");
-            });
+            // محرك استماع دوري سريع يربط الأجهزة المتصلة كل ثانيتين بدون ثغرات تجميد
+            setInterval(function() {
+                fetch(`${FIREBASE_URL}.json`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            localStorage.setItem(key, JSON.stringify(data[key]));
+                        });
+                        renderAll();
+                    }
+                }).catch(e => console.log("تحديث سحابي..."));
+            }, 2000);
         }
         function initVisitorIdentity() {
             var myId = localStorage.getItem("kw_my_id");
@@ -383,39 +517,38 @@
 
         function updateSelectedRolePerm(permName, isChecked) { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (!role.permissions) role.permissions = {}; role.permissions[permName] = isChecked; pushToPrivateLog("⚙️ تعديل صلاحيات رتبة", `تعديل الصلاحية [${permName}] إلى (${isChecked})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); } }
         function changeSelectedRolePassword() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { var newPass = prompt("أدخل كلمة المرور الجديدة:", role.password); if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); pushToPrivateLog("🔑 تغيير كلمة مرور رتبة", `تعديل باسورد رتبة (${role.name})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
-        function renameSelectedRoleLive() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (role.name === "مدير العام") return; var newName = prompt("أدخل الاسم الجديد:", role.name); if (newName && newName.trim() !== "") { var oldName = role.name; role.name = newName.trim(); pushToPrivateLog("✏️ تعديل اسم رتبة", `تعديل من (${oldName}) إلى (${role.name})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
-        function processHireEmployee() { 
+               function processHireEmployee() { 
             var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
             if (isOwner || currentUserPermissions.fireAssign === true) { 
                 var name = document.getElementById("hireName").value.trim(); 
                 var id = document.getElementById("hireId").value.trim(); 
                 var email = document.getElementById("hireEmail").value.trim(); 
                 var role = document.getElementById("hireRoleSelect").value; 
-                if(!name || !id || !email) return; 
+                if(!name || !id || !email) { alert("يرجى ملء كافة البيانات!"); return; } 
                 var emps = get("kw_employees", []); 
-                if(emps.some(function(e) { return e && e.id.toString() === id.toString(); })) return; 
+                if(emps.some(function(e) { return e && e.id.toString() === id.toString(); })) { alert("الـ ID مستخدم بالفعل!"); return; } 
                 emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); 
-                pushToPrivateLog("💼 توظيف جديد", `تعيين ${name} رتبة ${role}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
+                pushToPrivateLog("💼 توظيف جديد", `تم تعيين ${name} برتبة ${role}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
                 broadcastCloudDataChange("kw_employees", emps); 
-                alert("تم التوظيف."); 
-            } 
+                alert("تم التوظيف بنجاح."); 
+            } else { alert("ليس لديك صلاحية!"); } 
         }
         function processFireEmployee() { 
             var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
             if (isOwner || currentUserPermissions.fireAssign === true) { 
                 var id = document.getElementById("fireEmployeeSelect").value; 
                 if(!id) return; 
-                if(id.toString() === "100") return; 
+                if(id.toString() === "100") { alert("لا يمكن طرد المطور!"); return; } 
                 var emps = get("kw_employees", []); 
                 var targetEmp = emps.find(function(e) { return e && e.id.toString() === id.toString(); }); 
                 var empName = targetEmp ? targetEmp.name : ""; 
                 if (confirm(`هل أنت متأكد من فصل الموظف (${empName})؟`)) { 
                     emps = emps.filter(function(e) { return e && e.id.toString() !== id.toString(); }); 
-                    pushToPrivateLog("❌ فصل موظف", `طرد الموظف ${empName}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
+                    pushToPrivateLog("❌ فصل موظف", `تم طرد الموظف ${empName}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
                     broadcastCloudDataChange("kw_employees", emps); 
-                    alert("تم الفصل."); 
+                    alert("تم تنفيذ الفصل."); 
                 } 
-            } 
+            } else { alert("ليس لديك صلاحية!"); } 
         }
         function archiveAndDismissComplaint(complaintId) { 
             var complaints = get("kw_complaints_v1", []); 
@@ -443,12 +576,12 @@
             var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
             if (isOwner || currentUserPermissions.fireAssign === true) { 
                 if (empId.toString() === "100") return; 
-                if (confirm("هل أنت متأكد من حذف الموظف؟")) { 
+                if (confirm("هل أنت متأكد من حذف الموظف من السجل؟")) { 
                     var emps = get("kw_employees", []); 
                     emps = emps.filter(function(e) { return e && e.id.toString() !== empId.toString(); }); 
-                    pushToPrivateLog("📊 مسح موظف", `حذف الموظف ${empName}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
+                    pushToPrivateLog("📊 مسح موظف من السجل", `حذف الموظف ${empName}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
                     broadcastCloudDataChange("kw_employees", emps); 
-                    alert("تم الحذف."); 
+                    alert("تم إزالة بيانات الموظف."); 
                 } 
             } 
         }
@@ -471,10 +604,6 @@
         function downloadStaffDataBackupFile() { var emps = get("kw_employees", []); var textContent = "📊 كشف بيانات موظفي متجر KW STORE\n"; emps.forEach(function(e, i) { if(e) textContent += (i+1) + ". الاسم: " + e.name + " | المعرّف: " + e.id + " | الرتبة: " + e.role + "\n"; }); var blob = new Blob([textContent], { type: "text/plain;charset=utf-8" }); var link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kw_staff_records_data_2026.txt"; link.click(); }
         function renderAll() {
             var hireSel = document.getElementById("hireRoleSelect"); var fieldSel = document.getElementById("field_staffRole"); var fireSel = document.getElementById("fireEmployeeSelect"); var loginSel = document.getElementById("loginRoleSelect"); var compCont = document.getElementById("complaintsListContainer"); var ordCont = document.getElementById("ordersListContainer"); var tableCont = document.getElementById("staffRecordsDataTableContainer"); var logCont = document.getElementById("systemLogListContainer"); var trashCont = document.getElementById("trashLogListContainer"); var privCont = document.getElementById("privateLogsContainer"); var roles = get("kw_roles_v3", []); var emps = get("kw_employees", []);
-            if(loginSel) { loginSel.innerHTML = ""; roles.forEach(function(r) { if(r) loginSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
-            if(hireSel) { hireSel.innerHTML = ""; roles.forEach(function(r) { if(r) hireSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
-            if(fieldSel) { fieldSel.innerHTML = ""; roles.forEach(function(r) { if(r) fieldSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
-            if(fireSel) { fireSel.innerHTML = ""; emps.forEach(function(e) { if(e) fireSel.innerHTML += '<option value="' + e.id + '">👤 ' + e.name + ' (ID: ' + e.id + ')</option>'; }); }
             if(compCont) { compCont.innerHTML = ""; var complaints = get("kw_complaints_v1", []); if(complaints.length === 0) { compCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد شكاوى مستلمة حالياً.</div>'; } else { complaints.forEach(function(c) { if(c) { compCont.innerHTML += '<div class="data-list-item"><div>📅 وقت التذكرة: ' + c.date + ' | 👤 اسم العميل: ' + c.senderName + '</div>' + '<div style="color:#fff; margin-top:5px; font-weight:bold;">⚠️ الشكوى: ' + c.message + '</div>' + '<div style="margin-top:8px; color:var(--primary);">✍️ الرد الحالي: ' + (c.reply || "لا يوجد رد بعد") + '</div>' + '<div style="margin-top:10px; display:flex; gap:8px;">' + '<button class="btn" style="width:auto; padding:4px 10px; font-size:12px;" onclick="processComplaintReply(\''+c.id+'\')">✉️ الرد الفني</button>' + '<button class="btn btn-danger" style="width:auto; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissComplaint(\''+c.id+'\')">❌ إنهاء ومسح التذكرة</button></div></div>'; } }); } }
             if(ordCont) { ordCont.innerHTML = ""; var orders = get("kw_orders_v1", []); if(orders.length === 0) { ordCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد طلبات شراء مسجلة حالياً.</div>'; } else { orders.forEach(function(o) { if(o) { ordCont.innerHTML += '<div class="data-list-item"><div>👤 المشتري: ' + o.clientName + ' | 📞 هاتف: ' + o.clientPhone + '</div>' + '<div style="color:#fff; margin-top:5px; font-weight:bold;">📦 النظام المطلوب: ' + o.selectedSystem + '</div>' + '<div style="font-size:12px; color:var(--text-muted); margin-top:5px;">📅 التوقيت: ' + o.date + '</div>' + '<button class="btn btn-danger" style="width:auto; margin-top:10px; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissOrder(\''+o.id+'\')">❌ إنهاء ومسح الطلب</button></div>'; } }); } }
             if(tableCont) { tableCont.innerHTML = ""; if(emps.length === 0) { tableCont.innerHTML = '<div>كشف الموظفين فارغ.</div>'; } else { emps.forEach(function(e) { if(e) { tableCont.innerHTML += '<div class="data-list-item flex-box"><span>👤 الموظف: ' + e.name + ' | 🆔 الـ ID: ' + e.id + ' | 🛡️ الرتبة: <span class="badge">' + e.role + '</span></span>' + '<button class="btn-danger" style="padding:4px 10px; font-size:12px;" onclick="deleteSingleEmployeeRecord(\''+e.id+'\', \''+e.name+'\', \''+e.role+'\')">إزالة الموظف ❌</button></div>'; } }); } }
@@ -486,7 +615,8 @@
             if (!localStorage.getItem("kw_force_sync_global_db_v101")) { localStorage.clear(); localStorage.setItem("kw_force_sync_global_db_v101", "true"); }
             if (!localStorage.getItem("kw_roles_v3")) { set("kw_roles_v3", [ { id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, deleteAccessLog: true, viewTrashLog: true, deleteTrashLog: true, addDeleteRoles: true, editRolePerms: true, viewPrivateLog: true, deletePrivateLogHistory: true, editFiles: true, devMode: true } }, { id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, deleteAccessLog: false, viewTrashLog: false, deleteTrashLog: false, addDeleteRoles: false, editRolePerms: false, viewPrivateLog: false, deletePrivateLogHistory: false, editFiles: false, devMode: false } }, { id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, deleteAccessLog: false, viewTrashLog: false, deleteTrashLog: false, addDeleteRoles: false, editRolePerms: false, viewPrivateLog: false, deletePrivateLogHistory: false, editFiles: false, devMode: false } } ]); }
             if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "100", name: "Youssef Developer", email: "admin@kwstore.com", role: "مدير العام", date: "2026/10/10" }]); }
-            initVisitorIdentity(); listenToCloudGlobalUpdates();
+            initVisitorIdentity(); 
+            listenToCloudGlobalUpdates();
             renderAll();
             window.addEventListener("storage", function() { renderAll(); });
         };
