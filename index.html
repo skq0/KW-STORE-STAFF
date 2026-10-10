@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KW STORE | الرادار السيبراني والمزامنة السحابية العالمية 2026</title>
-    <!-- استدعاء مكاتب وسيرفرات جوجل الرسمية لربط الأجهزة والبث الحي والمباشر فورا -->
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
     <style>
         :root {
             --bg-dark: #060b07;
@@ -312,12 +309,8 @@
         حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام المراقبة السيبرانية والـ LOG المحمي بالمزامنة العالمية الحية عن بعد
     </footer>
     <script>
-        // 🔗 تهيئة خادم البث الحي وقاعدة بيانات Firebase المباشرة لربط أجهزة الطاقم حياً فورا بالإنترنت
-        var config = {
-            databaseURL: "https://firebaseio.com"
-        };
-        firebase.initializeApp(config);
-        var database = firebase.database();
+        // 🔗 تفعيل بروتوكول البث السريع المباشر (REST V2 Engine) المتوافق مع جيت هاب بالـ ad1bb
+        var FIREBASE_URL = "https://firebaseio.com";
 
         var selectedRoleId = null;
         var currentUserPermissions = {}; 
@@ -337,24 +330,27 @@
         function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // الرفع الفوري التلقائي لقاعدة البيانات السحابية لبقية الموظفين حياً عن بعد في نفس اللحظة
-            database.ref(key).set(value).catch(e => console.log("خطأ رفع سحابي"));
+            // مزامنة فورية تتخطى قيود CORS الخاصة بجيت هاب وتعمل فورا على جميع الشبكات
+            fetch(FIREBASE_URL + key + ".json", {
+                method: 'PUT',
+                body: JSON.stringify(value)
+            }).catch(e => console.log("خطأ رفع سحابي"));
         }
 
         function listenToCloudGlobalUpdates() {
-            // تفعيل بروتوكول البث الحي المستمر بجوجل لكسر كاش الأجهزة والمتصفحات الخارجية فورا حياً
-            database.ref().on('value', function(snapshot) {
-                var data = snapshot.val();
-                if (data) {
-                    Object.keys(data).forEach(function(key) {
-                        localStorage.setItem(key, JSON.stringify(data[key]));
-                    });
-                    renderAll();
-                    loadDiscordRolesSidebar();
-                }
-            }, function(error) {
-                console.log("خطأ في استقبال البث الحي");
-            });
+            // كسر حظر كاش المتصفحات وسحب البيانات الطازجة من السيرفر حياً كل ثانية ونصف للأجهزة التانية
+            setInterval(function() {
+                fetch(FIREBASE_URL + ".json?nocache=" + Date.now())
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data) {
+                        Object.keys(data).forEach(function(key) {
+                            localStorage.setItem(key, JSON.stringify(data[key]));
+                        });
+                        renderAll();
+                    }
+                }).catch(e => console.log("جاري مزامنة السيرفر..."));
+            }, 1500);
         }
         function initVisitorIdentity() {
             var myId = localStorage.getItem("kw_my_id");
@@ -407,14 +403,14 @@
             var typedIdentity = identityInputEl ? identityInputEl.value.trim() : "100";
             var typedPassword = passwordInputEl ? passwordInputEl.value : "admin2026";
             
-            // 🛡️ خط دفاع أول: التحقق الحتمي المباشر للمدير العام لكسر التجميد فورا
+            // 🛡️ الولوج الفوري والنشط للمدير العام لكسر تعليق صفحة تسجيل الدخول نهائياً
             if (selectedRole === "مدير العام") {
                 if (typedPassword === "admin2026" || typedPassword === "youssef2026") {
                     localStorage.setItem("kw_isAdmin", "true");
                     setupActiveSession("Youssef Developer", "admin@kwstore.com", typedIdentity, "مدير العام");
                     currentUserPermissions = { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, deleteAccessLog: true, viewTrashLog: true, deleteTrashLog: true, addDeleteRoles: true, editRolePerms: true, viewPrivateLog: true, deletePrivateLogHistory: true, editFiles: true, devMode: true };
                     pushToSystemLog("admin@kwstore.com", "Youssef Developer", "مدير العام (تسجيل دخول نجاح)", typedIdentity);
-                    pushToPrivateLog("تسجيل دخول مسؤول عام 👑", "تم بنجاح تدقيق وتحقق الصلاحيات الكاملة لأعلى رتبة بالنظام بالـ ID رقم " + typedIdentity, "Youssef Developer", typedIdentity, "مدير العام");
+                    pushToPrivateLog("تسجيل دخول مسؤول عام 👑", "تم نجاح تدقيق وتحقق الصلاحيات الكاملة لأعلى رتبة بالنظام بالـ ID رقم " + typedIdentity, "Youssef Developer", typedIdentity, "مدير العام");
                     unlockDashboard("Youssef Developer (مدير العام)");
                     return;
                 }
