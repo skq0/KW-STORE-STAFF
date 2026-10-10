@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KW STORE | نظام الإدارة المتكامل 2026</title>
+    <title>KW STORE | لوحة التحكم المتكاملة 2026</title>
     <style>
         :root {
             --bg-dark: #060b07;
@@ -19,35 +19,39 @@
             --discord-main: #36393f;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
-        header { background-color: var(--surface); padding: 15px 20px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 2px solid var(--primary); z-index: 100; }
+        body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        header { background-color: var(--surface); padding: 15px 20px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 2px solid var(--primary); z-index: 200; position: relative; }
         .logo { font-size: 22px; font-weight: bold; color: var(--primary); text-decoration: none; text-align: center; }
         .nav-links { display: flex; gap: 15px; align-items: center; justify-content: flex-end; }
         .nav-btn { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 13px; font-weight: bold; }
         .nav-btn:hover { background-color: var(--danger); color: #fff; }
-        .login-view { display: flex; justify-content: center; align-items: center; flex: 1; padding: 20px; }
-        .login-card { background-color: var(--surface); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); width: 100%; max-width: 420px; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
-        .login-card h2 { color: var(--primary); text-align: center; margin-bottom: 25px; font-size: 1.6rem; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 6px; color: #ccc; font-size: 14px; }
-        .form-control { width: 100%; padding: 10px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 15px; }
+        /* تنسيق شاشة قفل الدخول المركزية قبل الولوج */
+        .login-view { display: flex; justify-content: center; align-items: center; flex: 1; padding: 40px 20px; }
+        .login-card { background-color: var(--surface); padding: 35px; border-radius: 8px; border: 1px solid var(--border-color); width: 100%; max-width: 440px; box-shadow: 0 8px 30px rgba(0,0,0,0.7); }
+        .login-card h2 { color: var(--primary); text-align: center; margin-bottom: 25px; font-size: 1.7rem; letter-spacing: 0.5px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #ccc; font-size: 14px; font-weight: 500; }
+        .form-control { width: 100%; padding: 12px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 15px; transition: border-color 0.2s; }
         .form-control:focus { outline: none; border-color: var(--primary); }
-        .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; text-decoration: none; }
+        .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; text-decoration: none; transition: background 0.2s; }
         .btn:hover { background-color: var(--primary-hover); }
         .btn-danger { background-color: var(--danger); color: #fff; }
         .btn-danger:hover { background-color: var(--danger-hover); }
-
-        /* هيكلة الأزرار العمودية باليمين تماماً ومساحة العرض باليسار */
-        .dashboard-container { display: none; flex: 1; display: flex; flex-direction: row; width: 100%; }
-        .sidebar-right { width: 260px; background-color: var(--surface); border-left: 2px solid var(--primary); padding: 20px 10px; display: flex; flex-direction: column; gap: 10px; }
-        .sidebar-btn { width: 100%; background: none; border: 1px solid var(--border-color); color: var(--text); padding: 12px 15px; text-align: right; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
-        .sidebar-btn:hover, .sidebar-btn.active { background-color: var(--primary); color: #000; border-color: var(--primary); }
-        .main-content-left { flex: 1; padding: 30px; overflow-y: auto; height: calc(100vh - 65px); padding-bottom: 80px; }
+        /* الهيكلية البرمجية المصلحة للشريط الجانبي العمودي والواجهة المفتوحة */
+        .dashboard-container { display: none; flex: 1; width: 100%; position: relative; }
         
-        .panel-view { display: none; background-color: var(--surface); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        /* شريط جانبي ثابت ومستقل ممتد بكامل الطول الرأسي بالجهة اليمنى واضح جداً ومخفي تلقائياً */
+        .sidebar-right { width: 260px; background-color: #0b130e; border-left: 2px solid var(--primary); padding: 25px 12px; display: flex; flex-direction: column; gap: 12px; min-height: calc(100vh - 65px); }
+        .sidebar-btn { width: 100%; background: #060b07; border: 1px solid var(--border-color); color: #ccc; padding: 14px 18px; text-align: right; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+        .sidebar-btn:hover, .sidebar-btn.active { background-color: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 2px 10px rgba(46,204,113,0.2); }
+        
+        /* مساحة العرض الحية الكبيرة في الجهة اليسرى */
+        .main-content-left { flex: 1; padding: 35px; overflow-y: auto; height: calc(100vh - 65px); padding-bottom: 100px; }
+        
+        .panel-view { display: none; background-color: var(--surface); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .panel-view.active { display: block; }
-        .panel-view h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; font-size: 1.5rem; }
-        /* ستايل رتب ديسكورد والمفاتيح التفاعلية */
+        .panel-view h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-size: 1.6rem; }
+        /* تنسيق لوحة أدوار وصلاحيات ديسكورد ستايل */
         .discord-roles-container { display: grid; grid-template-columns: 200px 1fr; background: var(--discord-dark); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); min-height: 350px; overflow: hidden; margin-top: 15px; }
         .discord-roles-sidebar { background: #2f3136; padding: 10px; border-left: 1px solid rgba(0,0,0,0.2); }
         .discord-role-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-radius: 4px; cursor: pointer; margin-bottom: 5px; font-size: 13px; color: #b9bbbe; }
@@ -62,18 +66,18 @@
         input:checked + .discord-slider { background-color: var(--primary); }
         input:checked + .discord-slider:before { transform: translateX(-18px); }
 
-        .data-list-item { background: #060b07; border: 1px solid var(--border-color); padding: 12px; margin-bottom: 10px; border-radius: 4px; }
+        .data-list-item { background: #060b07; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 12px; border-radius: 6px; border-right: 3px solid var(--primary); }
         .flex-box { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .badge { background: var(--primary); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        footer { background-color: var(--surface); text-align: center; padding: 15px; border-top: 1px solid var(--border-color); position: fixed; bottom: 0; width: 100%; font-size: 12px; color: var(--text-muted); z-index: 90; }
+        .badge { background: var(--primary); color: #000; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        footer { background-color: var(--surface); text-align: center; padding: 15px; border-top: 1px solid var(--border-color); position: fixed; bottom: 0; width: 100%; font-size: 12px; color: var(--text-muted); z-index: 150; }
         
         @media (max-width: 768px) {
             header { display: flex; flex-direction: column; gap: 10px; text-align: center; padding: 15px; }
             .logo { font-size: 20px; width: 100%; }
             .nav-links { justify-content: center; width: 100%; }
-            .sidebar-right { width: 100%; border-left: none; border-bottom: 2px solid var(--primary); }
+            .sidebar-right { width: 100%; border-left: none; border-bottom: 2px solid var(--primary); min-height: auto; }
             .dashboard-container { flex-direction: column; }
-            .main-content-left { height: auto; }
+            .main-content-left { height: auto; padding: 15px; }
         }
     </style>
 </head>
@@ -87,7 +91,7 @@
         </div>
     </header>
 
-    <!-- 🔐 شاشة قفل الدخول لطاقم الموظفين والمسؤولين -->
+    <!-- 🔐 شاشة قفل الدخول (الواجهة الوحيدة التي تظهر للزائر في البداية) -->
     <div class="login-view" id="lockScreenView">
         <div class="login-card">
             <h2>تسجيل دخول طاقم العمل</h2>
@@ -108,9 +112,11 @@
             </form>
         </div>
     </div>
-    <!-- ⚙ حاوية لوحة التحكم المتقدمة بالأزرار العمودية على اليمين -->
+
+    <!-- ⚙ حاوية لوحة التحكم المتقدمة بالأزرار العمودية على اليمين (تظهر بعد الدخول فقط) -->
     <div class="dashboard-container" id="dashboardView">
         
+        <!-- الشريط الجانبي العمودي الاحترافي الواضح على اليمين تماماً -->
         <div class="sidebar-right">
             <button class="sidebar-btn active" onclick="switchPanel('complaintsPanel', this)">📬 تذاكر الشكاوى</button>
             <button class="sidebar-btn" onclick="switchPanel('ordersPanel', this)">📦 طلبات الأنظمة</button>
@@ -121,20 +127,19 @@
         </div>
         
         <div class="main-content-left">
-
-            <!-- 📬 واجهة تذاكر الشكاوى والرد التفاعلي الفوري بالاسم والوقت -->
+            <!-- تبويب تذاكر الشكاوى والرد التفاعلي الفوري عليها -->
             <div id="complaintsPanel" class="panel-view active">
                 <h3>📬 تذاكر الشكاوى والمقترحات الحية للعملاء</h3>
                 <div id="complaintsListContainer"></div>
             </div>
 
-            <!-- 📦 واجهة استقبال طلبات شراء الأنظمة لكاشير المبيعات -->
+            <!-- واجهة استقبال طلبات الأنظمة وكاشير المبيعات -->
             <div id="ordersPanel" class="panel-view">
                 <h3>📦 سجل طلبات شراء الأنظمة وكاشير المبيعات</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">يعرض الطلبات المسجلة حياً من موقع العميل الأساسي المربوط بالمتجر:</p>
                 <div id="ordersListContainer"></div>
             </div>
-            <!-- 👥 واجهة شؤون الموظفين (إصدار قرارات التعيين بالإيميل وقائمة الفصل) -->
+            <!-- تبويب شؤون الموظفين بقرارات التعيين بالإيميل والاسم وقائمة إسقاط الفصل المنسدلة -->
             <div id="hiringPanel" class="panel-view">
                 <h3>👥 إدارة توظيف وتعيين وفصل الموظفين بالنظام</h3>
                 
@@ -160,7 +165,7 @@
                     </div>
                 </div>
             </div>
-            <!-- 🛡 واجهة أدوار وصلاحيات الرتب ديسكورد ستايل كاملة -->
+            <!-- واجهة رتب ديسكورد ستايل بالـ Switch والتحكم بالصلاحيات والمفاتيح -->
             <div id="rolesPanel" class="panel-view">
                 <h3>🛡 لوحة تعديل الأدوار وإذن صلاحيات الرتب (Discord Style)</h3>
                 <div class="form-group" style="display: flex; gap: 10px;">
@@ -181,8 +186,8 @@
                         
                         <div class="discord-permission-row">
                             <div>
-                                <div style="font-weight: bold; color: #fff;">رؤية تذاكر الشكاوى واستقبال الردود</div>
-                                <div style="font-size: 12px; color: #b9bbbe;">تمنح الرتبة الحق في استعراض ومراجعة شكاوى ومشاكل المستخدمين للرد عليها.</div>
+                                <div style="font-weight: bold; color: #fff;">رؤية تذاكر الشكاوى واستقبل الردود</div>
+                                <div style="font-size: 12px; color: #b9bbbe;">تمنح الحق في استعراض ومراجعة شكاوى ومشاكل المستخدمين للرد عليها.</div>
                             </div>
                             <label class="discord-switch"><input type="checkbox" id="perm_viewComplaints" onchange="updateSelectedRolePerm('viewComplaints', this.checked)"><span class="discord-slider"></span></label>
                         </div>
@@ -203,7 +208,7 @@
                     </div>
                 </div>
             </div>
-            <!-- 📊 واجهة كتابة وتدوين بيانات الموظفين وتنزيل الملف والـ LOG السري للبوابة -->
+            <!-- واجهة تدوين كشوف الموظفين يدوياً وتنزيل ملف الـ Backup وسجلات الـ LOG المحمية -->
             <div id="staffDataPanel" class="panel-section panel-view">
                 <h3>📊 ملف كشوف وبيانات موظفي المتجر (يدوياً بالكامل)</h3>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; background: #060b07; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; flex-wrap: wrap; gap: 10px;">
@@ -292,6 +297,7 @@
             buttons.forEach(function(b) { b.classList.remove('active'); });
             if(btnElement) btnElement.classList.add('active');
         }
+
         function handleStaffAuth(e) {
             e.preventDefault();
             
@@ -303,7 +309,7 @@
             var myName = localStorage.getItem("kw_my_name");
             var myEmail = localStorage.getItem("kw_my_email");
             
-            // 🛡️ فحص المالك والمطور الرئيسي يوسف لعام 2026 فورا
+            // 🛡️ فحص المالك والمطور الرئيسي يوسف لعام 2026 فورا بدقة كاملة
             if (selectedRole === "مدير العام" && 
                 (typedIdentity === "100" || typedIdentity === "admin@kwstore.com" || typedIdentity === myId) && 
                 (typedPassword === "admin2026" || typedPassword === "youssef2026")) {
@@ -335,6 +341,7 @@
         }
 
         function unlockDashboard(userTitle) {
+            // [إصلاح مصلح وجذري]: إخفاء تماماً شاشة تسجيل الدخول وبث وعرض الحاوية والزرار العمودي الجانبي بالكامل بعد الولوج الناجح
             document.getElementById("lockScreenView").style.display = "none";
             document.getElementById("dashboardView").style.display = "flex";
             document.getElementById("logoutBtn").style.display = "inline-block";
@@ -409,6 +416,7 @@
             var replyText = prompt("اكتب رد المسؤول على التذكرة ليتم إرجاعه للعميل:", complaints[idx].reply || "");
             if(replyText && replyText.trim() !== "") { complaints[idx].reply = replyText.trim(); set("kw_complaints_v1", complaints); alert("تم إرسال وحفظ الرد الفني بنجاح."); renderAll(); }
         }
+
         function openManualAddForm() { document.getElementById("manualAddStaffForm").style.display = "block"; }
         function saveManualStaffRecordRow() {
             var name = document.getElementById("field_staffName").value.trim();
@@ -444,14 +452,6 @@
             var id = document.getElementById("fireEmployeeSelect").value; if(!id) return;
             var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e.id.toString() !== id.toString(); });
             set("kw_employees", emps); renderAll(); alert("تم تنفيذ قرار الفصل فورا بنجاح.");
-        }
-
-        function toggleUsersDirectory() {
-            var div = document.getElementById("usersDirectoryList"); if (!div) return;
-            if (div.style.display === "none" || div.style.display === "") {
-                div.style.display = "block"; div.innerHTML = ""; var dir = get("kw_visitors_directory", []);
-                dir.forEach(function(u) { div.innerHTML += '<div class="data-list-item">👤 الاسم: ' + u.name + ' | 🆔 الـ ID: ' + u.id + '</div>'; });
-            } else { div.style.display = "none"; }
         }
 
         function renderAll() {
@@ -491,21 +491,18 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             initVisitorIdentity();
-            if (!localStorage.getItem("kw_roles_v3")) {
-                set("kw_roles_v3", [
-                    { id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, editPrices: true, fireAssign: true } },
-                    { id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, editPrices: false, fireAssign: false } },
-                    { id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, editPrices: false, fireAssign: false } }
-                ]);
-            }
-            if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "100", name: "Youssef Developer", email: "admin@kwstore.com", role: "مدير العام", date: "2026/10/10" }]); }
-            var select = document.getElementById("loginRoleSelect");
-            if (select) {
-                select.innerHTML = ""; var roles = get("kw_roles_v3", []);
-                roles.forEach(function(r) { select.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; });
-            }
-            renderAll();
-        });
-    </script>
-</body>
-</html>
+if (!localStorage.getItem("kw_roles_v3")) {
+set("kw_roles_v3", [
+{ id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, editPrices: true, fireAssign: true } },
+{ id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, editPrices: false, fireAssign: false } },
+{ id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, editPrices: false, fireAssign: false } }
+]);
+}
+if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "100", name: "Youssef Developer", email: "admin@kwstore.com", role: "مدير العام", date: "2026/10/10" }]); }
+var select = document.getElementById("loginRoleSelect");
+if (select) {
+select.innerHTML = ""; var roles = get("kw_roles_v3", []);
+roles.forEach(function(r) { select.innerHTML += '' + r.name + ''; });
+}
+renderAll();
+});
