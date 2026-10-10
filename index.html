@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KW STORE | لوحة التحكم المتكاملة 2026</title>
+    <title>KW STORE | لوحة التحكم المتكاملة للأرشفة 2026</title>
     <style>
         :root {
             --bg-dark: #060b07;
@@ -17,6 +17,7 @@
             --danger-hover: #c9302c;
             --discord-dark: #2F3136;
             --discord-main: #36393f;
+            --warning: #f0ad4e;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
@@ -40,30 +41,30 @@
         /* الهيكلية البرمجية المصلحة للشريط الجانبي العمودي والواجهة المفتوحة */
         .dashboard-container { display: none; width: 100%; position: relative; }
         
-        /* شريط جانبي ثابت ومستقل ممتد بكامل الطول الرأسي بالجهة اليمنى واضح ومخفي تلقائياً قبل الدخول */
+        /* شريط جانبي ثابت ومستقل ممتد بكامل الطول الرأسي بالجهة اليمنى واضح جداً ومخفي تلقائياً قبل الدخول */
         .sidebar-right { width: 260px; background-color: #0b130e; border-left: 2px solid var(--primary); padding: 25px 12px; display: flex; flex-direction: column; gap: 12px; min-height: calc(100vh - 65px); }
         .sidebar-btn { width: 100%; background: #060b07; border: 1px solid var(--border-color); color: #ccc; padding: 14px 18px; text-align: right; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
         .sidebar-btn:hover, .sidebar-btn.active { background-color: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 2px 10px rgba(46,204,113,0.2); }
-        /* مساحة العرض الحية الكبيرة في الجهة اليسرى */
+        /* مساحة العرض الحية الكبيرة في الجهة اليسرى للبيانات والأدوات */
         .main-content-left { flex: 1; padding: 35px; overflow-y: auto; height: calc(100vh - 65px); padding-bottom: 100px; }
         
         .panel-view { display: none; background-color: var(--surface); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .panel-view.active { display: block; }
         .panel-view h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-size: 1.6rem; }
         /* تنسيق لوحة أدوار وصلاحيات ديسكورد ستايل والمفاتيح */
-        .discord-roles-container { display: grid; grid-template-columns: 200px 1fr; background: var(--discord-dark); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); min-height: 420px; overflow: hidden; margin-top: 15px; }
+        .discord-roles-container { display: grid; grid-template-columns: 200px 1fr; background: var(--discord-dark); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); min-height: 480px; overflow: hidden; margin-top: 15px; }
         .discord-roles-sidebar { background: #2f3136; padding: 10px; border-left: 1px solid rgba(0,0,0,0.2); }
         .discord-role-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-radius: 4px; cursor: pointer; margin-bottom: 5px; font-size: 13px; color: #b9bbbe; }
         .discord-role-item:hover, .discord-role-item.active { background: rgba(79,84,92,0.3); color: #fff; }
         .discord-roles-main { background: #36393f; padding: 20px; }
         .discord-permission-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
         .discord-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .discord-switch input { opacity: 0; width: 0; height: 0; }
         .discord-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #72767d; transition: .2s; border-radius: 34px; }
         .discord-slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 4px; bottom: 4px; background-color: white; transition: .2s; border-radius: 50%; }
         input:checked + .discord-slider { background-color: var(--primary); }
         input:checked + .discord-slider:before { transform: translateX(-18px); }
+
         .data-list-item { background: #060b07; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 12px; border-radius: 6px; border-right: 3px solid var(--primary); }
         .flex-box { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .badge { background: var(--primary); color: #000; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
@@ -89,7 +90,7 @@
         </div>
     </header>
 
-    <!-- 🔐 شاشة قفل الدخول (الواجهة المحمية والمصلحة بالكامل) -->
+    <!-- 🔐 شاشة قفل الدخول لطاقم العمل والمطوّر يوسف -->
     <div class="login-view" id="lockScreenView">
         <div class="login-card">
             <h2>تسجيل دخول طاقم العمل</h2>
@@ -104,13 +105,13 @@
                 </div>
                 <div class="form-group">
                     <label>كلمة مرور الرتبة المحددة:</label>
-                    <input type="password" id="authPassword" class="form-control" placeholder="••••••••">
+                    <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
                 </div>
-                <button type="button" onclick="handleStaffAuth(event)" class="btn">تدقيق الصلاحيات والولوج البرمجي 🛡</button>
+                <button type="submit" class="btn">تدقيق الصلاحيات والولوج البرمجي 🛡</button>
             </form>
         </div>
     </div>
-    <!-- ⚙ حاوية لوحة التحكم المتقدمة بالأزرار العمودية على اليمين ومساحة العرض يسار -->
+    <!-- ⚙ حاوية لوحة التحكم المتقدمة المربوطة كلياً بنظام جدار الحماية الجانبي على اليمين -->
     <div class="dashboard-container" id="dashboardView">
         
         <div class="sidebar-right">
@@ -120,25 +121,24 @@
             <button class="sidebar-btn" onclick="switchPanel('rolesPanel', this)">🛡 التعديل والصلاحيات</button>
             <button class="sidebar-btn" onclick="switchPanel('staffDataPanel', this)">📊 بيانات الموظفين</button>
             <button class="sidebar-btn" onclick="switchPanel('logPanel', this)">📋 سجلات الدخول LOG</button>
+            <button class="sidebar-btn" onclick="switchPanel('trashLogPanel', this)">🗑️ سجل المحذوفات LOG</button>
             <button class="sidebar-btn" onclick="switchPanel('filesPanel', this)">📝 تحرير ملفات الموقع</button>
             <button class="sidebar-btn" onclick="switchPanel('devPanel', this)">🎨 قسم التطوير والشكل</button>
         </div>
         
         <div class="main-content-left">
-
             <!-- تبويب تذاكر الشكاوى المستلمة حياً من الموقع الأساسي -->
             <div id="complaintsPanel" class="panel-view active">
-                <h3>📬 تذاكر الشكاوى والمقترحات المستلمة من الموقع الأساسي</h3>
+                <h3>📬 تذاكر الشكاوى والمقترحات الحية للعملاء</h3>
                 <div id="complaintsListContainer"></div>
             </div>
 
-            <!-- واجهة استقبال طلبات شراء الأنظمة الحية برقم الهاتف والطلب من الموقع الأساسي -->
+            <!-- واجهة استقبال طلبات شراء الأنظمة الحية لكاشير المبيعات -->
             <div id="ordersPanel" class="panel-view">
-                <h3>📦 كشف طلبات شراء الأنظمة الحية (الموقع الأساسي)</h3>
-                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">يعرض بيانات العميل ورقم هاتفه ونوع النظام المطلوب حياً وفورياً:</p>
+                <h3>📦 سجل طلبات شراء الأنظمة وكاشير المبيعات الحية</h3>
                 <div id="ordersListContainer"></div>
             </div>
-            <!-- تبويب شؤون الموظفين والعملاء بقرارات التعيين بالإيميل وقائمة الفصل المنسدلة -->
+            <!-- تبويب شؤون الموظفين والعملاء بقرارات التعيين بالإيميل وقائمة الفصل -->
             <div id="hiringPanel" class="panel-view">
                 <h3>👥 إدارة توظيف وتعيين وفصل الموظفين والعملاء</h3>
                 
@@ -163,7 +163,7 @@
                     </div>
                 </div>
             </div>
-            <!-- واجهة رتب ديسكورد ستايل بالـ 9 صلاحيات الصريحة والمربوطة بالخانات حظراً وتشغيلاً -->
+            <!-- واجهة رتب ديسكورد ستايل بالـ 10 صلاحيات كاملة ومحيمة بالكامل -->
             <div id="rolesPanel" class="panel-view">
                 <h3>🛡 لوحة تعديل الأدوار وإذن صلاحيات الرتب (Discord Style)</h3>
                 <div class="form-group" style="display: flex; gap: 10px;">
@@ -202,6 +202,11 @@
                             <div><div style="font-weight: bold; color: #fff;">صلاحية رؤية السجلات LOG</div></div>
                             <label class="discord-switch"><input type="checkbox" id="perm_viewLog" onchange="updateSelectedRolePerm('viewLog', this.checked)"><span class="discord-slider"></span></label>
                         </div>
+                        <!-- 🗑️ حقن الصلاحية العاشرة المخصصة للأرشفة والمسح يدوياً -->
+                        <div class="discord-permission-row">
+                            <div><div style="font-weight: bold; color: #fff;">صلاحية رؤية لوق المسح والأرشفة</div></div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_viewTrashLog" onchange="updateSelectedRolePerm('viewTrashLog', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
                         <div class="discord-permission-row">
                             <div><div style="font-weight: bold; color: #fff;">صلاحية إضافة رتب أو إزالة رتب</div></div>
                             <label class="discord-switch"><input type="checkbox" id="perm_addDeleteRoles" onchange="updateSelectedRolePerm('addDeleteRoles', this.checked)"><span class="discord-slider"></span></label>
@@ -221,7 +226,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- واجهة كشوف وبيانات الموظفين التنزيلية اليدوية -->
             <div id="staffDataPanel" class="panel-section panel-view">
                 <h3>📊 ملف كشوف وبيانات موظفي المتجر (يدوياً بالكامل)</h3>
@@ -245,17 +249,23 @@
                 </div>
                 <div id="staffRecordsDataTableContainer"></div>
             </div>
-            <!-- واجهة الـ LOG -->
+            <!-- واجهة الـ LOG الأساسية لعلميات فك قفل النظام وعميات الدخول -->
             <div id="logPanel" class="panel-view">
                 <h3>📋 سجل عمليات الدخول والتحقق الآمن (System LOG)</h3>
                 <div id="systemLogListContainer" style="max-height: 400px; overflow-y: auto; background: #060b07; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px;"></div>
             </div>
 
+            <!-- 🗑️ واجهة سجل الأرشفة والمحذوفات والطلبات المنتهية المخصصة للملفات الممسوحة -->
+            <div id="trashLogPanel" class="panel-view">
+                <h3>🗑️ سجل الأرشفة والمحذوفات والطلبات المنتهية (Archive LOG)</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">كشف شامل للمراقبة وعرض الشكاوى والطلبات التي تم مسحها وإنهائها يدوياً بالكامل:</p>
+                <div id="trashLogListContainer" style="max-height: 400px; overflow-y: auto; background: #060b07; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px;"></div>
+            </div>
             <!-- واجهة تحرير ملفات الموقع البرمجية الجديدة -->
             <div id="filesPanel" class="panel-view">
                 <h3>📝 تحرير وتعديل ملفات السورس والموقع</h3>
                 <textarea class="form-control" rows="8" style="font-family: monospace; font-size: 14px; background: #000; border-color: var(--primary);" readonly>// index.html & app.js Source Code Active Control Loader V99...</textarea>
-                <button class="btn" style="margin-top: 15px; width: auto;" onclick="alert('تم تدوين وحفظ تعديل الملفات بنجاح في السيرفر!')">💾 حفظ التعديلات الكودية للموقع</button>
+                <button class="btn" style="margin-top: 15px; width: auto;" onclick="alert('تم تدوين وحفظ تعديل ملفات بنجاح!')">💾 حفظ التعديلات الكودية للموقع</button>
             </div>
 
             <!-- واجهة أداة التطوير وتغيير أشكال الموقع الإداري الجديد -->
@@ -263,7 +273,7 @@
                 <h3>🎨 قسم التطوير الهندسي وتعديل شكل المتجر</h3>
                 <div style="display: flex; gap: 15px; align-items: center; background: #060b07; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color);">
                     <label>اللون الرئيسي للهيكل السحابي:</label>
-                    <input type="color" value="#2ecc71" style="cursor: pointer;" onchange="alert('تم تحديث لون القالب وتطوير الشكل بنجاح!')">
+                    <input type="color" value="#2ecc71" style="cursor: pointer;" onchange="alert('تم تحديث لون القالب بنجاح!')">
                 </div>
             </div>
 
@@ -271,12 +281,13 @@
     </div>
 
     <footer>
-        حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - تصميم وتطوير المتجر مدمج الربط الحي والصلاحيات
+        حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - تصميم وتطوير النظام المتكامل مدمج الحماية والأدوار والأرشفة
     </footer>
 
     <script>
         var selectedRoleId = null;
         var currentUserPermissions = {}; // تخزين صلاحيات الحساب المسجل حالياً بالمتصفح
+        var activeUserSessionName = "Youssef Developer"; // تخزين الموظف النشط للمراقبة بالأرشفة
 
         function get(k, def) { 
             var val = localStorage.getItem(k); 
@@ -308,7 +319,7 @@
             var titleEl = document.getElementById("headerUserTitle");
             if (titleEl) { titleEl.innerText = "👤 معرفك الحالي: " + myId + " | الاسم: " + myName; }
         }
-        // 🛡️ [جدار الحماية المطور]: حظر وفحص التبويبات طبقاً لصلاحيات الرتبة المسجلة وحماية الخانات بالكامل
+        // 🛡️ [تحديث جدار الحماية للـ 10 صلاحيات الكاملة]: حظر وفحص التبويبات طبقاً لصلاحيات الرتبة وحماية الخانات
         function switchPanel(panelId, btnElement) {
             var isOwner = localStorage.getItem("kw_isAdmin") === "true";
             
@@ -317,7 +328,8 @@
                 if (panelId === 'ordersPanel' && !currentUserPermissions.viewOrders) { alert("عذراً، ليس لديك صلاحية رؤية طلبات العملاء!"); return; }
                 if (panelId === 'hiringPanel' && !currentUserPermissions.fireAssign) { alert("عذراً، ليس لديك صلاحية تعيين وفصل العملاء والموظفين!"); return; }
                 if (panelId === 'staffDataPanel' && !currentUserPermissions.viewStaffData) { alert("عذراً، ليس لديك صلاحية رؤية معلومات الموظفين!"); return; }
-                if (panelId === 'logPanel' && !currentUserPermissions.viewLog) { alert("عذراً، ليس لديك صلاحية رؤية سجل الـ LOG!"); return; }
+                if (panelId === 'logPanel' && !currentUserPermissions.viewLog) { alert("عذراً، ليس لديك صلاحية رؤية سجل الـ LOG الأساسي!"); return; }
+                if (panelId === 'trashLogPanel' && !currentUserPermissions.viewTrashLog) { alert("عذراً، ليس لديك صلاحية رؤية سجل المحذوفات والأرشفة LOG!"); return; }
                 if (panelId === 'rolesPanel' && !currentUserPermissions.editRolePerms) { alert("عذراً، ليس لديك صلاحية تعديل صلاحيات الرتب!"); return; }
                 if (panelId === 'filesPanel' && !currentUserPermissions.editFiles) { alert("عذراً، ليس لديك صلاحية تحرير ملفات الموقع!"); return; }
                 if (panelId === 'devPanel' && !currentUserPermissions.devMode) { alert("عذراً، ليس لديك صلاحية التطوير وتعديل شكل الموقع!"); return; }
@@ -333,6 +345,7 @@
             if (buttons) { buttons.forEach(function(b) { b.classList.remove('active'); }); }
             if(btnElement) btnElement.classList.add('active');
         }
+        // 🔒 [تحديث حل مشكلة الـ LOG قاطعاً وثابتاً فورا]: معالجة فك القفل وتدوين الدخول فور الضغط بنجاح لضمان التثبيت
         function handleStaffAuth(e) {
             if (e) e.preventDefault();
             
@@ -350,7 +363,10 @@
             if (selectedRole === "مدير العام" && (typedIdentity === "100" || typedIdentity === "admin@kwstore.com" || typedIdentity === myId)) {
                 if (typedPassword === "admin2026" || typedPassword === "youssef2026") {
                     localStorage.setItem("kw_isAdmin", "true");
-                    currentUserPermissions = { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, addDeleteRoles: true, editRolePerms: true, editFiles: true, devMode: true };
+                    activeUserSessionName = "Youssef Developer";
+                    currentUserPermissions = { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, viewTrashLog: true, addDeleteRoles: true, editRolePerms: true, editFiles: true, devMode: true };
+                    
+                    // تدوين لوق الدخول الأساسي فورا دون تعليق
                     pushToSystemLog("admin@kwstore.com", "Youssef Developer", "مدير العام");
                     unlockDashboard("Youssef Developer (مدير العام)");
                     return;
@@ -365,16 +381,19 @@
             if (matchedRole && (matchedEmp || typedIdentity === myId)) {
                 var finalName = matchedEmp ? matchedEmp.name : myName;
                 localStorage.setItem("kw_isAdmin", "false");
+                activeUserSessionName = finalName;
                 currentUserPermissions = matchedRole.permissions || {};
+                
                 pushToSystemLog("employee@kwstore.com", finalName, matchedRole.name);
                 unlockDashboard(finalName + " (" + matchedRole.name + ")");
             } else {
                 localStorage.setItem("kw_isAdmin", "true");
-                currentUserPermissions = { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, addDeleteRoles: true, editRolePerms: true, editFiles: true, devMode: true };
+                activeUserSessionName = "Youssef Developer";
+                currentUserPermissions = { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, viewTrashLog: true, addDeleteRoles: true, editRolePerms: true, editFiles: true, devMode: true };
+                pushToSystemLog("admin@kwstore.com", "Youssef Developer", "مدير العام - كسر أمان تلقائي");
                 unlockDashboard("Youssef Developer (مدير العام - كسر كاش احتياطي)");
             }
         }
-
         function unlockDashboard(userTitle) {
             document.getElementById("lockScreenView").style.display = "none";
             document.getElementById("dashboardView").style.display = "flex";
@@ -385,7 +404,56 @@
         }
 
         function logoutStaff() { localStorage.removeItem("kw_isAdmin"); location.reload(); }
-        function pushToSystemLog(email, name, role) { var logs = get("kw_system_logs_v1", []); logs.push({ name: name, email: email, role: role, time: new Date().toLocaleString("ar-EG") }); set("kw_system_logs_v1", logs); }
+        
+        function pushToSystemLog(email, name, role) { 
+            var logs = get("kw_system_logs_v1", []); 
+            logs.push({ name: name, email: email, role: role, time: new Date().toLocaleString("ar-EG") }); 
+            set("kw_system_logs_v1", logs); 
+        }
+
+        // ❌ [دالة إنهاء ومسح تذاكر الشكاوى وأرشفتها حياً في اللوق المخصص الجديد]
+        function archiveAndDismissComplaint(complaintId) {
+            var complaints = get("kw_complaints_v1", []);
+            var idx = complaints.findIndex(function(c) { return c && c.id === complaintId; });
+            if (idx === -1) return;
+            
+            var trashLogs = get("kw_trash_archive_logs_v1", []);
+            trashLogs.push({
+                type: "تذكرة شكوى 📬",
+                clientName: complaints[idx].senderName,
+                details: complaints[idx].message,
+                handlerStaff: activeUserSessionName,
+                time: new Date().toLocaleString("ar-EG")
+            });
+            set("kw_trash_archive_logs_v1", trashLogs);
+            
+            complaints.splice(idx, 1);
+            set("kw_complaints_v1", complaints);
+            alert("تم إنهاء الشكوى بنجاح، ونقلها بالكامل إلى 'سجل الأرشفة والمحذوفات LOG' الآمن.");
+            renderAll();
+        }
+
+        // ❌ [دالة إنهاء ومسح طلبات شراء الأنظمة وأرشفتها حياً في اللوق المخصص الجديد]
+        function archiveAndDismissOrder(orderId) {
+            var orders = get("kw_orders_v1", []);
+            var idx = orders.findIndex(function(o) { return o && o.id === orderId; });
+            if (idx === -1) return;
+            
+            var trashLogs = get("kw_trash_archive_logs_v1", []);
+            trashLogs.push({
+                type: "طلب شراء نظام 📦",
+                clientName: orders[idx].clientName + " (هاتف: " + orders[idx].clientPhone + ")",
+                details: "شراء وتفعيل: " + orders[idx].selectedSystem,
+                handlerStaff: activeUserSessionName,
+                time: new Date().toLocaleString("ar-EG")
+            });
+            set("kw_trash_archive_logs_v1", trashLogs);
+            
+            orders.splice(idx, 1);
+            set("kw_orders_v1", orders);
+            alert("تم إنهاء طلب شراء النظام بنجاح، ونقل تفاصيل الفاتورة بالكامل إلى 'سجل الأرشفة والمحذوفات LOG' الآمن.");
+            renderAll();
+        }
         function loadDiscordRolesSidebar() {
             var sidebar = document.getElementById("discordRolesSidebar");
             if (!sidebar) return; sidebar.innerHTML = "";
@@ -414,6 +482,7 @@
             document.getElementById("perm_fireAssign").checked = role.permissions?.fireAssign || false;
             document.getElementById("perm_viewStaffData").checked = role.permissions?.viewStaffData || false;
             document.getElementById("perm_viewLog").checked = role.permissions?.viewLog || false;
+            document.getElementById("perm_viewTrashLog").checked = role.permissions?.viewTrashLog || false;
             document.getElementById("perm_addDeleteRoles").checked = role.permissions?.addDeleteRoles || false;
             document.getElementById("perm_editRolePerms").checked = role.permissions?.editRolePerms || false;
             document.getElementById("perm_editFiles").checked = role.permissions?.editFiles || false;
@@ -436,114 +505,111 @@
                 if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); set("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); }
             }
         }
+
         function addNewRole() {
             var name = document.getElementById("roleInput").value.trim(); if (!name) return;
             var r = get("kw_roles_v3", []);
-            r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, addDeleteRoles: false, editRolePerms: false, editFiles: false, devMode: false } });
+            r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, viewTrashLog: false, addDeleteRoles: false, editRolePerms: false, editFiles: false, devMode: false } });
             set("kw_roles_v3", r); document.getElementById("roleInput").value = ""; renderAll(); loadDiscordRolesSidebar();
         }
-
         function processComplaintReply(complaintId) {
             var complaints = get("kw_complaints_v1", []);
             var idx = complaints.findIndex(function(c) { return c && c.id === complaintId; });
             if(idx === -1) return;
-            var replyText = prompt("اكتب رد المسؤول الفني على التذكرة (سيعود فوراً لموقع العميل الأساسي):", complaints[idx].reply || "");
-            if(replyText && replyText.trim() !== "") { complaints[idx].reply = replyText.trim(); set("kw_complaints_v1", complaints); alert("تم إرسال وحفظ الرد بنجاح."); renderAll(); }
+            var replyText = prompt("اكتب رد المسؤول الفني على التذكرة:", complaints[idx].reply || "");
+            if(replyText && replyText.trim() !== "") { complaints[idx].reply = replyText.trim(); set("kw_complaints_v1", complaints); alert("تم حفظ الرد بنجاح."); renderAll(); }
         }
 
         function openManualAddForm() { document.getElementById("manualAddStaffForm").style.display = "block"; }
         function saveManualStaffRecordRow() {
-            var name = document.getElementById("field_staffName").value.trim();
-            var id = document.getElementById("field_staffId").value.trim();
-            var email = document.getElementById("field_staffEmail").value.trim();
-            var role = document.getElementById("field_staffRole").value;
-            if(!name || !id || !email) { alert("يرجى كتابة البيانات يدوياً!"); return; }
+            var name = document.getElementById("field_staffName").value.trim(); var id = document.getElementById("field_staffId").value.trim(); var email = document.getElementById("field_staffEmail").value.trim(); var role = document.getElementById("field_staffRole").value;
+            if(!name || !id || !email) { alert("يرجى كتابة كافة البيانات يدوياً أولاً!"); return; }
             var emps = get("kw_employees", []); emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") });
-            set("kw_employees", emps); document.getElementById("manualAddStaffForm").style.display = "none"; renderAll(); alert("تم التدوين بنجاح.");
+            set("kw_employees", emps); document.getElementById("manualAddStaffForm").style.display = "none"; renderAll(); alert("تم تدوين الموظف بنجاح.");
         }
 
-        function clearAllStaffRecordsData() { if(confirm("هل مسح كشف الموظفين بالكامل؟")) { set("kw_employees", []); renderAll(); } }
+        function clearAllStaffRecordsData() { if(confirm("هل أنت متأكد من مسح كشف الموظفين بالكامل؟")) { set("kw_employees", []); renderAll(); } }
         function downloadStaffDataBackupFile() {
-            var emps = get("kw_employees", []);
-            var textContent = "📊 كشف بيانات موظفي متجر KW STORE لعام 2026\n=========================================\n";
-            emps.forEach(function(e, i) { if(e) textContent += (i+1) + ". الاسم: " + e.name + " | المعرّف: " + e.id + " | الإيميل: " + (e.email || "admin@kwstore.com") + " | الرتبة: " + e.role + "\n"; });
-            var blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
-            var link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kw_staff_records_data_2026.txt"; link.click();
+            var emps = get("kw_employees", []); var textContent = "📊 كشف بيانات موظفي متجر KW STORE لعام 2026\n=========================================\n";
+            emps.forEach(function(e, i) { if(e) textContent += (i+1) + ". الاسم: " + e.name + " | المعرّف: " + e.id + " | الرتبة: " + e.role + "\n"; });
+            var blob = new Blob([textContent], { type: "text/plain;charset=utf-8" }); var link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kw_staff_records_data_2026.txt"; link.click();
         }
 
         function processHireEmployee() {
             var name = document.getElementById("hireName").value.trim(); var id = document.getElementById("hireId").value.trim(); var email = document.getElementById("hireEmail").value.trim(); var role = document.getElementById("hireRoleSelect").value;
-            if(!name || !id || !email) { alert("يرجى ملء البيانات!"); return; }
+            if(!name || !id || !email) { alert("يرجى ملء كافة بيانات قرار التعيين!"); return; }
             var emps = get("kw_employees", []); emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") });
-            set("kw_employees", emps); renderAll(); alert("تم قرار التعيين.");
+            set("kw_employees", emps); renderAll(); alert("تم التوظيف.");
         }
 
         function processFireEmployee() {
             var id = document.getElementById("fireEmployeeSelect").value; if(!id) return;
             var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e && e.id.toString() !== id.toString(); });
-            set("kw_employees", emps); renderAll(); alert("تم الفصل بنجاح.");
+            set("kw_employees", emps); renderAll(); alert("تم الفصل.");
         }
-        // 🚀 [هندسة الربط الحي والكامل لعام 2026]: سحب وعرض الشكاوى والطلبات المستلمة من الموقع الأساسي
         function renderAll() {
             var hireSel = document.getElementById("hireRoleSelect"); var fieldSel = document.getElementById("field_staffRole"); var fireSel = document.getElementById("fireEmployeeSelect");
             var compCont = document.getElementById("complaintsListContainer"); var ordCont = document.getElementById("ordersListContainer");
             var tableCont = document.getElementById("staffRecordsDataTableContainer"); var logCont = document.getElementById("systemLogListContainer");
+            var trashCont = document.getElementById("trashLogListContainer");
             var roles = get("kw_roles_v3", []); var emps = get("kw_employees", []);
             
-            if(hireSel) { hireSel.innerHTML = ""; roles.forEach(function(r) { if(r) hireSel.innerHTML += '<option value="'+r.name+'">'+r.name+'</option>'; }); }
-            if(fieldSel) { fieldSel.innerHTML = ""; roles.forEach(function(r) { if(r) fieldSel.innerHTML += '<option value="'+r.name+'">'+r.name+'</option>'; }); }
+            if(hireSel) { hireSel.innerHTML = ""; roles.forEach(function(r) { if(r) hireSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
+            if(fieldSel) { fieldSel.innerHTML = ""; roles.forEach(function(r) { if(r) fieldSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
             if(fireSel) { fireSel.innerHTML = ""; emps.forEach(function(e) { if(e) fireSel.innerHTML += '<option value="' + e.id + '">👤 ' + e.name + ' (ID: ' + e.id + ')</option>'; }); }
             
-            // 📬 رندر وقراءة الشكاوى الحية الواردة من موقع العميل
             if(compCont) {
                 compCont.innerHTML = ""; var complaints = get("kw_complaints_v1", []);
-                if(complaints.length === 0) { compCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد شكاوى أو تذاكر مستلمة حالياً من الموقع الأساسي.</div>'; }
+                if(complaints.length === 0) { compCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد شكاوى مستلمة حالياً.</div>'; }
                 else {
                     complaints.forEach(function(c) {
                         if(c) {
-                            compCont.innerHTML += '<div class="data-list-item"><div>📅 وقت التذكرة: ' + (c.date || "2026/10/10") + ' | 👤 اسم العميل: ' + c.senderName + ' (ID: ' + (c.senderId || "زائر") + ')</div>' +
-                                '<div style="color:#fff; margin-top:5px; font-weight:bold;">⚠️ نص المشكلة: ' + c.message + '</div>' +
-                                '<div style="margin-top:8px; color:var(--primary);">✍️ رد الإدارة الحالي: ' + (c.reply || "لا يوجد رد بعد... في انتظار ردك") + '</div>' +
-                                '<button class="btn" style="width:auto; margin-top:10px; padding:4px 10px; font-size:12px;" onclick="processComplaintReply(\''+c.id+'\')">✉️ اضغط هنا للرد الفني على التذكرة وإرجاعها</button></div>';
+                            compCont.innerHTML += '<div class="data-list-item"><div>📅 وقت التذكرة: ' + c.date + ' | 👤 اسم العميل: ' + c.senderName + '</div>' +
+                                '<div style="color:#fff; margin-top:5px; font-weight:bold;">⚠️ الشكوى: ' + c.message + '</div>' +
+                                '<div style="margin-top:8px; color:var(--primary);">✍️ الرد الحالي: ' + (c.reply || "لا يوجد رد بعد") + '</div>' +
+                                '<div style="margin-top:10px; display:flex; gap:8px;">' +
+                                '<button class="btn" style="width:auto; padding:4px 10px; font-size:12px;" onclick="processComplaintReply(\''+c.id+'\')">✉️ الرد الفني</button>' +
+                                '<button class="btn btn-danger" style="width:auto; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissComplaint(\''+c.id+'\')">❌ إنهاء ومسح التذكرة</button></div></div>';
                         }
                     });
                 }
             }
-
-            // 📦 [حقن برمي حي للطلبات]: قلب وعرض الطلبات القادمة من موقع العميل الأساسي برقم التلفون والطلب
             if(ordCont) {
-                ordCont.innerHTML = ""; var orders = get("kw_orders_v1", []); // يقرأ نفس قاعدة بيانات الموقع الأساسي حياً
-                if(orders.length === 0) { ordCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد طلبات شراء مسجلة حالياً من الموقع الأساسي.</div>'; }
+                ordCont.innerHTML = ""; var orders = get("kw_orders_v1", []);
+                if(orders.length === 0) { ordCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد طلبات شراء مسجلة حالياً.</div>'; }
                 else {
-                    orders.reverse().forEach(function(o) {
+                    orders.forEach(function(o) {
                         if(o) {
-                            ordCont.innerHTML += '<div class="data-list-item"><div>👤 اسم المشتري: <strong style="color:var(--primary)">' + o.clientName + '</strong> | 📞 رقم الهاتف: <strong style="color:#cd9b32">' + o.clientPhone + '</strong></div>' +
+                            ordCont.innerHTML += '<div class="data-list-item"><div>👤 المشتري: ' + o.clientName + ' | 📞 هاتف: ' + o.clientPhone + '</div>' +
                                 '<div style="color:#fff; margin-top:5px; font-weight:bold;">📦 النظام المطلوب: ' + o.selectedSystem + '</div>' +
-                                '<div style="font-size:12px; color:var(--text-muted); margin-top:5px;">📅 تاريخ وتوقيت الطلب: ' + (o.date || "2026/10/10") + '</div></div>';
+                                '<div style="font-size:12px; color:var(--text-muted); margin-top:5px;">📅 التوقيت: ' + o.date + '</div>' +
+                                '<button class="btn btn-danger" style="width:auto; margin-top:10px; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissOrder(\''+o.id+'\')">❌ إنهاء ومسح الطلب</button></div>';
                         }
                     });
                 }
             }
-
-            if(tableCont) { tableCont.innerHTML = ""; if(emps.length === 0) { tableCont.innerHTML = '<div>كشف فارغ.</div>'; } else { emps.forEach(function(e) { if(e) tableCont.innerHTML += '<div class="data-list-item flex-box"><span>👤 الموظف: ' + e.name + ' | 🆔 الـ ID: ' + e.id + ' | 📧 الإيميل: ' + (e.email || "admin@kwstore.com") + '</span><span class="badge">' + e.role + '</span></div>'; }); } }
-            if(logCont) { logCont.innerHTML = ""; var logs = get("kw_system_logs_v1", []); if(logs.length === 0) { logCont.innerHTML = '<div>السجل فارغ.</div>'; } else { logs.slice().reverse().forEach(function(l) { if(l) logCont.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:6px 0; font-size:13px; color:#ccc;">📅 ['+l.time+'] - فك القفل بنجاح لـ 👤 الاسم: <span style="color:var(--primary)">'+l.name+'</span> | 🛡️ الرتبة: <span style="color:#cd9b32">'+l.role+'</span></div>'; }); } }
+            if(tableCont) { tableCont.innerHTML = ""; if(emps.length === 0) { tableCont.innerHTML = '<div>كشف الموظفين فارغ.</div>'; } else { emps.forEach(function(e) { if(e) tableCont.innerHTML += '<div class="data-list-item flex-box"><span>👤 الموظف: ' + e.name + ' | 🆔 الـ ID: ' + e.id + '</span><span class="badge">' + e.role + '</span></div>'; }); } }
+            if(logCont) { logCont.innerHTML = ""; var logs = get("kw_system_logs_v1", []); if(logs.length === 0) { logCont.innerHTML = '<div>السجل فارغ.</div>'; } else { logs.slice().reverse().forEach(function(l) { if(l) logCont.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:6px 0; font-size:13px; color:#ccc;">📅 ['+l.time+'] - دخول ناجح لـ 👤 الاسم: <span style="color:var(--primary)">'+l.name+'</span> | 🛡️ الرتبة: <span style="color:#cd9b32">'+l.role+'</span></div>'; }); } }
+            
+            if(trashCont) {
+                trashCont.innerHTML = ""; var tLogs = get("kw_trash_archive_logs_v1", []);
+                if(tLogs.length === 0) { trashCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">سجل الأرشفة نظيف وفارغ كلياً حالياً.</div>'; }
+                else { tLogs.slice().reverse().forEach(function(tl) { if(tl) trashCont.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:8px 0; font-size:13px; color:#aaa;">📅 ['+tl.time+'] - <span style="color:var(--danger)">[تم الإنهاء والأرشفة]</span> لـ '+tl.type+' | 👤 العميل: <span style="color:#fff">'+tl.clientName+'</span> | 📝 التفاصيل: '+tl.details+' | 🛠️ المسؤول الحاذف: <span style="color:var(--primary)">'+tl.handlerStaff+'</span></div>'; }); }
+            }
         }
 
         window.onload = function() {
-            if (!localStorage.getItem("kw_force_clean_cache_sync_v2")) { localStorage.clear(); localStorage.setItem("kw_force_clean_cache_sync_v2", "true"); }
             initVisitorIdentity();
             if (!localStorage.getItem("kw_roles_v3")) {
                 set("kw_roles_v3", [
-                    { id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, addDeleteRoles: true, editRolePerms: true, editFiles: true, devMode: true } },
-                    { id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, addDeleteRoles: false, editRolePerms: false, editFiles: false, devMode: false } },
-                    { id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, addDeleteRoles: false, editRolePerms: false, editFiles: false, devMode: false } }
+                    { id: 1, name: "مدير العام", password: "admin2026", permissions: { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, viewTrashLog: true, addDeleteRoles: true, editRolePerms: true, editFiles: true, devMode: true } },
+                    { id: 2, name: "مسؤول شكاوى", password: "shakwa2026", permissions: { viewComplaints: true, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, viewTrashLog: false, addDeleteRoles: false, editRolePerms: false, editFiles: false, devMode: false } },
+                    { id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, viewTrashLog: false, addDeleteRoles: false, editRolePerms: false, editFiles: false, devMode: false } }
                 ]);
             }
             if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "100", name: "Youssef Developer", email: "admin@kwstore.com", role: "مدير العام", date: "2026/10/10" }]); }
             var select = document.getElementById("loginRoleSelect"); if (select) { select.innerHTML = ""; var roles = get("kw_roles_v3", []); roles.forEach(function(r) { if(r) select.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
             renderAll();
-            
-            // 🔄 الاستماع الحي لأي طلب أو شكوى جديدة تضاف من موقع العميل لتحديث اللوحة فوراً تلقائياً
             window.addEventListener("storage", function() { renderAll(); });
         };
     </script>
