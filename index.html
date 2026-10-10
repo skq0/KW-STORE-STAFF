@@ -308,8 +308,7 @@
     <footer>
         حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام المراقبة السيبرانية والـ LOG المحمي بالمزامنة العالمية الحية عن بعد
     </footer>
-        <script>
-        // 🔗 الروابط كاملة ومصححة ومطابقة لسيرفرك ad1bb لمنع أخطاء الـ Console نهائياً
+             <script>
         var FIREBASE_URL = "https://firebaseio.com";
 
         var selectedRoleId = null;
@@ -335,7 +334,6 @@
                 body: JSON.stringify(value)
             }).catch(e => console.log("خطأ رفع سحابي"));
         }
-
         function listenToCloudGlobalUpdates() {
             setInterval(function() {
                 fetch(FIREBASE_URL + ".json?nocache=" + Date.now())
@@ -369,7 +367,6 @@
             pushToSystemLog(myEmail, myName, "زيارة وتدقيق هوية آمنة", myId);
             pushToPrivateLog("زيارة ودخول للموقع 📡", "تم رصد بصمة دخول للجهاز بواسطة العضو: " + myName, myName, myId, "زائر مؤقت");
         }
-
         function switchPanel(panelId, btnElement) {
             var isOwner = localStorage.getItem("kw_isAdmin") === "true";
             if (!isOwner) {
@@ -458,6 +455,7 @@
                 }
             } else { alert("عذراً، أنت لا تملك صلاحية مسح السجل السري!"); }
         }
+
         function clearSystemAccessLogLive() {
             var isOwner = localStorage.getItem("kw_isAdmin") === "true";
             if (isOwner || currentUserPermissions.deleteAccessLog === true) {
@@ -508,6 +506,7 @@
                 }
             } else { alert("ليس لديك صلاحية!"); }
         }
+
         function updateSelectedRolePerm(permName, isChecked) { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (!role.permissions) role.permissions = {}; role.permissions[permName] = isChecked; pushToPrivateLog("⚙️ تعديل صلاحيات رتبة", "تعديل الصلاحية [" + permName + "] إلى (" + isChecked + ")", activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); } }
         function changeSelectedRolePassword() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { var newPass = prompt("أدخل كلمة المرور الجديدة:", role.password); if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); pushToPrivateLog("🔑 تغيير كلمة مرور رتبة", "تعديل باسورد رتبة (" + role.name + ")", activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
         function renameSelectedRoleLive() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (role.name === "مدير العام") return; var newName = prompt("أدخل الاسم الجديد:", role.name); if (newName && newName.trim() !== "") { var oldName = role.name; role.name = newName.trim(); pushToPrivateLog("✏️ تعديل اسم رتبة", "تعديل من (" + oldName + ") إلى (" + role.name + ")", activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
