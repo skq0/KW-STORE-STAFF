@@ -399,46 +399,52 @@
             if (buttons) { buttons.forEach(function(b) { b.classList.remove('active'); }); }
             if(btnElement) btnElement.classList.add('active');
         }
-        function handleStaffAuth(e) {
+                function handleStaffAuth(e) {
             if (e) e.preventDefault();
             var roleSelectEl = document.getElementById("loginRoleSelect");
             var identityInputEl = document.getElementById("authIdentity");
             var passwordInputEl = document.getElementById("authPassword");
+            
             var selectedRole = roleSelectEl ? roleSelectEl.value : "مدير العام";
             var typedIdentity = identityInputEl ? identityInputEl.value.trim() : "100";
             var typedPassword = passwordInputEl ? passwordInputEl.value : "admin2026";
-            var myId = localStorage.getItem("kw_my_id") || "100";
-            var myName = localStorage.getItem("kw_my_name") || "Youssef Developer";
             
-            if (selectedRole === "مدير العام" && (typedIdentity === "100" || typedIdentity === myId)) {
+            // 🛡️ خط دفاع أول: السماح للمدير العام بالولوج الفوري الحتمي دون تجميد الصفحة
+            if (selectedRole === "مدير العام") {
                 if (typedPassword === "admin2026" || typedPassword === "youssef2026") {
                     localStorage.setItem("kw_isAdmin", "true");
-                    setupActiveSession("Youssef Developer", "admin@kwstore.com", "100", "مدير العام");
+                    setupActiveSession("Youssef Developer", "admin@kwstore.com", typedIdentity, "مدير العام");
                     currentUserPermissions = { viewComplaints: true, viewOrders: true, fireAssign: true, viewStaffData: true, viewLog: true, deleteAccessLog: true, viewTrashLog: true, deleteTrashLog: true, addDeleteRoles: true, editRolePerms: true, viewPrivateLog: true, deletePrivateLogHistory: true, editFiles: true, devMode: true };
-                    pushToSystemLog("admin@kwstore.com", "Youssef Developer", "مدير العام (تسجيل دخول)", "100");
-                    pushToPrivateLog("تسجيل دخول مسؤول عام 👑", "تم بنجاح تدقيق وتحقق الصلاحيات الكاملة لأعلى رتبة بالنظام بالـ ID رقم 100", "Youssef Developer", "100", "مدير العام");
+                    
+                    pushToSystemLog("admin@kwstore.com", "Youssef Developer", "مدير العام (تسجيل دخول نجاح)", typedIdentity);
+                    pushToPrivateLog("تسجيل دخول مسؤول عام 👑", "تم نجاح تدقيق الصلاحيات الكاملة لأعلى رتبة بالـ ID رقم " + typedIdentity, "Youssef Developer", typedIdentity, "مدير العام");
                     unlockDashboard("Youssef Developer (مدير العام)");
                     return;
                 }
             }
+            
+            // التحقق من بقية رتب الموظفين العاديين
             var emps = get("kw_employees", []);
             var matchedEmp = emps.find(function(emp) { return emp && emp.id.toString() === typedIdentity && emp.role === selectedRole; });
             var roles = get("kw_roles_v3", []);
             var matchedRole = roles.find(function(r) { return r && r.name === selectedRole && r.password === typedPassword; });
+            
             if (matchedRole && matchedEmp) {
                 localStorage.setItem("kw_isAdmin", "false");
                 setupActiveSession(matchedEmp.name, matchedEmp.email, matchedEmp.id, matchedRole.name);
                 currentUserPermissions = matchedRole.permissions || {};
-                pushToSystemLog(matchedEmp.email, matchedEmp.name, matchedRole.name + " (تسجيل دخول)", matchedEmp.id);
-                pushToPrivateLog("تسجيل دخول رتبة موظف 💼", "تم تسجيل دخول آمن للموظف بنجاح وتفعيل حزمة تصاريح الرتب المعينة له", matchedEmp.name, matchedEmp.id, matchedRole.name);
+                
+                pushToSystemLog(matchedEmp.email, matchedEmp.name, matchedRole.name + " (تسجيل دخول نجاح)", matchedEmp.id);
+                pushToPrivateLog("تسجيل دخول رتبة موظف 💼", "تم تسجيل دخول آمن للموظف بنجاح وتوثيق الهوية عبر السيستم", matchedEmp.name, matchedEmp.id, matchedRole.name);
                 unlockDashboard(matchedEmp.name + " (" + matchedRole.name + ")");
-            } else { alert("خطأ تدقيق: البيانات المدخلة لا تطابق رتبك المسجلة أو الباسورد خاطئ!"); }
+            } else { 
+                alert("خطأ تدقيق: البيانات المدخلة لا تطابق رتبك المسجلة أو الباسورد خاطئ!"); 
+            }
         }
 
         function setupActiveSession(name, email, id, role) { activeUserSessionName = name; activeUserSessionEmail = email; activeUserSessionId = id; activeUserSessionRole = role; }
         function unlockDashboard(userTitle) { document.getElementById("lockScreenView").style.display = "none"; document.getElementById("dashboardView").style.display = "flex"; document.getElementById("logoutBtn").style.display = "inline-block"; document.getElementById("headerUserTitle").innerText = "⚙ المسؤول النشط: " + userTitle; renderAll(); loadDiscordRolesSidebar(); }
         function processStaffLogoutLive() { pushToSystemLog(activeUserSessionEmail, activeUserSessionName, "تسجيل خروج صريح ومغادرة الجلسة 🚪", activeUserSessionId); pushToPrivateLog("تسجيل خروج 🚪", "قام المسؤول بإغلاق الواجهة وتأمين الجلسة وتوثيق الخروج من المتصفح حياً", activeUserSessionName, activeUserSessionId, activeUserSessionRole); localStorage.removeItem("kw_isAdmin"); location.reload(); }
-        function pushToSystemLog(email, name, role, id) { 
             var logs = get("kw_system_logs_v1", []); 
             logs.push({ name: name, email: email, role: role, id: id || "---", time: new Date().toLocaleString("ar-EG") }); 
             broadcastCloudDataChange("kw_system_logs_v1", logs);
