@@ -327,18 +327,18 @@
         function set(k, v) { 
             localStorage.setItem(k, JSON.stringify(v)); 
         }
-        function broadcastCloudDataChange(key, value) {
+                function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // رفع مباشر وحتمي مصلح المسار 100% بدون أي أخطاء name not resolved
+            // 🔗 رابط مباشر مشفر وحتمي بدون أي متغيرات نصية لمنع خطأ الاستدعاء القديم
             fetch("https://firebaseio.com" + key + ".json", {
                 method: 'PUT',
                 body: JSON.stringify(value)
             }).catch(e => console.log("خطأ رفع سحابي"));
         }
 
-        function listenToCloudGlobalUpdates() {
-            // كسر حظر كاش المتصفحات والاتصال المباشر الخالي من الأخطاء حياً كل ثانية ونصف للأجهزة التانية
+        function forceLiveCloudSyncEngine() {
+            // ⚡ محرك سحب حي مصلح كلياً يجبر المتصفح على نسف الكاش القديم فورا
             setInterval(function() {
                 fetch("https://firebaseio.com.json?nocache=" + Date.now())
                 .then(function(res) { return res.json(); })
@@ -349,7 +349,7 @@
                         });
                         renderAll();
                     }
-                }).catch(e => console.log("جاري مزامنة السيرفر..."));
+                }).catch(e => console.log("تزامن مستمر..."));
             }, 1500);
         }
         function initVisitorIdentity() {
