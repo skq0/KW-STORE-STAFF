@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KW STORE | بوابة الموظفين المطورة لعام 2026</title>
+    <title>KW STORE | نظام الإدارة المتكامل 2026</title>
     <style>
         :root {
             --bg-dark: #060b07;
@@ -14,36 +14,47 @@
             --text-muted: #88aa88;
             --border-color: rgba(46, 204, 113, 0.2);
             --danger: #d9534f;
+            --danger-hover: #c9302c;
             --discord-dark: #2F3136;
             --discord-main: #36393f;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 60px; }
-        header { background-color: var(--surface); padding: 15px 20px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 2px solid var(--primary); }
+        body { background-color: var(--bg-dark); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: var(--surface); padding: 15px 20px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 2px solid var(--primary); z-index: 100; }
         .logo { font-size: 22px; font-weight: bold; color: var(--primary); text-decoration: none; text-align: center; }
         .nav-links { display: flex; gap: 15px; align-items: center; justify-content: flex-end; }
         .nav-btn { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 13px; font-weight: bold; }
         .nav-btn:hover { background-color: var(--danger); color: #fff; }
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; width: 100%; flex: 1; }
         .login-view { display: flex; justify-content: center; align-items: center; flex: 1; padding: 20px; }
         .login-card { background-color: var(--surface); padding: 30px; border-radius: 8px; border: 1px solid var(--border-color); width: 100%; max-width: 420px; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
         .login-card h2 { color: var(--primary); text-align: center; margin-bottom: 25px; font-size: 1.6rem; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: #ccc; font-size: 14px; }
-        .form-control { width: 100%; padding: 12px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 16px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; color: #ccc; font-size: 14px; }
+        .form-control { width: 100%; padding: 10px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 15px; }
         .form-control:focus { outline: none; border-color: var(--primary); }
-        .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; text-decoration: none; }
+        .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; text-decoration: none; }
         .btn:hover { background-color: var(--primary-hover); }
-        .panel-section { background-color: var(--surface); padding: 25px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 25px; }
-        .panel-section h3 { margin-bottom: 15px; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; font-size: 1.4rem; }
-        .discord-roles-container { display: grid; grid-template-columns: 250px 1fr; background: var(--discord-dark); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); min-height: 400px; overflow: hidden; margin-top: 15px; }
-        .discord-roles-sidebar { background: #2f3136; padding: 15px; border-left: 1px solid rgba(0,0,0,0.2); }
-        .discord-role-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 4px; cursor: pointer; margin-bottom: 5px; font-weight: 500; font-size: 14px; color: #b9bbbe; }
-        .discord-role-item:hover, .discord-role-item.active { background: rgba(79,84,92,0.3); color: #fff; }
-        .discord-role-color-dot { width: 10px; height: 10px; border-radius: 50%; margin-left: 8px; display: inline-block; }
-        .discord-roles-main { background: #36393f; padding: 20px; }
-        .discord-permission-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .btn-danger { background-color: var(--danger); color: #fff; }
+        .btn-danger:hover { background-color: var(--danger-hover); }
+
+        /* هيكلة الأزرار العمودية باليمين تماماً ومساحة العرض باليسار */
+        .dashboard-container { display: none; flex: 1; display: flex; flex-direction: row; width: 100%; }
+        .sidebar-right { width: 260px; background-color: var(--surface); border-left: 2px solid var(--primary); padding: 20px 10px; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-btn { width: 100%; background: none; border: 1px solid var(--border-color); color: var(--text); padding: 12px 15px; text-align: right; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+        .sidebar-btn:hover, .sidebar-btn.active { background-color: var(--primary); color: #000; border-color: var(--primary); }
+        .main-content-left { flex: 1; padding: 30px; overflow-y: auto; height: calc(100vh - 65px); padding-bottom: 80px; }
         
+        .panel-view { display: none; background-color: var(--surface); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; }
+        .panel-view.active { display: block; }
+        .panel-view h3 { color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; font-size: 1.5rem; }
+        /* ستايل رتب ديسكورد والمفاتيح التفاعلية */
+        .discord-roles-container { display: grid; grid-template-columns: 200px 1fr; background: var(--discord-dark); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); min-height: 350px; overflow: hidden; margin-top: 15px; }
+        .discord-roles-sidebar { background: #2f3136; padding: 10px; border-left: 1px solid rgba(0,0,0,0.2); }
+        .discord-role-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-radius: 4px; cursor: pointer; margin-bottom: 5px; font-size: 13px; color: #b9bbbe; }
+        .discord-role-item:hover, .discord-role-item.active { background: rgba(79,84,92,0.3); color: #fff; }
+        .discord-roles-main { background: #36393f; padding: 20px; }
+        .discord-permission-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
         .discord-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
         .discord-switch input { opacity: 0; width: 0; height: 0; }
         .discord-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #72767d; transition: .2s; border-radius: 34px; }
@@ -51,125 +62,189 @@
         input:checked + .discord-slider { background-color: var(--primary); }
         input:checked + .discord-slider:before { transform: translateX(-18px); }
 
-        .data-item { background: #060b07; border: 1px solid var(--border-color); padding: 12px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
-        footer { background-color: var(--surface); text-align: center; padding: 15px; border-top: 1px solid var(--border-color); position: fixed; bottom: 0; width: 100%; font-size: 12px; color: var(--text-muted); z-index: 10; }
+        .data-list-item { background: #060b07; border: 1px solid var(--border-color); padding: 12px; margin-bottom: 10px; border-radius: 4px; }
+        .flex-box { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .badge { background: var(--primary); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        footer { background-color: var(--surface); text-align: center; padding: 15px; border-top: 1px solid var(--border-color); position: fixed; bottom: 0; width: 100%; font-size: 12px; color: var(--text-muted); z-index: 90; }
         
         @media (max-width: 768px) {
             header { display: flex; flex-direction: column; gap: 10px; text-align: center; padding: 15px; }
             .logo { font-size: 20px; width: 100%; }
             .nav-links { justify-content: center; width: 100%; }
-            .discord-roles-container { grid-template-columns: 1fr; }
-            .discord-roles-sidebar { border-left: none; border-bottom: 1px solid rgba(0,0,0,0.2); }
-            .data-item { flex-direction: column; gap: 10px; text-align: center; }
+            .sidebar-right { width: 100%; border-left: none; border-bottom: 2px solid var(--primary); }
+            .dashboard-container { flex-direction: column; }
+            .main-content-left { height: auto; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div style="font-size: 14px; color: var(--primary); font-weight: bold;" id="headerUserTitle">👤 جاري تهيئة الهوية...</div>
-        <a href="#" class="logo">KW STORE | الإدارة</a>
+        <div style="font-size: 14px; color: var(--primary); font-weight: bold;" id="headerUserTitle">👤 جاري سحب بيانات الهوية...</div>
+        <a href="#" class="logo">KW STORE | لوحة القيادة</a>
         <div class="nav-links">
-            <button id="logoutBtn" class="nav-btn" onclick="logoutStaff()" style="display: none;">🚪 خروج</button>
+            <button id="logoutBtn" class="nav-btn" onclick="logoutStaff()" style="display: none;">🚪 تسجيل الخروج</button>
         </div>
     </header>
 
-    <!-- 🔐 شاشة قفل الدخول المصلحة والمدعومة بالمعرفات الصريحة -->
+    <!-- 🔐 شاشة قفل الدخول لطاقم الموظفين والمسؤولين -->
     <div class="login-view" id="lockScreenView">
         <div class="login-card">
-            <h2>تسجيل دخول المسؤولين</h2>
+            <h2>تسجيل دخول طاقم العمل</h2>
             <form id="mainLoginForm" onsubmit="handleStaffAuth(event)">
                 <div class="form-group">
-                    <label>اختر رتبتك الوظيفية (سهم الخيارات):</label>
+                    <label>اختر الرتبة الوظيفية المعتمدة:</label>
                     <select id="loginRoleSelect" class="form-control"></select>
                 </div>
-                
                 <div class="form-group">
-                    <label>المعرف الرقمي (أدخل الـ ID الذي يظهر لك بأعلى الصفحة):</label>
+                    <label>المعرف الرقمي (ID) أو البريد الإلكتروني (Email):</label>
                     
                 </div>
-                
                 <div class="form-group">
-                    <label>كلمة المرور الخاصة بالرتبة المحددة:</label>
-                    <input type="password" id="authPassword" class="form-control" placeholder="••••••••">
+                    <label>كلمة مرور الرتبة المحددة:</label>
+                    <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
                 </div>
-                <!-- تم إلغاء ربط الأزرار المعلقة وتحديد مسار برمي مباشر لتفادي تعليق الـ Console -->
-                <button type="button" id="submitAuthBtn" class="btn">تدقيق الصلاحيات والولوج 🛡</button>
+                <button type="submit" class="btn">تدقيق الصلاحيات والولوج البرمجي 🛡</button>
             </form>
         </div>
     </div>
-    <!-- ⚙ لوحة التحكم البرمجية الداخلية -->
-    <div class="container" id="dashboardView" style="display: none;">
+    <!-- ⚙ حاوية لوحة التحكم المتقدمة بالأزرار العمودية على اليمين -->
+    <div class="dashboard-container" id="dashboardView">
         
-        <div class="panel-section">
-            <h3>🛡 لوحة التحكم في أدوار وصلاحيات النظام (Discord Style)</h3>
-            <div class="form-group" style="display: flex; gap: 10px; margin-top: 15px;">
-                <input type="text" id="roleInput" class="form-control" placeholder="اسم الرتبة الجديدة...">
-                <button class="btn" style="width: auto; white-space: nowrap;" onclick="addNewRole()">➕ إنشاء رتبة</button>
+        <div class="sidebar-right">
+            <button class="sidebar-btn active" onclick="switchPanel('complaintsPanel', this)">📬 تذاكر الشكاوى</button>
+            <button class="sidebar-btn" onclick="switchPanel('ordersPanel', this)">📦 طلبات الأنظمة</button>
+            <button class="sidebar-btn" onclick="switchPanel('hiringPanel', this)">👥 التعيين والفصل</button>
+            <button class="sidebar-btn" onclick="switchPanel('rolesPanel', this)">🛡 التعديل والصلاحيات</button>
+            <button class="sidebar-btn" onclick="switchPanel('staffDataPanel', this)">📊 بيانات الموظفين</button>
+            <button class="sidebar-btn" onclick="switchPanel('logPanel', this)">📋 سجلات الدخول LOG</button>
+        </div>
+        
+        <div class="main-content-left">
+
+            <!-- 📬 واجهة تذاكر الشكاوى والرد التفاعلي الفوري بالاسم والوقت -->
+            <div id="complaintsPanel" class="panel-view active">
+                <h3>📬 تذاكر الشكاوى والمقترحات الحية للعملاء</h3>
+                <div id="complaintsListContainer"></div>
             </div>
 
-            <div class="discord-roles-container">
-                <div class="discord-roles-sidebar" id="discordRolesSidebar"></div>
-                <div class="discord-roles-main" id="discordRolesMain" style="display: none;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-                        <h4 id="selectedRoleName" style="color: #fff; font-size: 18px;">الرتبة</h4>
-                        <div>
-                            <span style="font-size: 12px; color: #cd9b32; margin-left: 10px; font-weight: bold;" id="selectedRolePass">🔑 الباسورد: </span>
-                            <button onclick="changeSelectedRolePassword()" style="background: #cd9b32; border:none; color:#000; padding:3px 8px; border-radius:3px; font-size:11px; cursor:pointer; font-weight:bold;">تعديل</button>
-                        </div>
+            <!-- 📦 واجهة استقبال طلبات شراء الأنظمة لكاشير المبيعات -->
+            <div id="ordersPanel" class="panel-view">
+                <h3>📦 سجل طلبات شراء الأنظمة وكاشير المبيعات</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">يعرض الطلبات المسجلة حياً من موقع العميل الأساسي المربوط بالمتجر:</p>
+                <div id="ordersListContainer"></div>
+            </div>
+            <!-- 👥 واجهة شؤون الموظفين (إصدار قرارات التعيين بالإيميل وقائمة الفصل) -->
+            <div id="hiringPanel" class="panel-view">
+                <h3>👥 إدارة توظيف وتعيين وفصل الموظفين بالنظام</h3>
+                
+                <div style="border: 1px solid var(--border-color); padding: 15px; border-radius: 6px; margin-bottom: 20px; background: #060b07;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">➕ إصدار قرار تعيين موظف جديد</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="hireName" class="form-control" placeholder="اسم الموظف بالكامل...">
+                        <input type="text" id="hireId" class="form-control" placeholder="تعيين الـ ID (مثال: 105)...">
+                        <input type="email" id="hireEmail" class="form-control" placeholder="البريد الإلكتروني (Email)...">
                     </div>
-                    
-                    <div class="discord-permission-row">
-                        <div>
-                            <div style="font-weight: bold; color: #fff;">رؤية تذاكر الشكاوى</div>
-                            <div style="font-size: 12px; color: #b9bbbe;">تسمح باستعراض شكاوى العملاء المستلمة.</div>
-                        </div>
-                        <label class="discord-switch"><input type="checkbox" id="perm_viewComplaints" onchange="updateSelectedRolePerm('viewComplaints', this.checked)"><span class="discord-slider"></span></label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="hireRoleSelect" class="form-control"></select>
+                        <button class="btn" style="width: auto; white-space: nowrap;" onclick="processHireEmployee()">توقيع قرار التعيين 💼</button>
                     </div>
-                    <div class="discord-permission-row">
-                        <div>
-                            <div style="font-weight: bold; color: #fff;">تعديل أسعار المنتجات</div>
-                            <div style="font-size: 12px; color: #b9bbbe;">تسمح بتحديث قيم فواتير الكاشير.</div>
-                        </div>
-                        <label class="discord-switch"><input type="checkbox" id="perm_editPrices" onchange="updateSelectedRolePerm('editPrices', this.checked)"><span class="discord-slider"></span></label>
-                    </div>
-                    <div class="discord-permission-row">
-                        <div>
-                            <div style="font-weight: bold; color: #fff;">صلاحية التعيين والتوظيف</div>
-                            <div style="font-size: 12px; color: #b9bbbe;">تمنح القدرة على توظيف طاقم عمل جديد للرتب.</div>
-                        </div>
-                        <label class="discord-switch"><input type="checkbox" id="perm_fireAssign" onchange="updateSelectedRolePerm('fireAssign', this.checked)"><span class="discord-slider"></span></label>
+                </div>
+
+                <div style="border: 1px solid var(--border-color); padding: 15px; border-radius: 6px; background: #060b07;">
+                    <h4 style="color: var(--danger); margin-bottom: 10px;">❌ قرار الفصل الفوري من الخدمة</h4>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">اختر الموظف النشط من قائمة الموظفين ليتم إسقاط صلاحياته وفصله فورا من قاعدة البيانات:</p>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="fireEmployeeSelect" class="form-control"></select>
+                        <button class="btn btn-danger" style="width: auto; white-space: nowrap;" onclick="processFireEmployee()">تنفيذ قرار الفصل ❌</button>
                     </div>
                 </div>
             </div>
-        </div>
+            <!-- 🛡 واجهة أدوار وصلاحيات الرتب ديسكورد ستايل كاملة -->
+            <div id="rolesPanel" class="panel-view">
+                <h3>🛡 لوحة تعديل الأدوار وإذن صلاحيات الرتب (Discord Style)</h3>
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <input type="text" id="roleInput" class="form-control" placeholder="أدخل اسم الرتبة الجديدة لإنشائها...">
+                    <button class="btn" style="width: auto; white-space: nowrap;" onclick="addNewRole()">➕ إنشاء رتبة</button>
+                </div>
 
-        <div class="panel-section">
-            <h3>📂 دليل معرفات الزوار والمستخدمين (Directory)</h3>
-            <button class="btn" style="background: #16a085; color: #fff; margin-bottom: 15px; width: auto;" onclick="toggleUsersDirectory()">🔄 استعراض كشف المعرفات 👤</button>
-            <div id="usersDirectoryList" style="display: none; max-height: 200px; overflow-y: auto;"></div>
-        </div>
-
-        <div class="panel-section">
-            <h3>👥 توظيف وتعيين الموظفين الجدد</h3>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <input type="text" id="empIdInput" class="form-control" placeholder="ID الزائر...">
-                <select id="empRoleSelect" class="form-control"></select>
-                <button class="btn" style="width: auto; white-space: nowrap;" onclick="assignEmployee()">تفعيل التعيين 💼</button>
+                <div class="discord-roles-container">
+                    <div class="discord-roles-sidebar" id="discordRolesSidebar"></div>
+                    <div class="discord-roles-main" id="discordRolesMain" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                            <h4 id="selectedRoleName" style="color: #fff; font-size: 17px;">الرتبة</h4>
+                            <div>
+                                <span style="font-size: 12px; color: #cd9b32; margin-left: 10px; font-weight: bold;" id="selectedRolePass">🔑 الباسورد: </span>
+                                <button onclick="changeSelectedRolePassword()" style="background: #cd9b32; border:none; color:#000; padding:3px 8px; border-radius:3px; font-size:11px; cursor:pointer; font-weight:bold;">تعديل</button>
+                            </div>
+                        </div>
+                        
+                        <div class="discord-permission-row">
+                            <div>
+                                <div style="font-weight: bold; color: #fff;">رؤية تذاكر الشكاوى واستقبال الردود</div>
+                                <div style="font-size: 12px; color: #b9bbbe;">تمنح الرتبة الحق في استعراض ومراجعة شكاوى ومشاكل المستخدمين للرد عليها.</div>
+                            </div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_viewComplaints" onchange="updateSelectedRolePerm('viewComplaints', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div>
+                                <div style="font-weight: bold; color: #fff;">صلاحيات التحكم بقرارات المبيعات والطلب</div>
+                                <div style="font-size: 12px; color: #b9bbbe;">تسمح لصاحبها بمشاهدة وفحص بيانات هواتف وطلبات العملاء المشترين للأنظمة.</div>
+                            </div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_editPrices" onchange="updateSelectedRolePerm('editPrices', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                        <div class="discord-permission-row">
+                            <div>
+                                <div style="font-weight: bold; color: #fff;">إدارة التعيين والفصل الكلي لشؤون الموظفين</div>
+                                <div style="font-size: 12px; color: #b9bbbe;">أعلى إذن إداري يسمح بتوظيف طاقم عمل جديد أو إنهاء وفصل أي حساب.</div>
+                            </div>
+                            <label class="discord-switch"><input type="checkbox" id="perm_fireAssign" onchange="updateSelectedRolePerm('fireAssign', this.checked)"><span class="discord-slider"></span></label>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="empList"></div>
-        </div>
+            <!-- 📊 واجهة كتابة وتدوين بيانات الموظفين وتنزيل الملف والـ LOG السري للبوابة -->
+            <div id="staffDataPanel" class="panel-section panel-view">
+                <h3>📊 ملف كشوف وبيانات موظفي المتجر (يدوياً بالكامل)</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; background: #060b07; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; flex-wrap: wrap; gap: 10px;">
+                    <span style="font-weight: bold; display: flex; align-items: center; font-size: 14px;">🎛 أدوات السجل:</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn" style="background: #16a085; color: #fff; padding: 6px 12px; font-size: 13px;" onclick="openManualAddForm()">➕ إضافة بيانات موظف</button>
+                        <button class="btn btn-danger" style="padding: 6px 12px; font-size: 13px;" onclick="clearAllStaffRecordsData()">❌ مسح كلي للكشف</button>
+                        <button class="btn" style="background: #2980b9; color: #fff; padding: 6px 12px; font-size: 13px;" onclick="downloadStaffDataBackupFile()">📥 تنزيل البيانات على جهازي</button>
+                    </div>
+                </div>
 
-        <div class="panel-section">
-            <h3>📬 كشف تذاكر الشكاوى المستلمة من العملاء</h3>
-            <div id="adminComplaintsList"></div>
+                <div id="manualAddStaffForm" style="display: none; border: 1px solid var(--primary); padding: 15px; border-radius: 6px; margin-bottom: 20px; background: #0b130e;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">📝 كتابة بيانات الموظف في السجل</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="field_staffName" class="form-control" placeholder="اسم الموظف يدوي...">
+                        <input type="text" id="field_staffId" class="form-control" placeholder="معرّف الـ ID يدوي...">
+                        <input type="email" id="field_staffEmail" class="form-control" placeholder="البريد الإلكتروني يدوي...">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="field_staffRole" class="form-control"></select>
+                        <button class="btn" style="width: auto;" onclick="saveManualStaffRecordRow()">حفظ وتدوين في السجل 💾</button>
+                        <button class="btn btn-danger" style="width: auto;" onclick="document.getElementById('manualAddStaffForm').style.display='none'">إلغاء</button>
+                    </div>
+                </div>
+                <div id="staffRecordsDataTableContainer"></div>
+            </div>
+
+            <div id="logPanel" class="panel-view">
+                <h3>📋 سجل عمليات الدخول والتحقق الآمن (System LOG)</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">كشف شامل لمراقبة هويات وإيميلات كل من نجح في فك قفل النظام وتسجيل دخوله للوحة:</p>
+                <div id="systemLogListContainer" style="max-height: 400px; overflow-y: auto; background: #060b07; border: 1px solid var(--border-color); padding: 10px; border-radius: 6px;"></div>
+            </div>
+
         </div>
     </div>
 
     <footer>
-        حقوق الطبع محفوظة لـ KW STORE © ٢٠٢٦ - نظام الموظفين المطوّر بالكامل مدمج الحماية
+        حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - تصميم وتطوير النظام المتكامل مدمج الحماية والأدوار
     </footer>
 
+    <!-- بدء قسم المحرك الـ JavaScript المدمج الصارم لمنع مشاكل الكاش والربط -->
     <script>
         var selectedRoleId = null;
 
@@ -186,15 +261,17 @@
         function initVisitorIdentity() {
             var myId = localStorage.getItem("kw_my_id");
             var myName = localStorage.getItem("kw_my_name");
+            var myEmail = localStorage.getItem("kw_my_email") || "youssef@kwstore.com";
             
             if (!myId) {
                 myId = Math.floor(Math.random() * (1000 - 100 + 1) + 100).toString();
                 myName = "موظف_" + myId;
                 localStorage.setItem("kw_my_id", myId);
                 localStorage.setItem("kw_my_name", myName);
+                localStorage.setItem("kw_my_email", myEmail);
                 
                 var dir = get("kw_visitors_directory", []);
-                dir.push({ id: myId, name: myName });
+                dir.push({ id: myId, name: myName, email: myEmail });
                 set("kw_visitors_directory", dir);
             }
             
@@ -204,50 +281,64 @@
             }
         }
 
-        // تم إعادة بناء دالة الفحص وحل مشكلة الـ value للتمرير التلقائي الفوري والآمن للمطور
+        function switchPanel(panelId, btnElement) {
+            var panels = document.querySelectorAll('.panel-view');
+            panels.forEach(function(p) { p.classList.remove('active'); });
+            
+            var targetPanel = document.getElementById(panelId);
+            if(targetPanel) targetPanel.classList.add('active');
+            
+            var buttons = document.querySelectorAll('.sidebar-btn');
+            buttons.forEach(function(b) { b.classList.remove('active'); });
+            if(btnElement) btnElement.classList.add('active');
+        }
         function handleStaffAuth(e) {
-            if(e) e.preventDefault();
+            e.preventDefault();
             
-            var roleSelectEl = document.getElementById("loginRoleSelect");
-            var identityInputEl = document.getElementById("authIdentity");
-            var passwordInputEl = document.getElementById("authPassword");
+            var selectedRole = document.getElementById("loginRoleSelect").value;
+            var typedIdentity = document.getElementById("authIdentity").value.trim();
+            var typedPassword = document.getElementById("authPassword").value;
             
-            var selectedRole = roleSelectEl ? roleSelectEl.value : "مدير العام";
-            var typedIdentity = identityInputEl ? identityInputEl.value.trim() : "";
-            var typedPassword = passwordInputEl ? passwordInputEl.value : "";
+            var myId = localStorage.getItem("kw_my_id");
+            var myName = localStorage.getItem("kw_my_name");
+            var myEmail = localStorage.getItem("kw_my_email");
             
-            // 🛡️ تفادي قيم الـ Null؛ إذا تركت الخانات فارغة يدخلك فورا كمدير ومطور النظام
-            if (!typedIdentity || !typedPassword) {
-                typedIdentity = "100";
-                typedPassword = "admin2026";
+            // 🛡️ فحص المالك والمطور الرئيسي يوسف لعام 2026 فورا
+            if (selectedRole === "مدير العام" && 
+                (typedIdentity === "100" || typedIdentity === "admin@kwstore.com" || typedIdentity === myId) && 
+                (typedPassword === "admin2026" || typedPassword === "youssef2026")) {
+                
+                localStorage.setItem("kw_isAdmin", "true");
+                pushToSystemLog("admin@kwstore.com", "Youssef Developer", "مدير العام");
+                unlockDashboard("Youssef Developer (مدير العام)");
+                return;
             }
             
-            if (selectedRole === "مدير العام" && (typedIdentity === "100" || typedIdentity === localStorage.getItem("kw_my_id"))) {
-                if (typedPassword === "admin2026" || typedPassword === "youssef2026") {
-                    localStorage.setItem("kw_isAdmin", "true");
-                    unlockDashboard("Youssef Developer (مدير العام)");
-                    return;
-                }
-            }
+            var emps = get("kw_employees", []);
+            var matchedEmp = emps.find(function(emp) {
+                return (emp.id.toString() === typedIdentity || emp.email === typedIdentity) && emp.role === selectedRole;
+            });
             
             var roles = get("kw_roles_v3", []);
             var matchedRole = roles.find(function(r) { return r.name === selectedRole && r.password === typedPassword; });
             
-            if (matchedRole) {
+            if (matchedRole && (matchedEmp || typedIdentity === myId)) {
+                var finalName = matchedEmp ? matchedEmp.name : myName;
+                var finalEmail = matchedEmp ? matchedEmp.email : myEmail;
                 localStorage.setItem("kw_isAdmin", "false");
-                unlockDashboard(localStorage.getItem("kw_my_name") + " (" + matchedRole.name + ")");
-            } else { 
-                // نظام الدخول الاحتياطي للطور عند وجود أي تعليق في كاش جهازك
-                localStorage.setItem("kw_isAdmin", "true");
-                unlockDashboard("Youssef Developer (مدير العام - دخول طوارئ)");
-            } 
+                
+                pushToSystemLog(finalEmail, finalName, matchedRole.name);
+                unlockDashboard(finalName + " (" + matchedRole.name + ")");
+            } else {
+                alert("خطأ: عذراً جدار الحماية يرفض الولوج، كلمة المرور أو المعرف غير متطابق مع رتبتك الوظيفية!");
+            }
         }
 
         function unlockDashboard(userTitle) {
             document.getElementById("lockScreenView").style.display = "none";
-            document.getElementById("dashboardView").style.display = "block";
+            document.getElementById("dashboardView").style.display = "flex";
             document.getElementById("logoutBtn").style.display = "inline-block";
-            document.getElementById("headerUserTitle").innerText = "⚙ الموظف النشط: " + userTitle;
+            document.getElementById("headerUserTitle").innerText = "⚙ المسؤول الحالي: " + userTitle;
             
             renderAll();
             loadDiscordRolesSidebar();
@@ -257,10 +348,15 @@
             localStorage.removeItem("kw_isAdmin");
             location.reload();
         }
+
+        function pushToSystemLog(email, name, role) {
+            var logs = get("kw_system_logs_v1", []);
+            logs.push({ name: name, email: email, role: role, time: new Date().toLocaleString("ar-EG") });
+            set("kw_system_logs_v1", logs);
+        }
         function loadDiscordRolesSidebar() {
             var sidebar = document.getElementById("discordRolesSidebar");
-            if (!sidebar) return;
-            sidebar.innerHTML = "";
+            if (!sidebar) return; sidebar.innerHTML = "";
             var roles = get("kw_roles_v3", []);
             roles.forEach(function(role) {
                 var isActive = selectedRoleId === role.id ? "active" : "";
@@ -270,16 +366,13 @@
         }
 
         function selectDiscordRole(roleId) {
-            selectedRoleId = roleId;
-            loadDiscordRolesSidebar();
+            selectedRoleId = roleId; loadDiscordRolesSidebar();
             var roles = get("kw_roles_v3", []);
             var role = roles.find(function(r) { return r.id.toString() === roleId.toString(); });
             if (!role) return;
-            
             document.getElementById("discordRolesMain").style.display = "block";
             document.getElementById("selectedRoleName").innerText = "🛡 رتبة: " + role.name;
-            document.getElementById("selectedRolePass").innerText = "🔑 الباسورد: " + role.password;
-            
+            document.getElementById("selectedRolePass").innerText = "🔑 الباسورد الحالي: " + role.password;
             document.getElementById("perm_viewComplaints").checked = role.permissions?.viewComplaints || false;
             document.getElementById("perm_editPrices").checked = role.permissions?.editPrices || false;
             document.getElementById("perm_fireAssign").checked = role.permissions?.fireAssign || false;
@@ -289,11 +382,7 @@
             if (!selectedRoleId) return;
             var roles = get("kw_roles_v3", []);
             var role = roles.find(function(r) { return r.id.toString() === selectedRoleId.toString(); });
-            if (role) {
-                if (!role.permissions) role.permissions = {};
-                role.permissions[permName] = isChecked;
-                set("kw_roles_v3", roles);
-            }
+            if (role) { if (!role.permissions) role.permissions = {}; role.permissions[permName] = isChecked; set("kw_roles_v3", roles); }
         }
 
         function changeSelectedRolePassword() {
@@ -301,78 +390,103 @@
             var roles = get("kw_roles_v3", []);
             var role = roles.find(function(r) { return r.id.toString() === selectedRoleId.toString(); });
             if (role) {
-                var newPass = prompt("أدخل الباسورد الجديد:", role.password);
-                if (newPass && newPass.trim() !== "") {
-                    role.password = newPass.trim();
-                    set("kw_roles_v3", roles);
-                    selectDiscordRole(selectedRoleId);
-                }
+                var newPass = prompt("أدخل كلمة المرور الجديدة لهذه الرتبة:", role.password);
+                if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); set("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); }
             }
-        }
-        function addNewRole() {
-            var name = document.getElementById("roleInput").value.trim();
-            if (!name) return;
-            var r = get("kw_roles_v3", []);
-            r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, editPrices: false, fireAssign: false } });
-            set("kw_roles_v3", r);
-            document.getElementById("roleInput").value = "";
-            renderAll();
-            loadDiscordRolesSidebar();
         }
 
-        function editUserIdentity(oldId) {
-            var dir = get("kw_visitors_directory", []);
-            var idx = dir.findIndex(function(u) { return u.id.toString() === oldId.toString(); });
-            if (idx === -1) return;
-            var newName = prompt("الاسم الجديد:", dir[idx].name);
-            var newId = prompt("ID الجديد:", dir[idx].id);
-            if (newName && newId) {
-                dir[idx].name = newName; dir[idx].id = newId;
-                set("kw_visitors_directory", dir);
-                document.getElementById("usersDirectoryList").style.display = "none";
-                toggleUsersDirectory();
-            }
+        function addNewRole() {
+            var name = document.getElementById("roleInput").value.trim(); if (!name) return;
+            var r = get("kw_roles_v3", []);
+            r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, editPrices: false, fireAssign: false } });
+            set("kw_roles_v3", r); document.getElementById("roleInput").value = ""; renderAll(); loadDiscordRolesSidebar();
+        }
+
+        function processComplaintReply(complaintId) {
+            var complaints = get("kw_complaints_v1", []);
+            var idx = complaints.findIndex(function(c) { return c.id === complaintId; });
+            if(idx === -1) return;
+            var replyText = prompt("اكتب رد المسؤول على التذكرة ليتم إرجاعه للعميل:", complaints[idx].reply || "");
+            if(replyText && replyText.trim() !== "") { complaints[idx].reply = replyText.trim(); set("kw_complaints_v1", complaints); alert("تم إرسال وحفظ الرد الفني بنجاح."); renderAll(); }
+        }
+        function openManualAddForm() { document.getElementById("manualAddStaffForm").style.display = "block"; }
+        function saveManualStaffRecordRow() {
+            var name = document.getElementById("field_staffName").value.trim();
+            var id = document.getElementById("field_staffId").value.trim();
+            var email = document.getElementById("field_staffEmail").value.trim();
+            var role = document.getElementById("field_staffRole").value;
+            if(!name || !id || !email) { alert("يرجى كتابة كافة البيانات يدوياً أولاً!"); return; }
+            var emps = get("kw_employees", []); emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") });
+            set("kw_employees", emps); document.getElementById("manualAddStaffForm").style.display = "none"; renderAll(); alert("تم تدوين الموظف بنجاح.");
+        }
+
+        function clearAllStaffRecordsData() { if(confirm("هل أنت متأكد من مسح كشف الموظفين بالكامل؟")) { set("kw_employees", []); renderAll(); } }
+        
+        function downloadStaffDataBackupFile() {
+            var emps = get("kw_employees", []);
+            var textContent = "📊 كشف بيانات موظفي متجر KW STORE لعام 2026\n=========================================\n";
+            emps.forEach(function(e, i) { textContent += (i+1) + ". الاسم: " + e.name + " | المعرّف: " + e.id + " | الإيميل: " + e.email + " | الرتبة: " + e.role + "\n"; });
+            var blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+            var link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kw_staff_records_data_2026.txt"; link.click();
+        }
+
+        function processHireEmployee() {
+            var name = document.getElementById("hireName").value.trim();
+            var id = document.getElementById("hireId").value.trim();
+            var email = document.getElementById("hireEmail").value.trim();
+            var role = document.getElementById("hireRoleSelect").value;
+            if(!name || !id || !email) { alert("يرجى ملء كافة بيانات قرار التعيين!"); return; }
+            var emps = get("kw_employees", []); emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") });
+            set("kw_employees", emps); renderAll(); alert("تم تفعيل وتوقيع قرار التعيين بنجاح.");
+        }
+
+        function processFireEmployee() {
+            var id = document.getElementById("fireEmployeeSelect").value; if(!id) return;
+            var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e.id.toString() !== id.toString(); });
+            set("kw_employees", emps); renderAll(); alert("تم تنفيذ قرار الفصل فورا بنجاح.");
         }
 
         function toggleUsersDirectory() {
-            var div = document.getElementById("usersDirectoryList");
-            if (!div) return;
+            var div = document.getElementById("usersDirectoryList"); if (!div) return;
             if (div.style.display === "none" || div.style.display === "") {
-                div.style.display = "block"; div.innerHTML = "";
-                var dir = get("kw_visitors_directory", []);
-                dir.forEach(function(u) {
-                    div.innerHTML += '<div class="data-item"><span>👤 ' + u.name + ' (ID: ' + u.id + ')</span>' +
-                        '📝 تعديل</button></div>';
-                });
+                div.style.display = "block"; div.innerHTML = ""; var dir = get("kw_visitors_directory", []);
+                dir.forEach(function(u) { div.innerHTML += '<div class="data-list-item">👤 الاسم: ' + u.name + ' | 🆔 الـ ID: ' + u.id + '</div>'; });
             } else { div.style.display = "none"; }
         }
 
         function renderAll() {
-            var sel = document.getElementById("empRoleSelect");
-            var eList = document.getElementById("empList");
-            var compList = document.getElementById("adminComplaintsList");
-            if (sel) {
-                sel.innerHTML = '<option value="مدير العام">مدير العام</option>';
-                var r = get("kw_roles_v3", []);
-                r.forEach(function(role) { if (role.name !== "مدير العام") sel.innerHTML += '<option value="' + role.name + '">' + role.name + '</option>'; });
+            var hireSel = document.getElementById("hireRoleSelect"); var fieldSel = document.getElementById("field_staffRole"); var fireSel = document.getElementById("fireEmployeeSelect");
+            var compCont = document.getElementById("complaintsListContainer"); var ordCont = document.getElementById("ordersListContainer");
+            var tableCont = document.getElementById("staffRecordsDataTableContainer"); var logCont = document.getElementById("systemLogListContainer");
+            var roles = get("kw_roles_v3", []); var emps = get("kw_employees", []);
+            
+            if(hireSel) { hireSel.innerHTML = ""; roles.forEach(function(r) { hireSel.innerHTML += '<option value="'+r.name+'">'+r.name+'</option>'; }); }
+            if(fieldSel) { fieldSel.innerHTML = ""; roles.forEach(function(r) { fieldSel.innerHTML += '<option value="'+r.name+'">'+r.name+'</option>'; }); }
+            if(fireSel) { fireSel.innerHTML = ""; emps.forEach(function(e) { fireSel.innerHTML += '<option value="'+e.id+'">👤 '+e.name+' (ID: '+e.id+')</option>'; }); }
+            
+            if(compCont) {
+                compCont.innerHTML = ""; var complaints = get("kw_complaints_v1", []);
+                if(complaints.length === 0) { compCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد شكاوى مستلمة حالياً.</div>'; }
+                else {
+                    complaints.forEach(function(c) {
+                        compCont.innerHTML += '<div class="data-list-item"><div>📅 وقت التذكرة: ' + c.date + ' | 👤 اسم العميل: ' + c.senderName + ' (ID: ' + c.senderId + ')</div>' +
+                            '<div style="color:#fff; margin-top:5px; font-weight:bold;">⚠️ الشكوى: ' + c.message + '</div>' +
+                            '<div style="margin-top:8px; color:var(--primary);">✍️ الرد الفني الحالي: ' + (c.reply || "لا يوجد رد بعد") + '</div>' +
+                            '<button class="btn" style="width:auto; margin-top:10px; padding:4px 10px; font-size:12px;" onclick="processComplaintReply(\''+c.id+'\')">✉️ اضغط على التذكرة للرد وإرجاعها</button></div>';
+                    });
+                }
             }
-            if (eList) { eList.innerHTML = ""; var emps = get("kw_employees", []); emps.forEach(function(e) { eList.innerHTML += '<div class="data-item"><span>👤 ' + e.name + ' (ID: ' + e.id + ')</span><span>الرتبة: ' + e.role + '</span></div>'; }); }
-            if (compList) { compList.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px;">لا توجد شكاوى حالياً.</div>'; }
-        }
-
-        function assignEmployee() {
-            var id = document.getElementById("empIdInput").value.trim();
-            var role = document.getElementById("empRoleSelect").value;
-            if (!id) return;
-            var dir = get("kw_visitors_directory", []);
-            var user = dir.find(function(u) { return u.id.toString() === id.toString(); });
-            if (!user) { alert("المعرف غير مسجل!"); return; }
-            var emps = get("kw_employees", []);
-            var exist = emps.find(function(e) { return e.id.toString() === id.toString(); });
-            if (exist) { exist.role = role; } else { emps.push({ id: id, name: user.name, role: role }); }
-            set("kw_employees", emps);
-            document.getElementById("empIdInput").value = "";
-            renderAll(); alert("تم التوظيف.");
+            if(ordCont) { ordCont.innerHTML = '<div class="data-list-item" style="color:var(--text-muted);">لا توجد طلبات شراء مسجلة حالياً من المتجر.</div>'; }
+            if(tableCont) {
+                tableCont.innerHTML = "";
+                if(emps.length === 0) { tableCont.innerHTML = '<div>كشف الموظفين فارغ.</div>'; }
+                else { emps.forEach(function(e) { tableCont.innerHTML += '<div class="data-list-item flex-box"><span>👤 اسم الموظف: ' + e.name + ' | 🆔 الـ ID: ' + e.id + ' | 📧 الإيميل: ' + e.email + '</span><span class="badge">' + e.role + '</span></div>'; }); }
+            }
+            if(logCont) {
+                logCont.innerHTML = ""; var logs = get("kw_system_logs_v1", []);
+                if(logs.length === 0) { logCont.innerHTML = '<div>السجل فارغ ولم يتم رصد أي عمليات دخول بعد.</div>'; }
+                else { logs.slice().reverse().forEach(function(l) { logCont.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:6px 0; font-size:13px; color:#ccc;">📅 ['+l.time+'] - فك القفل بنجاح لـ 👤 الاسم: <span style="color:var(--primary)">'+l.name+'</span> | 📧 البريد: <span>'+l.email+'</span> | 🛡️ الرتبة: <span style="color:#cd9b32">'+l.role+'</span></div>'; }); }
+            }
         }
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -384,19 +498,12 @@
                     { id: 3, name: "دعم فني مستوى 1", password: "tech2026", permissions: { viewComplaints: true, editPrices: false, fireAssign: false } }
                 ]);
             }
+            if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "100", name: "Youssef Developer", email: "admin@kwstore.com", role: "مدير العام", date: "2026/10/10" }]); }
             var select = document.getElementById("loginRoleSelect");
             if (select) {
-                select.innerHTML = "";
-                var roles = get("kw_roles_v3", []);
+                select.innerHTML = ""; var roles = get("kw_roles_v3", []);
                 roles.forEach(function(r) { select.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; });
             }
-            
-            // ربط صارم ومباشر ومؤمن للزر البرمجي لقتل أي خطأ في الكونسول فورا
-            var btnEl = document.getElementById("submitAuthBtn");
-            if(btnEl) {
-                btnEl.addEventListener("click", handleStaffAuth);
-            }
-            
             renderAll();
         });
     </script>
