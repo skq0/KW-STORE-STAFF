@@ -305,7 +305,7 @@
         حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام المراقبة السيبرانية والـ LOG المحمي بالمزامنة العالمية الحية عن بعد
     </footer>
     <script>
-        // ربط وحقن خوادم قنوات البث السحابي المفتوح من جوجل لعام 2026 لتفادي حظر التبويبات المتصفح محلياً
+        // 🔗 ربط خادم جوجل السحابي الحقيقي المفتوح لعام 2026 لربط كافة أجهزة طاقم العمل عن بعد حياً فوراً
         var FIREBASE_URL = "https://firebaseio.com";
         var selectedRoleId = null;
         var currentUserPermissions = {}; 
@@ -323,18 +323,18 @@
             localStorage.setItem(k, JSON.stringify(v)); 
         }
         function broadcastCloudDataChange(key, value) {
-            // حفظ محلي آمن لحماية البيانات عند انقطاع الاتصال
+            // حفظ محلي فوري كخط دفاع احتياطي لحماية السجلات
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // رفع ومزامنة فورية لخوادم جوجل السحابية حياً في نفس الثانية لبقية الأجهزة
+            // بث ورفع فوري لخادم جوجل السحابي لتحديث بقية المتصفحات والأجهزة بنفس الثانية عبر الإنترنت
             fetch(`${FIREBASE_URL}${key}.json`, {
                 method: 'PUT',
                 body: JSON.stringify(value)
-            }).catch(e => console.log("خطأ شبكة مؤقت"));
+            }).catch(e => console.log("خطأ مزامنة"));
         }
 
         function listenToCloudGlobalUpdates() {
-            // الاستماع اللحظي الدائم لكل جهاز لاستقبال التحديثات، الزيارات، والرتب الجديدة حياً وفوراً
+            // استماع وجلب تلقائي ومستمر لربط الرتب المعدلة وزيارات الأجهزة الخارجية حياً على شاشتك
             setInterval(function() {
                 fetch(`${FIREBASE_URL}.json`)
                 .then(res => res.json())
@@ -345,7 +345,7 @@
                         });
                         renderAll();
                     }
-                }).catch(e => console.log("جاري مزامنة السحاب..."));
+                }).catch(e => console.log("جاري الاتصال بالسحاب..."));
             }, 2500);
         }
         function initVisitorIdentity() {
@@ -513,8 +513,8 @@
         function updateSelectedRolePerm(permName, isChecked) { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (!role.permissions) role.permissions = {}; role.permissions[permName] = isChecked; pushToPrivateLog("⚙️ تعديل صلاحيات رتبة", `تعديل الصلاحية [${permName}] إلى (${isChecked})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); } }
         function changeSelectedRolePassword() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { var newPass = prompt("أدخل كلمة المرور الجديدة:", role.password); if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); pushToPrivateLog("🔑 تغيير كلمة مرور رتبة", `تعديل باسورد رتبة (${role.name})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
         function renameSelectedRoleLive() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (role.name === "مدير العام") return; var newName = prompt("أدخل الاسم الجديد:", role.name); if (newName && newName.trim() !== "") { var oldName = role.name; role.name = newName.trim(); pushToPrivateLog("✏️ تعديل اسم رتبة", `تعديل من (${oldName}) إلى (${role.name})`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
-        function processHireEmployee() { var isOwner = localStorage.getItem("kw_isAdmin") === "true"; if (isOwner || currentUserPermissions.fireAssign === true) { var name = document.getElementById("hireName").value.trim(); var id = document.getElementById("hireId").value.trim(); var email = document.getElementById("hireEmail").value.trim(); var role = document.getElementById("hireRoleSelect").value; if(!name || !id || !email) return; var emps = get("kw_employees", []); if(emps.some(function(e) { return e && e.id.toString() === id.toString(); })) return; emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); pushToPrivateLog("💼 توظيف جديد", `تعيين ${name} برتبة ${role}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_employees", emps); alert("تم التوظيف."); } }
-        function processFireEmployee() { var isOwner = localStorage.getItem("kw_isAdmin") === "true"; if (isOwner || currentUserPermissions.fireAssign === true) { var id = document.getElementById("fireEmployeeSelect").value; if(!id) return; if(id.toString() === "100") return; var emps = get("kw_employees", []); var targetEmp = emps.find(function(e) { return e && e.id.toString() === id.toString(); }); var empName = targetEmp ? targetEmp.name : ""; if (confirm(`هل أنت متأكد من فصل الموظف (${empName})؟`)) { emps = emps.filter(function(e) { return e && e.id.toString() !== id.toString(); }); pushToPrivateLog("❌ فصل موظف", `طرد الموظف ${empName}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_employees", emps); alert("تم الفصل."); } } }
+        function processHireEmployee() { var isOwner = localStorage.getItem("kw_isAdmin") === "true"; if (isOwner || currentUserPermissions.fireAssign === true) { var name = document.getElementById("hireName").value.trim(); var id = document.getElementById("hireId").value.trim(); var email = document.getElementById("hireEmail").value.trim(); var role = document.getElementById("hireRoleSelect").value; if(!name || !id || !email) { alert("يرجى ملء كافة البيانات!"); return; } var emps = get("kw_employees", []); if(emps.some(function(e) { return e && e.id.toString() === id.toString(); })) { alert("الـ ID مستخدم بالفعل!"); return; } emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); pushToPrivateLog("💼 توظيف جديد", `تم تعيين ${name} برتبة ${role}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_employees", emps); alert("تم التوظيف بنجاح."); } else { alert("ليس لديك صلاحية!"); } }
+        function processFireEmployee() { var isOwner = localStorage.getItem("kw_isAdmin") === "true"; if (isOwner || currentUserPermissions.fireAssign === true) { var id = document.getElementById("fireEmployeeSelect").value; if(!id) return; if(id.toString() === "100") { alert("لا يمكن طرد المطور!"); return; } var emps = get("kw_employees", []); var targetEmp = emps.find(function(e) { return e && e.id.toString() === id.toString(); }); var empName = targetEmp ? targetEmp.name : ""; if (confirm(`هل أنت متأكد من فصل الموظف (${empName})؟`)) { emps = emps.filter(function(e) { return e && e.id.toString() !== id.toString(); }); pushToPrivateLog("❌ فصل موظف", `تم طرد الموظف ${empName}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_employees", emps); alert("تم تنفيذ الفصل."); } } else { alert("ليس لديك صلاحية!"); } }
         function archiveAndDismissComplaint(complaintId) { var complaints = get("kw_complaints_v1", []); var idx = complaints.findIndex(function(c) { return c && c.id === complaintId; }); if (idx === -1) return; var trashLogs = get("kw_trash_archive_logs_v1", []); trashLogs.push({ type: "تذكرة شكوى 📬", clientName: complaints[idx].senderName, details: complaints[idx].message, handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") }); complaints.splice(idx, 1); broadcastCloudDataChange("kw_trash_archive_logs_v1", trashLogs); broadcastCloudDataChange("kw_complaints_v1", complaints); alert("تم إنهاء الشكوى."); }
         function archiveAndDismissOrder(orderId) { var orders = get("kw_orders_v1", []); var idx = orders.findIndex(function(o) { return o && o.id === orderId; }); if (idx === -1) return; var trashLogs = get("kw_trash_archive_logs_v1", []); trashLogs.push({ type: "طلب شراء نظام 📦", clientName: orders[idx].clientName, details: orders[idx].selectedSystem, handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") }); orders.splice(idx, 1); broadcastCloudDataChange("kw_trash_archive_logs_v1", trashLogs); broadcastCloudDataChange("kw_orders_v1", orders); alert("تم إنهاء الطلب."); }
         function deleteSingleEmployeeRecord(empId, empName, empRole) { var isOwner = localStorage.getItem("kw_isAdmin") === "true"; if (isOwner || currentUserPermissions.fireAssign === true) { if (empId.toString() === "100") return; if (confirm("هل أنت متأكد من حذف الموظف من السجل؟")) { var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e && e.id.toString() !== empId.toString(); }); pushToPrivateLog("📊 مسح موظف من السجل", `حذف الموظف ${empName}`, activeUserSessionName, activeUserSessionId, activeUserSessionRole); broadcastCloudDataChange("kw_employees", emps); alert("تم إزالة بيانات الموظف."); } } }
