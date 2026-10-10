@@ -327,29 +327,29 @@
         function set(k, v) { 
             localStorage.setItem(k, JSON.stringify(v)); 
         }
-        function broadcastCloudDataChange(key, value) {
+                function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // مزامنة سريعة تتخطى CORS الخاص بجيت هاب حياً في نفس الثانية
             fetch(`${FIREBASE_URL}${key}.json`, {
                 method: 'PUT',
                 body: JSON.stringify(value)
             }).catch(e => console.log("خطأ مزامنة"));
         }
 
+        // ⚡ كسر حظر كاش المتصفحات والأجهزة الخارجية لجلب الرتب حياً فورا كل ثانيتين
         function listenToCloudGlobalUpdates() {
-            // محرك الفحص والاتصال اللحظي الدائم لربط المتصفحات حياً وفوراً كل ثانيتين
             setInterval(function() {
-                fetch(`${FIREBASE_URL}.json`)
-                .then(res => res.json())
-                .then(data => {
+                // حقن قيمة زمنية عشوائية تمنع المتصفح من قراءة النسخة القديمة
+                fetch(`${FIREBASE_URL}.json?nocache=${Date.now()}`)
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
                     if (data) {
-                        Object.keys(data).forEach(key => {
+                        Object.keys(data).forEach(function(key) {
                             localStorage.setItem(key, JSON.stringify(data[key]));
                         });
                         renderAll();
                     }
-                }).catch(e => console.log("تحديث سحابي..."));
+                }).catch(e => console.log("جاري كسر حظر الكاش..."));
             }, 2000);
         }
         function initVisitorIdentity() {
