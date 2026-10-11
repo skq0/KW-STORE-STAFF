@@ -106,7 +106,7 @@
                     <label>كلمة مرور الرتبة المحددة:</label>
                     <input type="password" id="authPassword" class="form-control" style="border: 1px solid var(--primary) !important; background: #000000 !important;" placeholder="••••••••" required>
                 </div>
-                <button type="button" class="btn" onclick="handleStaffAuth(null)">تحقق من كلمة المرور والولوج 🛡</button>
+                <button type="button" class="btn" onclick="handleStaffAuth(null)">تحقق من كلمة المرور والولووج 🛡</button>
             </div>
         </div>
     </div>
@@ -290,7 +290,7 @@
         حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام المراقبة السيبرانية والـ LOG المحمي بالمزامنة العالمية الحية عن بعد
     </footer>
     <script>
-        // 🔗 منظومة المزامنة اللحظية بدون توكنات أو أكواد تفعيل وهمية لـ ad1bb
+        // 🔗 منظومة المزامنة اللحظية المباشرة والمصلحة 100% لخادمك ad1bb
         var selectedRoleId = null;
         var currentUserPermissions = {}; 
         var activeUserSessionName = "زائر مجهول"; 
@@ -312,6 +312,7 @@
         function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
+            // رفع فوري مباشر للمسارات السحابية حياً لقاعدة البيانات المحددة
             fetch("https://firebaseio.com" + key + ".json", {
                 method: 'PUT',
                 body: JSON.stringify(value)
@@ -346,11 +347,13 @@
             source.onerror = function() { console.log("إعادة ربط الشريان تلقائياً..."); };
         }
         function initVisitorIdentity() {
-            // الغاء تام لكود التفعيل ورصد الهوية بشكل طبيعي آمن بناء على الجلسة النشطة
             var activeSessionSaved = localStorage.getItem("kw_active_role_session");
             if (activeSessionSaved) {
                 activeUserSessionRole = activeSessionSaved;
-                activeUserSessionName = localStorage.getItem("kw_active_name_session") || "مسؤول الرتبة";
+                activeUserSessionName = localStorage.getItem("kw_active_name_session") || (activeSessionSaved + " Staff");
+            } else {
+                activeUserSessionRole = "غير مسجل";
+                activeUserSessionName = "زائر مجهول";
             }
             refreshActiveUserPermissionsLive();
         }
@@ -363,7 +366,11 @@
             }
             var roles = get("kw_roles_v3", []);
             var myCurrentRoleObj = roles.find(function(r) { return r && r.name === activeUserSessionRole; });
-            if (myCurrentRoleObj) { currentUserPermissions = myCurrentRoleObj.permissions || {}; }
+            if (myCurrentRoleObj) { 
+                currentUserPermissions = myCurrentRoleObj.permissions || {}; 
+            } else {
+                currentUserPermissions = {};
+            }
         }
         function switchPanel(panelId, btnElement) {
             var isOwner = localStorage.getItem("kw_isAdmin") === "true";
@@ -421,71 +428,170 @@
                 pushToSystemLog("staff@kwstore.com", selectedRole + " Staff", selectedRole + " (دخول بالباسورد)");
                 pushToPrivateLog("تسجيل دخول بالرتبة 💼", "تم الدخول بنجاح لرتبة: " + selectedRole, selectedRole + " Staff", selectedRole);
                 unlockDashboard(selectedRole + " Staff (" + selectedRole + ")");
-            } else { alert("خطأ حماية: كلمة المرور المدخلة غير صحيحة للرتبة المحددة!"); }
+            } else { 
+                alert("خطأ حماية: كلمة المرور المدخلة غير صحيحة للرتبة المحددة!"); 
+            }
         }
         function setupActiveSession(name, email, role) { activeUserSessionName = name; activeUserSessionEmail = email; activeUserSessionRole = role; }
         function unlockDashboard(userTitle) { document.getElementById("lockScreenView").style.display = "none"; document.getElementById("dashboardView").style.display = "flex"; document.getElementById("logoutBtn").style.display = "inline-block"; initVisitorIdentity(); renderAll(); loadDiscordRolesSidebar(); }
         function processStaffLogoutLive() { pushToSystemLog(activeUserSessionEmail, activeUserSessionName, "تسجيل خروج 🚪"); localStorage.removeItem("kw_isAdmin"); localStorage.removeItem("kw_active_role_session"); localStorage.removeItem("kw_active_name_session"); location.reload(); }
-        function addNewRole() { 
-            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.addDeleteRoles) {
-                var name = document.getElementById("roleInput").value.trim(); if (!name) return; 
-                var r = get("kw_roles_v3", []); 
-                r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, deleteAccessLog: false, viewTrashLog: false, deleteTrashLog: false, addDeleteRoles: false, editRolePerms: false, viewPrivateLog: false, deletePrivateLogHistory: false, editFiles: false, devMode: false, viewEditPassword: false } });
-                broadcastCloudDataChange("kw_roles_v3", r); document.getElementById("roleInput").value = ""; loadDiscordRolesSidebar(); 
-            }
-        }
-        function deleteDiscordRole(roleId, roleName) {
-            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.addDeleteRoles) {
-                if (roleName === "Founder") return;
-                if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(roleName)) { alert("🚨 منع الهرم الوظيفي!"); return; }
-                if (confirm("هل أنت متأكد؟")) {
-                    var roles = get("kw_roles_v3", []); roles = roles.filter(function(r) { return r && r.id.toString() !== roleId.toString(); }); 
-                    broadcastCloudDataChange("kw_roles_v3", roles); document.getElementById("discordRolesMain").style.display = "none"; loadDiscordRolesSidebar();
-                }
-            }
-        }
-        function updateSelectedRolePerm(permName, isChecked) { 
-            if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
-            if (role) {
-                if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) { alert("🚨 خرق هرمي!"); renderAll(); return; }
-                if (!role.permissions) role.permissions = {}; role.permissions[permName] = isChecked; broadcastCloudDataChange("kw_roles_v3", roles); 
-            } 
-        }
-        function changeSelectedRolePassword() { 
-            if (!selectedRoleId || (!localStorage.getItem("kw_isAdmin") === "true" && !currentUserPermissions.viewEditPassword)) return;
-            var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
-            if (role && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(role.name))) {
-                var newPass = prompt("أدخل كلمة المرور الجديدة للرتبة:"); if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); }
-            }
-        }
-        function renameSelectedRoleLive() { 
-            if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
-            if (role && role.name !== "Founder" && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(role.name))) {
-                var newName = prompt("اسم الرتبة الجديد:", role.name); if (newName && newName.trim() !== "") { role.name = newName.trim(); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); }
-            }
-        }
+        function pushToSystemLog(email, name, role) { var logs = get("kw_system_logs_v1", []); logs.push({ name: name, email: email, role: role, time: new Date().toLocaleString("ar-EG") }); broadcastCloudDataChange("kw_system_logs_v1", logs); }
+        function pushToPrivateLog(actionTitle, description, executorName, executorRole) { var privateLogs = get("kw_private_cyber_logs_v1", []); privateLogs.push({ id: "priv_" + Date.now(), actionTitle: actionTitle, description: description, executorName: executorName || activeUserSessionName, executorId: "Direct", executorRole: executorRole || activeUserSessionRole, time: new Date().toLocaleTimeString("ar-EG"), date: new Date().toLocaleDateString("ar-EG") }); broadcastCloudDataChange("kw_private_cyber_logs_v1", privateLogs); }
+        function togglePrivateLogDropdown(element) { element.parentElement.classList.toggle('open'); }
+        function clearPrivateLogHistoryLive() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.deletePrivateLogHistory) { if (confirm("🚨 هل أنت متأكد؟")) { broadcastCloudDataChange("kw_private_cyber_logs_v1", []); } } }
+        function clearSystemAccessLogLive() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.deleteAccessLog) { if (confirm("هل أنت متأكد؟")) { broadcastCloudDataChange("kw_system_logs_v1", []); } } }
+        function clearArchiveTrashLogLive() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.deleteTrashLog) { if (confirm("هل أنت متأكد؟")) { broadcastCloudDataChange("kw_trash_archive_logs_v1", []); } } }
         function archiveAndDismissComplaint(id) { var complaints = get("kw_complaints_v1", []); var idx = complaints.findIndex(function(c) { return c && c.id === id; }); if (idx !== -1) { var trash = get("kw_trash_archive_logs_v1", []); trash.push({ type: "تذكرة شكوى 📬", clientName: complaints[idx].senderName, details: complaints[idx].message, handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") }); complaints.splice(idx, 1); broadcastCloudDataChange("kw_trash_archive_logs_v1", trash); broadcastCloudDataChange("kw_complaints_v1", complaints); alert("تم إنهاء الشكوى بنجاح وأرشفتها."); } }
         function archiveAndDismissOrder(id) { var orders = get("kw_orders_v1", []); var idx = orders.findIndex(function(o) { return o && o.id === id; }); if (idx !== -1) { var trash = get("kw_trash_archive_logs_v1", []); trash.push({ type: "طلب شراء نظام 📦", clientName: orders[idx].clientName, details: orders[idx].selectedSystem, handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") }); orders.splice(idx, 1); broadcastCloudDataChange("kw_trash_archive_logs_v1", trash); broadcastCloudDataChange("kw_orders_v1", orders); alert("تم إنهاء الطلب بنجاح وأرشمته."); } }
-        function deleteSingleEmployeeRecord(token, name, role) { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { if (confirm("هل أنت متأكد من مسح تدوينة هذا الموظف؟")) { var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e && e.id.toString() !== token.toString(); }); broadcastCloudDataChange("kw_employees", emps); } } }
-        function loadDiscordRolesSidebar() { var sidebar = document.getElementById("discordRolesSidebar"); if (!sidebar) return; sidebar.innerHTML = ""; var roles = get("kw_roles_v3", []); roles.forEach(function(role) { if(role) { var isActive = selectedRoleId === role.id ? "active" : ""; sidebar.innerHTML += '<div class="discord-role-item ' + isActive + '" onclick="selectDiscordRole(\'' + role.id + '\')"><span>🟢 ' + role.name + '</span><button class="btn-danger" style="padding:2px 6px; font-size:10px; margin-right:5px;" onclick="event.stopPropagation(); deleteDiscordRole(\''+role.id+'\', \''+role.name+'\')">حذف 🗑️</button></div>'; } }); }
-        function selectDiscordRole(roleId) { 
-            selectedRoleId = roleId; loadDiscordRolesSidebar(); var isOwner = localStorage.getItem("kw_isAdmin") === "true"; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === roleId.toString(); }); if (!role) return; 
-            if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) {
-                document.getElementById("discordRolesMain").style.display = "block"; document.getElementById("selectedRoleName").innerHTML = "🛡 رتبة: " + role.name + " [🔒 محمية كلياً]"; document.getElementById("selectedRolePass").innerText = "🔑 الباسورد الحالي: [🔒 محجوب]"; document.getElementById("passwordEditAreaContainer").innerHTML = "";
-                var inputs = document.querySelectorAll("#discordRolesMain input[type='checkbox']"); if(inputs) { inputs.forEach(function(i) { i.checked = false; i.disabled = true; }); } return;
-            }
-            var inputs = document.querySelectorAll("#discordRolesMain input[type='checkbox']"); if(inputs) { inputs.forEach(function(i) { i.disabled = false; }); }
-            document.getElementById("discordRolesMain").style.display = "block"; document.getElementById("selectedRoleName").innerHTML = "🛡 رتبة: " + role.name + " <button onclick='renameSelectedRoleLive()'>✏️ تعديل الاسم</button>"; 
-            document.getElementById("selectedRolePass").innerText = ""; document.getElementById("passwordEditAreaContainer").innerHTML = '<button onclick="verifyAndOpenPasswordSecurely()" style="background:#cd9b32; border:none; color:#000; padding:4px 10px; border-radius:4px; font-size:12px; cursor:pointer; font-weight:bold;">عرض وتعديل الباسورد الإداري 🔑</button>';
-            document.getElementById("perm_viewComplaints").checked = role.permissions?.viewComplaints || false; document.getElementById("perm_viewOrders").checked = role.permissions?.viewOrders || false; document.getElementById("perm_fireAssign").checked = role.permissions?.fireAssign || false; document.getElementById("perm_viewStaffData").checked = role.permissions?.viewStaffData || false; document.getElementById("perm_viewLog").checked = role.permissions?.viewLog || false; document.getElementById("perm_deleteAccessLog").checked = role.permissions?.deleteAccessLog || false; document.getElementById("perm_viewTrashLog").checked = role.permissions?.viewTrashLog || false; document.getElementById("perm_deleteTrashLog").checked = role.permissions?.deleteTrashLog || false; document.getElementById("perm_addDeleteRoles").checked = role.permissions?.addDeleteRoles || false; document.getElementById("perm_editRolePerms").checked = role.permissions?.editRolePerms || false; document.getElementById("perm_viewEditPassword").checked = role.permissions?.viewEditPassword || false; document.getElementById("perm_viewPrivateLog").checked = role.permissions?.viewPrivateLog || false; document.getElementById("perm_deletePrivateLogHistory").checked = role.permissions?.deletePrivateLogHistory || false; document.getElementById("perm_editFiles").checked = role.permissions?.editFiles || false; document.getElementById("perm_devMode").checked = role.permissions?.devMode || false; 
+        function addNewRole() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.addDeleteRoles) { var name = document.getElementById("roleInput").value.trim(); if (!name) return; var r = get("kw_roles_v3", []); r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, deleteAccessLog: false, viewTrashLog: false, deleteTrashLog: false, addDeleteRoles: false, editRolePerms: false, viewPrivateLog: false, deletePrivateLogHistory: false, editFiles: false, devMode: false, viewEditPassword: false } }); broadcastCloudDataChange("kw_roles_v3", r); document.getElementById("roleInput").value = ""; loadDiscordRolesSidebar(); } }
+        function deleteDiscordRole(roleId, roleName) { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.addDeleteRoles) { if (roleName === "Founder") return; if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(roleName)) { alert("🚨 منع الهرم الوظيفي!"); return; } if (confirm("هل أنت متأكد؟")) { var roles = get("kw_roles_v3", []); roles = roles.filter(function(r) { return r && r.id.toString() !== roleId.toString(); }); broadcastCloudDataChange("kw_roles_v3", roles); document.getElementById("discordRolesMain").style.display = "none"; loadDiscordRolesSidebar(); } } }
+        function updateSelectedRolePerm(permName, isChecked) { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) { alert("🚨 خرق هرمي!"); renderAll(); return; } if (!role.permissions) role.permissions = {}; role.permissions[permName] = isChecked; broadcastCloudDataChange("kw_roles_v3", roles); } }
+        function changeSelectedRolePassword() { if (!selectedRoleId || (!localStorage.getItem("kw_isAdmin") === "true" && !currentUserPermissions.viewEditPassword)) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(role.name))) { var newPass = prompt("أدخل كلمة المرور الجديدة للرتبة:"); if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
+        function renameSelectedRoleLive() { if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role && role.name !== "Founder" && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(role.name))) { var newName = prompt("اسم الرتبة الجديد:", role.name); if (newName && newName.trim() !== "") { role.name = newName.trim(); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } }
+        function deleteSingleEmployeeRecord(token, name, role) { 
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { 
+                if (confirm("هل أنت متأكد من مسح تدوينة هذا الموظف؟")) { 
+                    var emps = get("kw_employees", []); 
+                    emps = emps.filter(function(e) { return e && e.id.toString() !== token.toString(); }); 
+                    broadcastCloudDataChange("kw_employees", emps); 
+                } 
+            } 
         }
-        function verifyAndOpenPasswordSecurely() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.viewEditPassword) { var check = prompt("أدخل الباسورد الإداري للتعديل:"); if (check === "KW.171997.171997.KW") { var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); if (role) { var n = prompt("🔓 تم التحقق.\nالباسورد الحالي [" + role.password + "]\nاكتب الجديد:"); if (n && n.trim() !== "") { role.password = n.trim(); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); } } } else { alert("خاطئ!"); } } }
-        function processComplaintReply(id) { var complaints = get("kw_complaints_v1", []); var idx = complaints.findIndex(function(c) { return c && c.id === id; }); if(idx !== -1) { var r = prompt("اكتب رد المسؤول:"); if(r && r.trim() !== "") { complaints[idx].reply = r.trim(); broadcastCloudDataChange("kw_complaints_v1", complaints); alert("تم تدوين الرد."); } } }
+        function loadDiscordRolesSidebar() { 
+            var sidebar = document.getElementById("discordRolesSidebar"); 
+            if (!sidebar) return; 
+            sidebar.innerHTML = ""; 
+            var roles = get("kw_roles_v3", []); 
+            roles.forEach(function(role) { 
+                if(role) { 
+                    var isActive = selectedRoleId === role.id ? "active" : ""; 
+                    sidebar.innerHTML += '<div class="discord-role-item ' + isActive + '" onclick="selectDiscordRole(\'' + role.id + '\')"><span>🟢 ' + role.name + '</span><button class="btn-danger" style="padding:2px 6px; font-size:10px; margin-right:5px;" onclick="event.stopPropagation(); deleteDiscordRole(\''+role.id+'\', \''+role.name+'\')">حذف 🗑️</button></div>'; 
+                } 
+            }); 
+        }
+        function selectDiscordRole(roleId) { 
+            selectedRoleId = roleId; 
+            loadDiscordRolesSidebar(); 
+            var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
+            var roles = get("kw_roles_v3", []); 
+            var role = roles.find(function(r) { return r && r.id.toString() === roleId.toString(); }); 
+            if (!role) return; 
+            
+            if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) {
+                document.getElementById("discordRolesMain").style.display = "block"; 
+                document.getElementById("selectedRoleName").innerHTML = "🛡 رتبة: " + role.name + " [🔒 محمية كلياً]"; 
+                document.getElementById("selectedRolePass").innerText = "🔑 الباسورد الحالي: [🔒 محجوب]"; 
+                document.getElementById("passwordEditAreaContainer").innerHTML = "";
+                var inputs = document.querySelectorAll("#discordRolesMain input[type='checkbox']"); 
+                if(inputs) { inputs.forEach(function(i) { i.checked = false; i.disabled = true; }); } 
+                return;
+            }
+            var inputs = document.querySelectorAll("#discordRolesMain input[type='checkbox']"); 
+            if(inputs) { inputs.forEach(function(i) { i.disabled = false; }); }
+            document.getElementById("discordRolesMain").style.display = "block"; 
+            document.getElementById("selectedRoleName").innerHTML = "🛡 رتبة: " + role.name + " <button onclick='renameSelectedRoleLive()'>✏️ تعديل الاسم</button>"; 
+            document.getElementById("selectedRolePass").innerText = ""; 
+            document.getElementById("passwordEditAreaContainer").innerHTML = '<button onclick="verifyAndOpenPasswordSecurely()" style="background:#cd9b32; border:none; color:#000; padding:4px 10px; border-radius:4px; font-size:12px; cursor:pointer; font-weight:bold;">عرض وتعديل الباسورد الإداري 🔑</button>';
+            
+            document.getElementById("perm_viewComplaints").checked = role.permissions?.viewComplaints || false; 
+            document.getElementById("perm_viewOrders").checked = role.permissions?.viewOrders || false; 
+            document.getElementById("perm_fireAssign").checked = role.permissions?.fireAssign || false; 
+            document.getElementById("perm_viewStaffData").checked = role.permissions?.viewStaffData || false; 
+            document.getElementById("perm_viewLog").checked = role.permissions?.viewLog || false; 
+            document.getElementById("perm_deleteAccessLog").checked = role.permissions?.deleteAccessLog || false; 
+            document.getElementById("perm_viewTrashLog").checked = role.permissions?.viewTrashLog || false; 
+            document.getElementById("perm_deleteTrashLog").checked = role.permissions?.deleteTrashLog || false; 
+            document.getElementById("perm_addDeleteRoles").checked = role.permissions?.addDeleteRoles || false; 
+            document.getElementById("perm_editRolePerms").checked = role.permissions?.editRolePerms || false; 
+            document.getElementById("perm_viewEditPassword").checked = role.permissions?.viewEditPassword || false;
+            document.getElementById("perm_viewPrivateLog").checked = role.permissions?.viewPrivateLog || false; 
+            document.getElementById("perm_deletePrivateLogHistory").checked = role.permissions?.deletePrivateLogHistory || false; 
+            document.getElementById("perm_editFiles").checked = role.permissions?.editFiles || false; 
+            document.getElementById("perm_devMode").checked = role.permissions?.devMode || false; 
+        }
+        function verifyAndOpenPasswordSecurely() { 
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.viewEditPassword) { 
+                var check = prompt("أدخل الباسورد الإداري للتعديل:"); 
+                if (check === "KW.171997.171997.KW") { 
+                    var roles = get("kw_roles_v3", []); 
+                    var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
+                    if (role) { 
+                        var n = prompt("🔓 تم التحقق.\nالباسورد الحالي [" + role.password + "]\nاكتب الجديد:"); 
+                        if (n && n.trim() !== "") { 
+                            role.password = n.trim(); 
+                            broadcastCloudDataChange("kw_roles_v3", roles); 
+                            selectDiscordRole(selectedRoleId); 
+                        } 
+                    } 
+                } else { alert("خاطئ!"); } 
+            } 
+        }
+        function processComplaintReply(id) { 
+            var complaints = get("kw_complaints_v1", []); 
+            var idx = complaints.findIndex(function(c) { return c && c.id === id; }); 
+            if(idx !== -1) { 
+                var r = prompt("اكتب رد المسؤول:"); 
+                if(r && r.trim() !== "") { 
+                    complaints[idx].reply = r.trim(); 
+                    broadcastCloudDataChange("kw_complaints_v1", complaints); 
+                    alert("تم تدوين الرد."); 
+                } 
+            } 
+        }
         function openManualAddForm() { document.getElementById("manualAddStaffForm").style.display = "block"; }
-        function saveManualStaffRecordRow() { var name = document.getElementById("field_staffName").value.trim(); var email = document.getElementById("field_staffEmail").value.trim(); var role = document.getElementById("field_staffRole").value; if(!name || !email) return; var emps = get("kw_employees", []); emps.push({ id: "emp_" + Date.now(), name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); broadcastCloudDataChange("kw_employees", emps); document.getElementById("manualAddStaffForm").style.display = "none"; alert("تم الحفظ."); }
-        function downloadStaffDataBackupFile() { var emps = get("kw_employees", []); var txt = "📊 كشف بيانات موظفي متجر KW STORE\n"; emps.forEach(function(e, i) { if(e) txt += (i+1) + ". الاسم: " + e.name + " | الرتبة: " + e.role + "\n"; }); var blob = new Blob([txt], { type: "text/plain;charset=utf-8" }); var link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kw_backup_2026.txt"; link.click(); }
-        function processHireEmployee() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { var name = document.getElementById("hireName").value.trim(); var email = document.getElementById("hireEmail").value.trim(); var role = document.getElementById("hireRoleSelect").value; if(!name || !email) return; if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role)) { alert("🚨 منع هرمي!"); return; } var emps = get("kw_employees", []); emps.push({ id: "emp_" + Date.now(), name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); broadcastCloudDataChange("kw_employees", emps); document.getElementById("hireName").value = ""; document.getElementById("hireEmail").value = ""; alert("تم تعيين الموظف بنجاح في الكشوف!"); } }
-        function processFireEmployee() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { var id = document.getElementById("fireEmployeeSelect").value; if(!id) return; var emps = get("kw_employees", []); var target = emps.find(function(e) { return e && e.id.toString() === id.toString(); }); if (target && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(target.role))) { if (confirm("هل أنت متأكد؟")) { emps = emps.filter(function(e) { return e && e.id.toString() !== id.toString(); }); broadcastCloudDataChange("kw_employees", emps); alert("تم عزل الموظف بنجاح."); } } } }
+        function saveManualStaffRecordRow() { 
+            var name = document.getElementById("field_staffName").value.trim(); 
+            var email = document.getElementById("field_staffEmail").value.trim(); 
+            var role = document.getElementById("field_staffRole").value; 
+            if(!name || !email) return; 
+            var emps = get("kw_employees", []); 
+            emps.push({ id: "emp_" + Date.now(), name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); 
+            broadcastCloudDataChange("kw_employees", emps); 
+            document.getElementById("manualAddStaffForm").style.display = "none"; 
+            alert("تم الحفظ."); 
+        }
+        function downloadStaffDataBackupFile() { 
+            var emps = get("kw_employees", []); 
+            var txt = "📊 كشف بيانات موظفي متجر KW STORE\n"; 
+            emps.forEach(function(e, i) { if(e) txt += (i+1) + ". الاسم: " + e.name + " | الرتبة: " + e.role + "\n"; }); 
+            var blob = new Blob([txt], { type: "text/plain;charset=utf-8" }); 
+            var link = document.createElement("a"); 
+            link.href = URL.createObjectURL(blob); 
+            link.download = "kw_backup_2026.txt"; 
+            link.click(); 
+        }
+        function processHireEmployee() { 
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { 
+                var name = document.getElementById("hireName").value.trim(); 
+                var email = document.getElementById("hireEmail").value.trim(); 
+                var role = document.getElementById("hireRoleSelect").value; 
+                if(!name || !email) return; 
+                if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role)) { 
+                    alert("🚨 منع هرمي!"); return; 
+                } 
+                var emps = get("kw_employees", []); 
+                emps.push({ id: "emp_" + Date.now(), name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); 
+                broadcastCloudDataChange("kw_employees", emps); 
+                document.getElementById("hireName").value = ""; 
+                document.getElementById("hireEmail").value = ""; 
+                alert("تم تعيين الموظف بنجاح في الكشوف!"); 
+            } 
+        }
+        function processFireEmployee() { 
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { 
+                var id = document.getElementById("fireEmployeeSelect").value; 
+                if(!id) return; 
+                var emps = get("kw_employees", []); 
+                var target = emps.find(function(e) { return e && e.id.toString() === id.toString(); }); 
+                if (target && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(target.role))) { 
+                    if (confirm("هل أنت متأكد؟")) { 
+                        emps = emps.filter(function(e) { return e && e.id.toString() !== id.toString(); }); 
+                        broadcastCloudDataChange("kw_employees", emps); 
+                        alert("تم عزل الموظف بنجاح."); 
+                    } 
+                } 
+            } 
+        }
         function renderAll() {
             var hireSel = document.getElementById("hireRoleSelect"); var fieldSel = document.getElementById("field_staffRole"); var fireSel = document.getElementById("fireEmployeeSelect"); var loginSel = document.getElementById("loginRoleSelect"); var compCont = document.getElementById("complaintsListContainer"); var ordCont = document.getElementById("ordersListContainer"); var tableCont = document.getElementById("staffRecordsDataTableContainer"); var logCont = document.getElementById("systemLogListContainer"); var trashCont = document.getElementById("trashLogListContainer"); var privCont = document.getElementById("privateLogsContainer"); var roles = get("kw_roles_v3", []); var emps = get("kw_employees", []); var isOwner = localStorage.getItem("kw_isAdmin") === "true";
             if(loginSel) { loginSel.innerHTML = ""; roles.forEach(function(r) { if(r) loginSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
@@ -500,7 +606,10 @@
             if(privCont) { privCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewPrivateLog) { var pLogs = get("kw_private_cyber_logs_v1", []); pLogs.slice().reverse().forEach(function(pl) { if(pl) { privCont.innerHTML += '<div class="cyber-log-item"><div class="cyber-log-header" onclick="togglePrivateLogDropdown(this)"><div class="cyber-log-title"><span>⚙️ ' + pl.actionTitle + '</span></div></div><div class="cyber-log-details"><p>📝 الوصف: ' + pl.description + '</p></div></div>'; } }); } }
         }
         window.onload = function() {
-            if (!localStorage.getItem("kw_force_sync_global_db_v2026_final_direct_login_v1")) { localStorage.clear(); localStorage.setItem("kw_force_sync_global_db_v2026_final_direct_login_v1", "true"); }
+            if (!localStorage.getItem("kw_force_sync_global_db_v2026_final_direct_login_v3")) { 
+                localStorage.clear(); 
+                localStorage.setItem("kw_force_sync_global_db_v2026_final_direct_login_v3", "true"); 
+            }
             if (!localStorage.getItem("kw_roles_v3")) { 
                 set("kw_roles_v3", [ 
                     { id: 1, name: "Founder", password: "Sk_q.171997.171997.Sk_q", permissions: { viewComplaints: false, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, deleteAccessLog: false, viewTrashLog: false, deleteTrashLog: false, addDeleteRoles: false, editRolePerms: false, viewPrivateLog: false, deletePrivateLogHistory: false, editFiles: false, devMode: false, viewEditPassword: false } }, 
@@ -516,8 +625,9 @@
             if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "founder_static", name: "Founder Leader", email: "founder@kwstore.com", role: "Founder", date: "2026/10/11" }]); }
             var defaultRoles = get("kw_roles_v3", []);
             fetch("https://firebaseio.com", { method: 'PUT', body: JSON.stringify(defaultRoles) });
-
-            initVisitorIdentity(); listenToCloudGlobalUpdates(); renderAll();
+            initVisitorIdentity(); 
+            listenToCloudGlobalUpdates(); 
+            renderAll();
             window.addEventListener("storage", function() { renderAll(); });
         };
     </script>
