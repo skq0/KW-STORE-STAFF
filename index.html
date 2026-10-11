@@ -32,8 +32,8 @@
         .login-card h2 { color: var(--primary); text-align: center; margin-bottom: 25px; font-size: 1.7rem; letter-spacing: 0.5px; }
         .form-group { margin-bottom: 20px; text-align: right; }
         .form-group label { display: block; margin-bottom: 8px; color: #ccc; font-size: 14px; font-weight: 500; }
-        .form-control { width: 100%; padding: 12px; background: #060b07; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 15px; transition: border-color 0.2s; text-align: right; }
-        .form-control:focus { outline: none; border-color: var(--primary); }
+        .form-control { width: 100%; padding: 12px; background: #000000 !important; border: 1px solid var(--border-color); color: #fff; border-radius: 4px; font-size: 15px; transition: border-color 0.2s; text-align: right; display: block !important; }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 8px rgba(46, 204, 113, 0.4); }
         .btn { display: inline-block; width: 100%; background-color: var(--primary); color: #000; text-align: center; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; text-decoration: none; transition: background 0.2s; }
         .btn:hover { background-color: var(--primary-hover); }
         .btn-danger { background-color: var(--danger); color: #fff; padding: 8px 14px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
@@ -108,7 +108,7 @@
                 </div>
                 <div class="form-group">
                     <label>كلمة مرور الرتبة المحددة:</label>
-                    <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
+                    <input type="password" id="authPassword" class="form-control" style="border: 1px solid var(--border-color) !important; background: #000 !important;" placeholder="••••••••" required>
                 </div>
                 <button type="button" class="btn" onclick="handleStaffAuth(null)">تدقيق مفتاح التفعيل والولوج 🛡</button>
             </div>
@@ -153,7 +153,7 @@
                     <h4 style="color: var(--danger); margin-bottom: 10px;">❌ سحب وإبطال تفعيل الـ Token (طرد الموظف)</h4>
                     <div style="display: flex; gap: 10px;">
                         <select id="fireEmployeeSelect" class="form-control"></select>
-                        <button class="btn btn-danger" style="width: auto; white-space: nowrap;" onclick="processFireEmployee()">إبطال المفتاح وفصل العضو تلقائياً ❌</button>
+                        <button class="btn btn-danger" style="width: auto; white-space: nowrap;" onclick="processFireEmployee()">تنفيذ قرار الفصل ❌</button>
                     </div>
                 </div>
             </div>
@@ -244,9 +244,9 @@
                 </div>
                 <div id="manualAddStaffForm" style="display: none; border: 1px solid var(--primary); padding: 15px; border-radius: 6px; margin-bottom: 20px; background: #0b130e;">
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="field_staffName" class="form-control" placeholder="اسم الموظف يدوي...">
+                        <input type="text" id="field_staffName" class="form-control" placeholder="اسم الموظف بالكامل...">
                         <input type="text" id="field_staffId" class="form-control" placeholder="معرّف الـ Token يدوي...">
-                        <input type="email" id="field_staffEmail" class="form-control" placeholder="البريد الإلكتروني يدوي...">
+                        <input type="email" id="field_staffEmail" class="form-control" placeholder="البريد الإلكتروني...">
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <select id="field_staffRole" class="form-control"></select>
@@ -295,7 +295,7 @@
         حقوق الطبع محفوظة لـ KW STORE لعام ٢٠٢٦ © - نظام المراقبة السيبرانية والـ LOG المحمي بالمزامنة العالمية الحية عن بعد
     </footer>
     <script>
-        // 🔗 تفعيل نظام الرموز المشفرة بالأنابيب لكسر تعليق المتصفحات كلياً
+        // 🔗 تفعيل نظام الرموز المشفرة بالأنابيب لكسر تعليق المتصفحات كلياً لـ ad1bb
         var selectedRoleId = null;
         var currentUserPermissions = {}; 
         var activeUserSessionName = "زائر مجهول"; 
@@ -303,34 +303,27 @@
         var activeUserSessionId = "000";
         var activeUserSessionRole = "غير مسجل";
 
-        // خريطة ميزان القوى الهرمي الصارم للرتب لمنع التلاعب بالأدوار العليا لـ يوسف
         var HIERARCHY_WEIGHTS = {
             "Founder": 8, "Co Founder": 7, "Ceo": 6, "Co Ceo": 5, "HR": 4, "SuperVisor": 3, "Helper": 2, "Assistant": 1
         };
 
         function getRoleWeight(roleName) { return HIERARCHY_WEIGHTS[roleName] || 0; }
-
         function get(k, def) { 
             var val = localStorage.getItem(k); 
             if (!val) return def; 
             try { return JSON.parse(val); } catch(e) { return def; } 
         }
-        function set(k, v) { 
-            localStorage.setItem(k, JSON.stringify(v)); 
-        }
+        function set(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
         function broadcastCloudDataChange(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
             renderAll();
-            // رفع مباشر صريح للمسارات لعدم إعطاء فرصة للكاش لتعليق المتصفحات
             fetch("https://firebaseio.com" + key + ".json", {
                 method: 'PUT',
                 body: JSON.stringify(value)
             }).catch(e => console.log("خطأ رفع سحابي"));
         }
         function listenToCloudGlobalUpdates() {
-            // شريان البث الحي (Stream) لتحديث ومزامنة كافة أجهزة المتجر في نفس اللحظة
             var source = new EventSource("https://firebaseio.com");
-            
             source.addEventListener('put', function(event) {
                 if (event && event.data) {
                     try {
@@ -352,31 +345,21 @@
                                 renderAll();
                             }
                         }
-                    } catch (err) {
-                        console.log("تحديث التيار المستمر حياً...");
-                    }
+                    } catch (err) { }
                 }
             });
-            source.onerror = function() {
-                console.log("إعادة ربط الشريان السحابي تلقائياً...");
-            };
         }
         function initVisitorIdentity() {
-            // 🔒 [نظام تفعيل بصمة المفاتيح السحابي لـ KW STORE]:
             var myToken = localStorage.getItem("kw_my_staff_token");
             var cloudEmps = get("kw_employees", []);
-            
-            // الفحص المشدد: هل يمتلك المتصفح توكن موظف مسجل حياً في السيرفر؟
             var matchedEmp = cloudEmps.find(function(e) { return e && e.id.toString() === myToken; });
             
             if (matchedEmp) {
-                // قفل المتصفح على بيانات الهوية المعتمدة والتوكن الممنوح له للأبد
                 localStorage.setItem("kw_my_id", matchedEmp.id);
                 localStorage.setItem("kw_my_name", matchedEmp.name);
                 localStorage.setItem("kw_my_email", matchedEmp.email);
                 document.getElementById("headerUserTitle").innerText = "🔑 مفتاح التفعيل نشط: " + matchedEmp.id + " | العضو: " + matchedEmp.name;
             } else {
-                // لو زائر عادي بدون توكن تفعيل
                 document.getElementById("headerUserTitle").innerText = "👤 رادار الهوية: زائر مؤقت للمتجر";
                 if(!localStorage.getItem("kw_my_id")) {
                     localStorage.setItem("kw_my_id", "VSTR-" + Math.floor(100 + Math.random() * 900));
@@ -393,14 +376,11 @@
             }
             var roles = get("kw_roles_v3", []);
             var myCurrentRoleObj = roles.find(function(r) { return r && r.name === activeUserSessionRole; });
-            if (myCurrentRoleObj) {
-                currentUserPermissions = myCurrentRoleObj.permissions || {};
-            }
+            if (myCurrentRoleObj) { currentUserPermissions = myCurrentRoleObj.permissions || {}; }
         }
         function switchPanel(panelId, btnElement) {
             var isOwner = localStorage.getItem("kw_isAdmin") === "true";
             refreshActiveUserPermissionsLive(); 
-            
             if (!isOwner) {
                 if (panelId === 'complaintsPanel' && !currentUserPermissions.viewComplaints) { alert("عذراً، ليس لديك صلاحية رؤية تذاكر الشكاوى!"); return; }
                 if (panelId === 'ordersPanel' && !currentUserPermissions.viewOrders) { alert("عذراً، ليس لديك صلاحية رؤية طلبات العملاء!"); return; }
@@ -442,7 +422,6 @@
                     return;
                 }
             }
-            
             var emps = get("kw_employees", []);
             var matchedEmp = emps.find(function(emp) { return emp && emp.id.toString() === typedToken && emp.role === selectedRole; });
             var roles = get("kw_roles_v3", []);
@@ -450,246 +429,153 @@
             
             if (matchedRole && matchedEmp) {
                 localStorage.setItem("kw_isAdmin", "false");
-                localStorage.setItem("kw_my_staff_token", typedToken); // ربط المتصفح بالتوكن فوراً
+                localStorage.setItem("kw_my_staff_token", typedToken);
                 setupActiveSession(matchedEmp.name, matchedEmp.email, matchedEmp.id, matchedRole.name);
                 currentUserPermissions = matchedRole.permissions || {};
                 pushToSystemLog(matchedEmp.email, matchedEmp.name, matchedRole.name + " (دخول بالـ Token)", matchedEmp.id);
-                pushToPrivateLog("تسجيل دخول موظف 💼", "تم إدخال الـ Token بنجاح وقفل الجلسة على جهاز الموظف: " + matchedEmp.name, matchedEmp.name, matchedEmp.id, matchedRole.name);
                 unlockDashboard(matchedEmp.name + " (" + matchedRole.name + ")");
             } else { alert("خطأ تفعيل: مفتاح التفعيل (Token) أو كلمة مرور الرتبة غير متطابقة مع السجلات!"); }
         }
         function setupActiveSession(name, email, id, role) { activeUserSessionName = name; activeUserSessionEmail = email; activeUserSessionId = id; activeUserSessionRole = role; }
         function unlockDashboard(userTitle) { document.getElementById("lockScreenView").style.display = "none"; document.getElementById("dashboardView").style.display = "flex"; document.getElementById("logoutBtn").style.display = "inline-block"; initVisitorIdentity(); renderAll(); loadDiscordRolesSidebar(); }
         function processStaffLogoutLive() { pushToSystemLog(activeUserSessionEmail, activeUserSessionName, "تسجيل خروج 🚪", activeUserSessionId); localStorage.removeItem("kw_isAdmin"); localStorage.removeItem("kw_my_staff_token"); location.reload(); }
-        function pushToSystemLog(email, name, role, id) { 
-            var logs = get("kw_system_logs_v1", []); 
-            logs.push({ name: name, email: email, role: role, id: id || "---", time: new Date().toLocaleString("ar-EG") }); 
-            broadcastCloudDataChange("kw_system_logs_v1", logs);
-        }
-        function pushToPrivateLog(actionTitle, description, executorName, executorId, executorRole) {
-            var privateLogs = get("kw_private_cyber_logs_v1", []);
-            var logObj = {
-                id: "priv_" + Date.now() + Math.floor(Math.random()*100),
-                actionTitle: actionTitle, description: description,
-                executorName: executorName || activeUserSessionName, executorId: executorId || activeUserSessionId, executorRole: executorRole || activeUserSessionRole,
-                time: new Date().toLocaleTimeString("ar-EG"), date: new Date().toLocaleDateString("ar-EG")
-            };
-            privateLogs.push(logObj);
-            broadcastCloudDataChange("kw_private_cyber_logs_v1", privateLogs);
-        }
+        function pushToSystemLog(email, name, role, id) { var logs = get("kw_system_logs_v1", []); logs.push({ name: name, email: email, role: role, id: id || "---", time: new Date().toLocaleString("ar-EG") }); broadcastCloudDataChange("kw_system_logs_v1", logs); }
+        function pushToPrivateLog(actionTitle, description, executorName, executorId, executorRole) { var privateLogs = get("kw_private_cyber_logs_v1", []); privateLogs.push({ id: "priv_" + Date.now(), actionTitle: actionTitle, description: description, executorName: executorName || activeUserSessionName, executorId: executorId || activeUserSessionId, executorRole: executorRole || activeUserSessionRole, time: new Date().toLocaleTimeString("ar-EG"), date: new Date().toLocaleDateString("ar-EG") }); broadcastCloudDataChange("kw_private_cyber_logs_v1", privateLogs); }
         function togglePrivateLogDropdown(element) { element.parentElement.classList.toggle('open'); }
-        function clearPrivateLogHistoryLive() {
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            if (isOwner || currentUserPermissions.deletePrivateLogHistory === true) {
-                if (confirm("🚨 هل أنت متأكد من تصفير سجل الـ Private Logs بالكامل؟")) {
-                    broadcastCloudDataChange("kw_private_cyber_logs_v1", []);
-                    alert("تم تصفير السجل السري.");
-                }
-            } else { alert("عذراً، أنت لا تملك صلاحية مسح السجل السري!"); }
-        }
-        function clearSystemAccessLogLive() {
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            if (isOwner || currentUserPermissions.deleteAccessLog === true) {
-                if (confirm("هل أنت متأكد من مسح سجل عمليات الدخول بالكامل؟")) {
-                    broadcastCloudDataChange("kw_system_logs_v1", []);
-                    alert("تم تصفير سجل النظام.");
-                }
-            } else { alert("خطأ حماية: عذراً، أنت لا تملك الصلاحية!"); }
-        }
-        function clearArchiveTrashLogLive() {
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            if (isOwner || currentUserPermissions.deleteTrashLog === true) {
-                if (confirm("هل أنت متأكد من مسح سجل الأرشفة بالكامل؟")) {
-                    broadcastCloudDataChange("kw_trash_archive_logs_v1", []);
-                    alert("تم تصفير سجل الأرشفة.");
-                }
-            } else { alert("خطأ حماية: عذراً، أنت لا تملك الصلاحية!"); }
-        }
+        function clearPrivateLogHistoryLive() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.deletePrivateLogHistory) { if (confirm("🚨 هل أنت متأكد؟")) { broadcastCloudDataChange("kw_private_cyber_logs_v1", []); } } }
+        function clearSystemAccessLogLive() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.deleteAccessLog) { if (confirm("هل أنت متأكد؟")) { broadcastCloudDataChange("kw_system_logs_v1", []); } } }
+        function clearArchiveTrashLogLive() { if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.deleteTrashLog) { if (confirm("هل أنت متأكد؟")) { broadcastCloudDataChange("kw_trash_archive_logs_v1", []); } } }
         function addNewRole() { 
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            if (isOwner || currentUserPermissions.addDeleteRoles === true) {
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.addDeleteRoles) {
                 var name = document.getElementById("roleInput").value.trim(); if (!name) return; 
                 var r = get("kw_roles_v3", []); 
-                var newRoleObj = { 
-                    id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), 
-                    permissions: { viewComplaints: false, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, deleteAccessLog: false, viewTrashLog: false, deleteTrashLog: false, addDeleteRoles: false, editRolePerms: false, viewPrivateLog: false, deletePrivateLogHistory: false, editFiles: false, devMode: false, viewEditPassword: false } 
-                }; 
-                r.push(newRoleObj);
-                pushToPrivateLog("➕ إنشاء رتبة جديدة 🛡️", "تم إنشاء رتبة: (" + name + ")", activeUserSessionName, activeUserSessionId, activeUserSessionRole);
-                broadcastCloudDataChange("kw_roles_v3", r);
-                document.getElementById("roleInput").value = ""; loadDiscordRolesSidebar(); 
-            } else { alert("ليس لديك صلاحية إضافة رتب!"); }
+                r.push({ id: "role_" + Date.now(), name: name, password: "pass" + Date.now().toString().slice(-4), permissions: { viewComplaints: false, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, deleteAccessLog: false, viewTrashLog: false, deleteTrashLog: false, addDeleteRoles: false, editRolePerms: false, viewPrivateLog: false, deletePrivateLogHistory: false, editFiles: false, devMode: false, viewEditPassword: false } });
+                broadcastCloudDataChange("kw_roles_v3", r); document.getElementById("roleInput").value = ""; loadDiscordRolesSidebar(); 
+            }
         }
         function deleteDiscordRole(roleId, roleName) {
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            if (isOwner || currentUserPermissions.addDeleteRoles === true) {
-                if (roleName === "Founder") { alert("لا يمكن حذف رتبة الـ Founder السيادية العظمى!"); return; }
-                if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(roleName)) {
-                    alert("🚨 خرق حماية: لا يمكنك حذف رتبة موازية لك أو أعلى منك في الهرم الوظيفي لـ KW STORE!"); return;
-                }
-                if (confirm("هل أنت متأكد من حذف رتبة (" + roleName + ")؟")) {
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.addDeleteRoles) {
+                if (roleName === "Founder") return;
+                if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(roleName)) { alert("🚨 منع الهرم الوظيفي!"); return; }
+                if (confirm("هل أنت متأكد؟")) {
                     var roles = get("kw_roles_v3", []); roles = roles.filter(function(r) { return r && r.id.toString() !== roleId.toString(); }); 
-                    var trashLogs = get("kw_trash_archive_logs_v1", []);
-                    trashLogs.push({ type: "إزالة رتبة من السيستم 🛡️", clientName: "رتبة: " + roleName, details: "حذف بقرار إداري", handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") });
-                    pushToPrivateLog("❌ إزالة رتبة 🛡️", "تم حذف رتبة: (" + roleName + ")", activeUserSessionName, activeUserSessionId, activeUserSessionRole);
-                    broadcastCloudDataChange("kw_trash_archive_logs_v1", trashLogs);
-                    broadcastCloudDataChange("kw_roles_v3", roles);
-                    document.getElementById("discordRolesMain").style.display = "none"; loadDiscordRolesSidebar();
+                    broadcastCloudDataChange("kw_roles_v3", roles); document.getElementById("discordRolesMain").style.display = "none"; loadDiscordRolesSidebar();
                 }
-            } else { alert("ليس لديك صلاحية!"); }
+            }
         }
         function updateSelectedRolePerm(permName, isChecked) { 
-            if (!selectedRoleId) return; 
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            var roles = get("kw_roles_v3", []); 
-            var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
+            if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
             if (role) {
-                if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) {
-                    alert("🚨 خرق أمني: لا يمكنك تعديل صلاحيات رتبة تسااويك أو تعلوك!"); renderAll(); return;
-                }
-                if (!role.permissions) role.permissions = {}; 
-                role.permissions[permName] = isChecked; 
-                pushToPrivateLog("⚙️ تعديل صلاحيات رتبة", "تعديل الصلاحية [" + permName + "] إلى (" + isChecked + ") لـ " + role.name, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
-                broadcastCloudDataChange("kw_roles_v3", roles); 
+                if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) { alert("🚨 خرق هرمي!"); renderAll(); return; }
+                if (!role.permissions) role.permissions = {}; role.permissions[permName] = isChecked; broadcastCloudDataChange("kw_roles_v3", roles); 
             } 
         }
         function changeSelectedRolePassword() { 
-            if (!selectedRoleId) return; 
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            if (!isOwner && !currentUserPermissions.viewEditPassword) {
-                alert("🔒 حماية سيادية: لا تمتلك صلاحية View Password & Edit!"); return;
+            if (!selectedRoleId || (!localStorage.getItem("kw_isAdmin") === "true" && !currentUserPermissions.viewEditPassword)) return;
+            var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
+            if (role && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(role.name))) {
+                var newPass = prompt("أدخل كلمة المرور الجديدة:"); if (newPass && newPass.trim() !== "") { role.password = newPass.trim(); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); }
             }
-            var roles = get("kw_roles_v3", []); 
-            var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
-            if (role) {
-                if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) {
-                    alert("🚨 منع الهرم الوظيفي: لا يمكنك تغيير كلمة مرور رتبة أعلى منك أو تسااويك!"); return;
-                }
-                var newPass = prompt("أدخل كلمة المرور الجديدة للرتبة:"); 
-                if (newPass && newPass.trim() !== "") { 
-                    role.password = newPass.trim(); 
-                    pushToPrivateLog("🔑 تغيير كلمة مرور رتبة", "تعديل باسورد رتبة (" + role.name + ")", activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
-                    broadcastCloudDataChange("kw_roles_v3", roles); 
-                    selectDiscordRole(selectedRoleId); 
-                } 
-            } 
         }
         function renameSelectedRoleLive() { 
-            if (!selectedRoleId) return; 
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            var roles = get("kw_roles_v3", []); 
-            var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
-            if (role) { 
-                if (role.name === "Founder") return; 
-                if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) {
-                    alert("🚨 منع الهرم الوظيفي: لا يمكنك تعديل مسمى رتبة تسااويك أو تعلوك!"); return;
-                }
-                var newName = prompt("أدخل الاسم الجديد للرتبة:", role.name); 
-                if (newName && newName.trim() !== "") { 
-                    var oldName = role.name; 
-                    role.name = newName.trim(); 
-                    pushToPrivateLog("✏️ تعديل اسم رتبة", "تعديل من (" + oldName + ") إلى (" + role.name + ")", activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
-                    broadcastCloudDataChange("kw_roles_v3", roles); 
-                    selectDiscordRole(selectedRoleId); 
-                } 
-            } 
+            if (!selectedRoleId) return; var roles = get("kw_roles_v3", []); var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
+            if (role && role.name !== "Founder" && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(role.name))) {
+                var newName = prompt("اسم الرتبة الجديد:", role.name); if (newName && newName.trim() !== "") { role.name = newName.trim(); broadcastCloudDataChange("kw_roles_v3", roles); selectDiscordRole(selectedRoleId); }
+            }
         }
         function processHireEmployee() { 
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
-            if (isOwner || currentUserPermissions.fireAssign === true) { 
-                var name = document.getElementById("hireName").value.trim(); 
-                var email = document.getElementById("hireEmail").value.trim(); 
-                var role = document.getElementById("hireRoleSelect").value; 
-                
-                if(!name || !email) { alert("رجاءً املأ كافة حقول كشف الموظف الجديد!"); return; } 
-                if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role)) {
-                    alert("🚨 منع الهرم الوظيفي: ليس لديك سلطة لتعيين شخص برتبة تماثلك أو تفوق رتبتك الكلية!"); return;
-                }
-                
-                // 🎲 خوارزمية سيادية فريدة لتوليد كود تفعيل Token عشوائي مشفر ثابت ومستحيل يتكرر
-                var secureRandomKey = Math.random().toString(36).substring(2, 7).toUpperCase();
-                var generatedToken = "KW-STAFF-" + secureRandomKey;
-                
-                var emps = get("kw_employees", []); 
-                emps.push({ id: generatedToken, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); 
-                
-                pushToPrivateLog("💼 توليد Token جديد", "تعيين الموظف " + name + " برتبة " + role + " ومنحه مفتاح تفعيل ثابت: " + generatedToken, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
-                broadcastCloudDataChange("kw_employees", emps); 
-                
-                document.getElementById("hireName").value = ""; document.getElementById("hireEmail").value = "";
-                
-                // انبثاق صندوق التفعيل لنسخه للموظف فوراً
-                prompt("👑 تم توليد مفتاح التفعيل (Token) بنجاح!\nانسخ هذا الكود وأعطه للموظف ليسجل به دخوله فوراً وبشكل ثابت ومستحيل يتغير:", generatedToken);
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { 
+                var name = document.getElementById("hireName").value.trim(); var email = document.getElementById("hireEmail").value.trim(); var role = document.getElementById("hireRoleSelect").value; 
+                if(!name || !email) return; 
+                if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role)) { alert("🚨 منع هرمي!"); return; }
+                var generatedToken = "KW-STAFF-" + Math.random().toString(36).substring(2, 7).toUpperCase();
+                var emps = get("kw_employees", []); emps.push({ id: generatedToken, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); 
+                broadcastCloudDataChange("kw_employees", emps); document.getElementById("hireName").value = ""; document.getElementById("hireEmail").value = "";
+                prompt("👑 انسخ كود الـ Token التالي للموظف:", generatedToken);
             } 
         }
         function processFireEmployee() { 
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
-            if (isOwner || currentUserPermissions.fireAssign === true) { 
-                var tokenToRevoke = document.getElementById("fireEmployeeSelect").value; 
-                if(!tokenToRevoke) return; 
-                if(tokenToRevoke === "KW-MASTER-2026") return; 
-                
-                var emps = get("kw_employees", []); 
-                var targetEmp = emps.find(function(e) { return e && e.id.toString() === tokenToRevoke.toString(); }); 
-                if (!targetEmp) return;
-                
-                if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(targetEmp.role)) {
-                    alert("🚨 منع الهرم الوظيفي: مستحيل! لا يمكنك سحب كود تفعيل مسؤول يمتلك رتبة تسااويك أو تعلوك!"); return;
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { 
+                var id = document.getElementById("fireEmployeeSelect").value; if(!id || id === "KW-MASTER-2026") return; 
+                var emps = get("kw_employees", []); var target = emps.find(function(e) { return e && e.id.toString() === id.toString(); }); 
+                if (target && (localStorage.getItem("kw_isAdmin") === "true" || getRoleWeight(activeUserSessionRole) > getRoleWeight(target.role))) {
+                    if (confirm("هل أنت متأكد؟")) { emps = emps.filter(function(e) { return e && e.id.toString() !== id.toString(); }); broadcastCloudDataChange("kw_employees", emps); alert("تم الإبطال والطرد بنجاح."); }
                 }
-                
-                var empName = targetEmp.name; 
-                if (confirm("🚨 هل أنت متأكد من إبطال مفتاح الـ Token وفصل الموظف (" + empName + ") نهائياً؟")) { 
-                    emps = emps.filter(function(e) { return e && e.id.toString() !== tokenToRevoke.toString(); }); 
-                    pushToPrivateLog("❌ إبطال تفعيل Token", "تم إلغاء وسحب كود التفعيل من العضو " + empName, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
+            } 
+        }
+        function archiveAndDismissComplaint(id) { 
+            var complaints = get("kw_complaints_v1", []); 
+            var idx = complaints.findIndex(function(c) { return c && c.id === id; }); 
+            if (idx !== -1) { 
+                var trash = get("kw_trash_archive_logs_v1", []); 
+                trash.push({ type: "تذكرة شكوى 📬", clientName: complaints[idx].senderName, details: complaints[idx].message, handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") }); 
+                complaints.splice(idx, 1); 
+                broadcastCloudDataChange("kw_trash_archive_logs_v1", trash); 
+                broadcastCloudDataChange("kw_complaints_v1", complaints); 
+                alert("تم إنهاء الشكوى بنجاح وأرشفتها.");
+            } 
+        }
+        function archiveAndDismissOrder(id) { 
+            var orders = get("kw_orders_v1", []); 
+            var idx = orders.findIndex(function(o) { return o && o.id === id; }); 
+            if (idx !== -1) { 
+                var trash = get("kw_trash_archive_logs_v1", []); 
+                trash.push({ type: "طلب شراء نظام 📦", clientName: orders[idx].clientName, details: orders[idx].selectedSystem, handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") }); 
+                orders.splice(idx, 1); 
+                broadcastCloudDataChange("kw_trash_archive_logs_v1", trash); 
+                broadcastCloudDataChange("kw_orders_v1", orders); 
+                alert("تم إنهاء الطلب بنجاح وأرشمته.");
+            } 
+        }
+        function deleteSingleEmployeeRecord(token, name, role) { 
+            if (localStorage.getItem("kw_isAdmin") === "true" || currentUserPermissions.fireAssign) { 
+                if (token === "KW-MASTER-2026") return; 
+                if (localStorage.getItem("kw_isAdmin") !== "true" && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role)) {
+                    alert("🚨 منع الهرم الوظيفي: لا يمكنك مسح سجل مسؤول موازي أو يعلوك!"); return;
+                }
+                if (confirm("هل أنت متأكد من حذف كرت تفعيل الموظف (" + name + ")؟")) { 
+                    var emps = get("kw_employees", []); 
+                    emps = emps.filter(function(e) { return e && e.id.toString() !== token.toString(); }); 
+                    pushToPrivateLog("📊 مسح سجل موظف", "حذف كود الموظف: " + name, activeUserSessionName, activeUserSessionId, activeUserSessionRole);
                     broadcastCloudDataChange("kw_employees", emps); 
-                    alert("تم إبطال المفتاح وفصل العضو سحابياً بنجاح."); 
                 } 
             } 
         }
-        function archiveAndDismissComplaint(complaintId) { var complaints = get("kw_complaints_v1", []); var idx = complaints.findIndex(function(c) { return c && c.id === complaintId; }); if (idx === -1) return; var trashLogs = get("kw_trash_archive_logs_v1", []); trashLogs.push({ type: "تذكرة شكوى 📬", clientName: complaints[idx].senderName, details: complaints[idx].message, handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") }); complaints.splice(idx, 1); broadcastCloudDataChange("kw_trash_archive_logs_v1", trashLogs); broadcastCloudDataChange("kw_complaints_v1", complaints); alert("تم إنهاء الشكوى."); }
-        function archiveAndDismissOrder(orderId) { var orders = get("kw_orders_v1", []); var idx = orders.findIndex(function(o) { return o && o.id === orderId; }); if (idx === -1) return; var trashLogs = get("kw_trash_archive_logs_v1", []); trashLogs.push({ type: "طلب شراء نظام 📦", clientName: orders[idx].clientName, details: orders[idx].selectedSystem, handlerStaff: activeUserSessionName, time: new Date().toLocaleString("ar-EG") }); orders.splice(idx, 1); broadcastCloudDataChange("kw_trash_archive_logs_v1", trashLogs); broadcastCloudDataChange("kw_orders_v1", orders); alert("تم إنهاء الطلب."); }
-        function deleteSingleEmployeeRecord(empToken, empName, empRole) { 
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
-            if (isOwner || currentUserPermissions.fireAssign === true) { 
-                if (empToken === "KW-MASTER-2026") return; 
-                if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(empRole)) {
-                    alert("🚨 منع الهرم الوظيفي: لا يمكنك مسح سجلات مسؤول موازي أو يعلوك في النفوذ!"); return;
-                }
-                if (confirm("هل أنت متأكد من حذف كرت تفعيل الموظف؟")) { 
-                    var emps = get("kw_employees", []); emps = emps.filter(function(e) { return e && e.id.toString() !== empToken.toString(); }); 
-                    pushToPrivateLog("📊 مسح موظف تفعيل", "حذف كود الموظف " + empName, activeUserSessionName, activeUserSessionId, activeUserSessionRole); 
-                    broadcastCloudDataChange("kw_employees", emps); 
-                    alert("تم الحذف."); 
+        function loadDiscordRolesSidebar() { 
+            var sidebar = document.getElementById("discordRolesSidebar"); 
+            if (!sidebar) return; 
+            sidebar.innerHTML = ""; 
+            var roles = get("kw_roles_v3", []); 
+            roles.forEach(function(role) { 
+                if(role) { 
+                    var isActive = selectedRoleId === role.id ? "active" : ""; 
+                    sidebar.innerHTML += '<div class="discord-role-item ' + isActive + '" onclick="selectDiscordRole(\'' + role.id + '\')"><span>🟢 ' + role.name + '</span><button class="btn-danger" style="padding:2px 6px; font-size:10px; margin-right:5px;" onclick="event.stopPropagation(); deleteDiscordRole(\''+role.id+'\', \''+role.name+'\')">حذف 🗑️</button></div>'; 
                 } 
-            } 
+            }); 
         }
-        function loadDiscordRolesSidebar() { var sidebar = document.getElementById("discordRolesSidebar"); if (!sidebar) return; sidebar.innerHTML = ""; var roles = get("kw_roles_v3", []); roles.forEach(function(role) { if(role) { var isActive = selectedRoleId === role.id ? "active" : ""; sidebar.innerHTML += '<div class="discord-role-item ' + isActive + '" onclick="selectDiscordRole(\'' + role.id + '\')">' + '<span>🟢 ' + role.name + '</span>' + '<button class="btn-danger" style="padding:2px 6px; font-size:10px; margin-right:5px;" onclick="event.stopPropagation(); deleteDiscordRole(\''+role.id+'\', \''+role.name+'\')">حذف 🗑️</button></div>'; } }); }
         function selectDiscordRole(roleId) { 
-            selectedRoleId = roleId; loadDiscordRolesSidebar(); 
-            var isOwner = localStorage.getItem("kw_isAdmin") === "true";
+            selectedRoleId = roleId; 
+            loadDiscordRolesSidebar(); 
+            var isOwner = localStorage.getItem("kw_isAdmin") === "true"; 
             var roles = get("kw_roles_v3", []); 
             var role = roles.find(function(r) { return r && r.id.toString() === roleId.toString(); }); 
             if (!role) return; 
             
             if (!isOwner && getRoleWeight(activeUserSessionRole) <= getRoleWeight(role.name)) {
-                document.getElementById("discordRolesMain").style.display = "block";
-                document.getElementById("selectedRoleName").innerHTML = "🛡 رتبة: " + role.name + " <span style='color:var(--danger); font-size:12px; margin-right:10px;'>[🔒 الرتبة أعلى منك أو تسااويك - محمية كلياً]</span>";
-                document.getElementById("selectedRolePass").innerText = "🔑 الباسورد الحالي: [🔒 محجوب بالهرم الوظيفي]";
+                document.getElementById("discordRolesMain").style.display = "block"; 
+                document.getElementById("selectedRoleName").innerHTML = "🛡 رتبة: " + role.name + " <span style='color:var(--danger); font-size:12px; margin-right:10px;'>[🔒 محمية كلياً]</span>"; 
+                document.getElementById("selectedRolePass").innerText = "🔑 الباسورد الحالي: [🔒 محجوب بالهرم الوظيفي]"; 
                 document.getElementById("passwordEditAreaContainer").innerHTML = "";
-                var inputs = document.querySelectorAll("#discordRolesMain input[type='checkbox']");
-                if(inputs) { inputs.forEach(function(i) { i.checked = false; i.disabled = true; }); }
+                var inputs = document.querySelectorAll("#discordRolesMain input[type='checkbox']"); 
+                if(inputs) { inputs.forEach(function(i) { i.checked = false; i.disabled = true; }); } 
                 return;
             }
-            
-            var inputs = document.querySelectorAll("#discordRolesMain input[type='checkbox']");
+            var inputs = document.querySelectorAll("#discordRolesMain input[type='checkbox']"); 
             if(inputs) { inputs.forEach(function(i) { i.disabled = false; }); }
-
             document.getElementById("discordRolesMain").style.display = "block"; 
             document.getElementById("selectedRoleName").innerHTML = "🛡 رتبة: " + role.name + " <button onclick='renameSelectedRoleLive()' style='background:#2ecc71; border:none; color:#000; padding:2px 6px; border-radius:3px; font-size:11px; cursor:pointer; font-weight:bold; margin-right:8px;'>✏️ تعديل الاسم</button>"; 
-            
             document.getElementById("selectedRolePass").innerText = ""; 
-            var btnContainer = document.getElementById("passwordEditAreaContainer");
-            btnContainer.innerHTML = '<button onclick="verifyAndOpenPasswordSecurely()" style="background:#cd9b32; border:none; color:#000; padding:6px 12px; border-radius:4px; font-size:12px; cursor:pointer; font-weight:bold;">عرض وتعديل الباسورد الإداري 🔑</button>';
+            document.getElementById("passwordEditAreaContainer").innerHTML = '<button onclick="verifyAndOpenPasswordSecurely()" style="background:#cd9b32; border:none; color:#000; padding:4px 10px; border-radius:4px; font-size:12px; cursor:pointer; font-weight:bold;">عرض وتعديل الباسورد الإداري 🔑</button>';
             
             document.getElementById("perm_viewComplaints").checked = role.permissions?.viewComplaints || false; 
             document.getElementById("perm_viewOrders").checked = role.permissions?.viewOrders || false; 
@@ -707,46 +593,72 @@
             document.getElementById("perm_editFiles").checked = role.permissions?.editFiles || false; 
             document.getElementById("perm_devMode").checked = role.permissions?.devMode || false; 
         }
-
-        function verifyAndOpenPasswordSecurely() {
+        function verifyAndOpenPasswordSecurely() { 
             var isOwner = localStorage.getItem("kw_isAdmin") === "true";
-            if (!isOwner && !currentUserPermissions.viewEditPassword) {
-                alert("ليس لديك صلاحية!"); return;
-            }
-            var adminPassCheck = prompt("أدخل الباسورد الإداري للتعديل:");
-            if (adminPassCheck === "KW.171997.171997.KW") {
-                var roles = get("kw_roles_v3", []);
-                var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); });
-                if (role) {
-                    var newPass = prompt("🔓 تم التحقق بنجاح.\nالباسورد الحالي للرتبة هو [" + role.password + "]\nاكتب الباسورد الجديد لو ترغب في التعديل:");
-                    if (newPass && newPass.trim() !== "") {
-                        role.password = newPass.trim();
-                        pushToPrivateLog("🔑 تعديل باسورد رتبة", "تعديل كلمة مرور رتبة (" + role.name + ")", activeUserSessionName, activeUserSessionId, activeUserSessionRole);
-                        broadcastCloudDataChange("kw_roles_v3", roles);
-                        alert("تم تحديث باسورد الرتبة بنجاح!");
-                        selectDiscordRole(selectedRoleId);
-                    }
-                }
-            } else {
-                alert("❌ الباسورد الإداري للتعديل خاطئ!");
-            }
+            if (isOwner || currentUserPermissions.viewEditPassword) { 
+                var check = prompt("أدخل الباسورد الإداري للتعديل الحتمي:"); 
+                if (check === "KW.171997.171997.KW") { 
+                    var roles = get("kw_roles_v3", []); 
+                    var role = roles.find(function(r) { return r && r.id.toString() === selectedRoleId.toString(); }); 
+                    if (role) { 
+                        var n = prompt("🔓 تم التحقق بنجاح.\nالباسورد الحالي للرتبة هو [" + role.password + "]\nاكتب الباسورد الجديد لو ترغب في التعديل:"); 
+                        if (n && n.trim() !== "") { 
+                            role.password = n.trim(); 
+                            pushToPrivateLog("🔑 تغيير باسورد رتبة", "تعديل كلمة مرور رتبة (" + role.name + ") عبر الصلاحية المؤمنة", activeUserSessionName, activeUserSessionId, activeUserSessionRole);
+                            broadcastCloudDataChange("kw_roles_v3", roles); 
+                            selectDiscordRole(selectedRoleId); 
+                        } 
+                    } 
+                } else { alert("❌ الباسورد الإداري للتعديل خاطئ! تم حجب البيانات."); } 
+            } else { alert("ليس لديك صلاحية!"); }
         }
-        function processComplaintReply(complaintId) { var complaints = get("kw_complaints_v1", []); var idx = complaints.findIndex(function(c) { return c && c.id === complaintId; }); if(idx === -1) return; var replyText = prompt("اكتب رد المسؤول المعتمد:"); if(replyText && replyText.trim() !== "") { complaints[idx].reply = replyText.trim(); broadcastCloudDataChange("kw_complaints_v1", complaints); alert("تم الرد وحفظ التذكرة."); } }
+        function processComplaintReply(id) { 
+            var complaints = get("kw_complaints_v1", []); 
+            var idx = complaints.findIndex(function(c) { return c && c.id === id; }); 
+            if(idx !== -1) { 
+                var r = prompt("اكتب رد المسؤول المعتمد للسيرفر:"); 
+                if(r && r.trim() !== "") { 
+                    complaints[idx].reply = r.trim(); 
+                    broadcastCloudDataChange("kw_complaints_v1", complaints); 
+                    alert("تم إرسال وحفظ الرد الفني بنجاح!");
+                } 
+            } 
+        }
         function openManualAddForm() { document.getElementById("manualAddStaffForm").style.display = "block"; }
-        function saveManualStaffRecordRow() { var name = document.getElementById("field_staffName").value.trim(); var id = document.getElementById("field_staffId").value.trim(); var email = document.getElementById("field_staffEmail").value.trim(); var role = document.getElementById("field_staffRole").value; if(!name || !id || !email) return; var emps = get("kw_employees", []); emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); broadcastCloudDataChange("kw_employees", emps); document.getElementById("manualAddStaffForm").style.display = "none"; alert("تم تدوين الموظف."); }
-        function downloadStaffDataBackupFile() { var emps = get("kw_employees", []); var textContent = "📊 كشف بيانات موظفي متجر KW STORE\n"; emps.forEach(function(e, i) { if(e) textContent += (i+1) + ". الاسم: " + e.name + " | مفتاح التفعيل: " + e.id + " | الرتبة: " + e.role + "\n"; }); var blob = new Blob([textContent], { type: "text/plain;charset=utf-8" }); var link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kw_staff_tokens_backup_2026.txt"; link.click(); }
+        function saveManualStaffRecordRow() { 
+            var name = document.getElementById("field_staffName").value.trim(); 
+            var id = document.getElementById("field_staffId").value.trim(); 
+            var email = document.getElementById("field_staffEmail").value.trim(); 
+            var role = document.getElementById("field_staffRole").value; 
+            if(!name || !id || !email) return; 
+            var emps = get("kw_employees", []); 
+            emps.push({ id: id, name: name, email: email, role: role, date: new Date().toLocaleDateString("ar-EG") }); 
+            broadcastCloudDataChange("kw_employees", emps); 
+            document.getElementById("manualAddStaffForm").style.display = "none"; 
+            alert("تم تدوين الموظف يدوياً بنجاح!");
+        }
+        function downloadStaffDataBackupFile() { 
+            var emps = get("kw_employees", []); 
+            var txt = "📊 كشف بيانات موظفي متجر KW STORE لعام 2026\n"; 
+            emps.forEach(function(e, i) { if(e) txt += (i+1) + ". الاسم: " + e.name + " | الـ Token: " + e.id + " | الرتبة: " + e.role + "\n"; }); 
+            var blob = new Blob([txt], { type: "text/plain;charset=utf-8" }); 
+            var link = document.createElement("a"); 
+            link.href = URL.createObjectURL(blob); 
+            link.download = "kw_tokens_backup_2026.txt"; 
+            link.click(); 
+        }
         function renderAll() {
             var hireSel = document.getElementById("hireRoleSelect"); var fieldSel = document.getElementById("field_staffRole"); var fireSel = document.getElementById("fireEmployeeSelect"); var loginSel = document.getElementById("loginRoleSelect"); var compCont = document.getElementById("complaintsListContainer"); var ordCont = document.getElementById("ordersListContainer"); var tableCont = document.getElementById("staffRecordsDataTableContainer"); var logCont = document.getElementById("systemLogListContainer"); var trashCont = document.getElementById("trashLogListContainer"); var privCont = document.getElementById("privateLogsContainer"); var roles = get("kw_roles_v3", []); var emps = get("kw_employees", []); var isOwner = localStorage.getItem("kw_isAdmin") === "true";
             if(loginSel) { loginSel.innerHTML = ""; roles.forEach(function(r) { if(r) loginSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
             if(hireSel) { hireSel.innerHTML = ""; roles.forEach(function(r) { if(r) hireSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
             if(fieldSel) { fieldSel.innerHTML = ""; roles.forEach(function(r) { if(r) fieldSel.innerHTML += '<option value="' + r.name + '">' + r.name + '</option>'; }); }
-            if(fireSel) { fireSel.innerHTML = ""; fireSel.innerHTML = ""; emps.forEach(function(e) { if(e) fireSel.innerHTML += '<option value="' + e.id + '">🔑 ' + e.name + ' (Token: ' + e.id + ')</option>'; }); }
-            if(compCont) { compCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewComplaints) { var complaints = get("kw_complaints_v1", []); if(complaints.length === 0) { compCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد شكاوى مستلمة حالياً.</div>'; } else { complaints.forEach(function(c) { if(c) { compCont.innerHTML += '<div class="data-list-item"><div>📅 وقت التذكرة: ' + c.date + ' | 👤 اسم العميل: ' + c.senderName + '</div><div style="color:#fff; margin-top:5px; font-weight:bold;">⚠️ الشكوى: ' + c.message + '</div><div style="margin-top:8px; color:var(--primary);">✍️ الرد الحالي: ' + (c.reply || "لا يوجد رد بعد") + '</div><div style="margin-top:10px; display:flex; gap:8px;"><button class="btn" style="width:auto; padding:4px 10px; font-size:12px;" onclick="processComplaintReply(\''+c.id+'\')">✉️ الرد الفني</button><button class="btn btn-danger" style="width:auto; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissComplaint(\''+c.id+'\')">❌ إنهاء ومسح التذكرة</button></div></div>'; } }); } } else { compCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية عرض تذاكر الشكاوى!</div>'; } }
-            if(ordCont) { ordCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewOrders) { var orders = get("kw_orders_v1", []); if(orders.length === 0) { ordCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">لا توجد طلبات شراء مسجلة حالياً.</div>'; } else { orders.forEach(function(o) { if(o) { ordCont.innerHTML += '<div class="data-list-item"><div>👤 المشتري: ' + o.clientName + ' | 📞 هاتف: ' + o.clientPhone + '</div><div style="color:#fff; margin-top:5px; font-weight:bold;">📦 النظام المطلوب: ' + o.selectedSystem + '</div><div style="font-size:12px; color:var(--text-muted); margin-top:5px;">📅 التوقيت: ' + o.date + '</div><button class="btn btn-danger" style="width:auto; margin-top:10px; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissOrder(\''+o.id+'\')">❌ إنهاء ومسح الطلب</button></div>'; } }); } } else { ordCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية عرض طلبات العملاء!</div>'; } }
+            if(fireSel) { fireSel.innerHTML = ""; emps.forEach(function(e) { if(e) fireSel.innerHTML += '<option value="' + e.id + '">🔑 ' + e.name + ' (Token: ' + e.id + ')</option>'; }); }
+            if(compCont) { compCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewComplaints) { var complaints = get("kw_complaints_v1", []); if(complaints.length === 0) { compCont.innerHTML = '<div>لا توجد شكاوى مستلمة.</div>'; } else { complaints.forEach(function(c) { if(c) { compCont.innerHTML += '<div class="data-list-item"><div>📅 وقت التذكرة: ' + c.date + ' | 👤 اسم العميل: ' + c.senderName + '</div><div style="color:#fff; margin-top:5px; font-weight:bold;">⚠️ الشكوى: ' + c.message + '</div><div style="margin-top:8px; color:var(--primary);">✍️ الرد الحالي: ' + (c.reply || "لا يوجد رد بعد") + '</div><div style="margin-top:10px; display:flex; gap:8px;"><button class="btn" style="width:auto; padding:4px 10px; font-size:12px;" onclick="processComplaintReply(\''+c.id+'\')">✉️ الرد الفني</button><button class="btn btn-danger" style="width:auto; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissComplaint(\''+c.id+'\')">❌ إنهاء ومسح التذكرة</button></div></div>'; } }); } } else { compCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية عرض تذاكر الشكاوى!</div>'; } }
+            if(ordCont) { ordCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewOrders) { var orders = get("kw_orders_v1", []); if(orders.length === 0) { ordCont.innerHTML = '<div>لا توجد طلبات شراء مسجلة حالياً.</div>'; } else { orders.forEach(function(o) { if(o) { ordCont.innerHTML += '<div class="data-list-item"><div>👤 المشتري: ' + o.clientName + ' | 📞 هاتف: ' + o.clientPhone + '</div><div style="color:#fff; margin-top:5px; font-weight:bold;">📦 النظام المطلوب: ' + o.selectedSystem + '</div><div style="font-size:12px; color:var(--text-muted); margin-top:5px;">📅 التوقيت: ' + o.date + '</div><button class="btn btn-danger" style="width:auto; margin-top:10px; padding:4px 10px; font-size:12px;" onclick="archiveAndDismissOrder(\''+o.id+'\')">❌ إنهاء ومسح الطلب</button></div>'; } }); } } else { ordCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية عرض طلبات العملاء!</div>'; } }
             if(tableCont) { tableCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewStaffData) { if(emps.length === 0) { tableCont.innerHTML = '<div>كشف الموظفين فارغ.</div>'; } else { emps.forEach(function(e) { if(e) { tableCont.innerHTML += '<div class="data-list-item flex-box"><span>👤 العضو: ' + e.name + ' | 🔑 الـ Token: <span style="color:var(--warning); font-family:monospace; font-weight:bold;">' + e.id + '</span> | 🛡️ الرتبة: <span class="badge">' + e.role + '</span></span><button class="btn-danger" style="padding:4px 10px; font-size:12px;" onclick="deleteSingleEmployeeRecord(\''+e.id+'\', \''+e.name+'\', \''+e.role+'\')">سحب المفتاح وطرد ❌</button></div>'; } }); } } else { tableCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية رؤية معلومات الموظفين!</div>'; } }
-            if(logCont) { logCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewLog) { var logs = get("kw_system_logs_v1", []); if(logs.length === 0) { logCont.innerHTML = '<div>السجل فارغ ولم يتم رصد أي عمليات دخول بعد.</div>'; } else { logs.slice().reverse().forEach(function(l) { if(l) logCont.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:6px 0; font-size:13px; color:#ccc;">📅 ['+l.time+'] - ' + l.role + ' لـ 👤 الاسم: <span style="color:var(--primary)">'+l.name+'</span> | الـ Token: <span>'+l.id+'</span></div>'; }); } } else { logCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية رؤية السجلات LOG العامة!</div>'; } }
-            if(trashCont) { trashCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewTrashLog) { var tLogs = get("kw_trash_archive_logs_v1", []); if(tLogs.length === 0) { trashCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">سجل الأرشفة نظيف وفارغ كلياً حالياً.</div>'; } else { tLogs.slice().reverse().forEach(function(tl) { if(tl) trashCont.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:8px 0; font-size:13px; color:#aaa;">📅 ['+tl.time+'] - <span style="color:var(--danger)">[تم الإنهاء والأرشفة]</span> لـ '+tl.type+' | 👤 الاسم: <span style="color:#fff">'+tl.clientName+'</span> | المسؤول: <span style="color:var(--primary)">'+tl.handlerStaff+'</span></div>'; }); } } else { trashCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية رؤية سجل المحذوفات والأرشفة!</div>'; } }
-            if(privCont) { privCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewPrivateLog) { var pLogs = get("kw_private_cyber_logs_v1", []); if(pLogs.length === 0) { privCont.innerHTML = '<div style="color:var(--text-muted); padding:15px; text-align:center;">📡 رادار الرصد السري فارغ ونظيف كلياً، لا يوجد عمليات مسجلة...</div>'; } else { pLogs.slice().reverse().forEach(function(pl) { if(pl) { privCont.innerHTML += '<div class="cyber-log-item"><div class="cyber-log-header" onclick="togglePrivateLogDropdown(this)"><div class="cyber-log-title"><span>⚙️ ' + pl.actionTitle + '</span></div><span class="cyber-arrow">▼ لمشاهدة التفاصيل</span></div><div class="cyber-log-details"><p style="color: #fff; font-weight: 500; margin-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 6px;">📝 وصف العملية الكلية: <span style="color:#ccc;">' + pl.description + '</span></p><div class="grid-details"><div class="detail-tag">👤 اسم الفاعل: <span>' + pl.executorName + '</span></div><div class="detail-tag">🔑 المفتاح (Token): <span>' + pl.executorId + '</span></div><div class="detail-tag">🛡️ الرتبة الإدارية: <span>' + pl.executorRole + '</span></div><div class="detail-tag">🕒 الوقت: <span>' + pl.time + '</span></div><div class="detail-tag">📅 التاريخ: <span>' + pl.date + '</span></div></div></div></div>'; } }); } } else { privCont.innerHTML = '<div style="color:var(--danger); padding:15px; text-align:center;">🔒 خطأ أمني: هذا القسم مخصص للإدارة العليا ويحتاج لصلاحية رؤية الـ Private Logs!</div>'; } }
+            if(logCont) { logCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewLog) { var logs = get("kw_system_logs_v1", []); if(logs.length === 0) { logCont.innerHTML = '<div>السجل فارغ.</div>'; } else { logs.slice().reverse().forEach(function(l) { if(l) logCont.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:6px 0; font-size:13px; color:#ccc;">📅 ['+l.time+'] - ' + l.role + ' لـ 👤 الاسم: <span style="color:var(--primary)">'+l.name+'</span> | الـ Token: <span>'+l.id+'</span></div>'; }); } } else { logCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية رؤية السجلات LOG العامة!</div>'; } }
+            if(trashCont) { trashCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewTrashLog) { var tLogs = get("kw_trash_archive_logs_v1", []); if(tLogs.length === 0) { trashCont.innerHTML = '<div style="color:var(--text-muted); padding:10px;">سجل الأرشفة نظيف وفارغ كلياً حالياً.</div>'; } else { tLogs.slice().reverse().forEach(function(tl) { if(tl) trashCont.innerHTML += '<div style="border-bottom:1px solid rgba(255,255,255,0.05); padding:8px 0; font-size:13px; color:#aaa;">📅 ['+tl.time+'] - <span style="color:var(--danger)">[تم الأرشفة]</span> لـ '+tl.type+' | المسؤول: <span style="color:var(--primary)">'+tl.handlerStaff+'</span></div>'; }); } } else { trashCont.innerHTML = '<div style="color:var(--danger); padding:10px;">🔒 خطأ حماية: لا تمتلك صلاحية رؤية سجل المحذوفات والأرشفة!</div>'; } }
+            if(privCont) { privCont.innerHTML = ""; if (isOwner || currentUserPermissions.viewPrivateLog) { var pLogs = get("kw_private_cyber_logs_v1", []); if(pLogs.length === 0) { privCont.innerHTML = '<div style="color:var(--text-muted); padding:15px; text-align:center;">📡 رادار الرصد السري فارغ ونظيف كلياً...</div>'; } else { pLogs.slice().reverse().forEach(function(pl) { if(pl) { privCont.innerHTML += '<div class="cyber-log-item"><div class="cyber-log-header" onclick="togglePrivateLogDropdown(this)"><div class="cyber-log-title"><span>⚙️ ' + pl.actionTitle + '</span></div><span class="cyber-arrow">▼ لمشاهدة التفاصيل</span></div><div class="cyber-log-details"><p style="color: #fff; font-weight: 500; margin-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 6px;">📝 وصف العملية الكلية: <span style="color:#ccc;">' + pl.description + '</span></p><div class="grid-details"><div class="detail-tag">👤 اسم الفاعل: <span>' + pl.executorName + '</span></div><div class="detail-tag">🔑 المفتاح (Token): <span>' + pl.executorId + '</span></div><div class="detail-tag">🛡️ الرتبة الإدارية: <span>' + pl.executorRole + '</span></div><div class="detail-tag">🕒 الوقت: <span>' + pl.time + '</span></div><div class="detail-tag">📅 التاريخ: <span>' + pl.date + '</span></div></div></div></div>'; } }); } } else { privCont.innerHTML = '<div style="color:var(--danger); padding:15px; text-align:center;">🔒 خطأ أمني: هذا القسم مخصص للإدارة العليا ويحتاج لصلاحية رؤية الـ Private Logs!</div>'; } }
         }
         window.onload = function() {
             if (!localStorage.getItem("kw_force_sync_global_db_v2026_final_token_system_v1")) { localStorage.clear(); localStorage.setItem("kw_force_sync_global_db_v2026_final_token_system_v1", "true"); }
@@ -762,26 +674,18 @@
                     { id: 8, name: "Assistant", password: "Assistant.552553521", permissions: { viewComplaints: false, viewOrders: false, fireAssign: false, viewStaffData: false, viewLog: false, deleteAccessLog: false, viewTrashLog: false, deleteTrashLog: false, addDeleteRoles: false, editRolePerms: false, viewPrivateLog: false, deletePrivateLogHistory: false, editFiles: false, devMode: false, viewEditPassword: false } }
                 ]); 
             }
-            // ربط السجل الافتراضي الأول للـ Founder بالمفتاح السيادي الرئيسي
             if (!localStorage.getItem("kw_employees")) { set("kw_employees", [{ id: "KW-MASTER-2026", name: "Founder Leader", email: "founder@kwstore.com", role: "Founder", date: "2026/10/11" }]); }
-            
-            var defaultRoles = get("kw_roles_v3", []);
+            var defaultRoles = get("kw_roles_v3", []); 
             var defaultEmps = get("kw_employees", []);
-            
             fetch("https://firebaseio.com", { method: 'PUT', body: JSON.stringify(defaultRoles) });
             fetch("https://firebaseio.com", { method: 'PUT', body: JSON.stringify(defaultEmps) });
-
-            // محرك الفحص والتشغيل الفوري للتوكنات
             var myToken = localStorage.getItem("kw_my_staff_token");
             if(myToken) {
                 var matchedEmp = defaultEmps.find(function(e) { return e && e.id.toString() === myToken; });
-                if(matchedEmp) {
-                    activeUserSessionName = matchedEmp.name; activeUserSessionEmail = matchedEmp.email; activeUserSessionId = matchedEmp.id; activeUserSessionRole = matchedEmp.role;
-                }
+                if(matchedEmp) { activeUserSessionName = matchedEmp.name; activeUserSessionEmail = matchedEmp.email; activeUserSessionId = matchedEmp.id; activeUserSessionRole = matchedEmp.role; }
             }
-
-            document.getElementById("headerUserTitle").innerText = myToken ? "🔑 مفتاح التفعيل نشط: " + myToken : "👤 رادار الهوية: زائر مؤقت للمتجر";
-            listenToCloudGlobalUpdates();
+            initVisitorIdentity(); 
+            listenToCloudGlobalUpdates(); 
             renderAll();
             window.addEventListener("storage", function() { renderAll(); });
         };
